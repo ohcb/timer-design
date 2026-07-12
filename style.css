@@ -1,0 +1,185 @@
+/* 전체 레이아웃 초기화 및 테마 설정 (다크 모드 기준) */
+:root {
+  --bg-color: #0e121a;
+  --panel-bg: #161b26;
+  --card-bg: #1c2333;
+  --card-highlight: #242c3e;
+  --text-main: #ffffff;
+  --text-muted: #7e8a9f;
+  --accent-color: #3b82f6;
+  --green-color: #10b981;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.timer-container {
+  width: 100%;
+  max-width: 1000px;
+  height: 100vh;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* 1. 스크램블 스타일 */
+.scramble-section {
+  text-align: center;
+  padding: 1rem;
+}
+
+.scramble-text {
+  font-size: 1.4rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  line-height: 1.5;
+  color: #dfe5ff;
+}
+
+/* 2. 타이머 디스플레이 스타일 */
+.timer-main {
+  text-align: center;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.timer-display {
+  font-size: 8.5rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.5rem;
+}
+
+.timer-summary {
+  display: flex;
+  gap: 1.5rem;
+  font-size: 1.2rem;
+  color: var(--text-muted);
+}
+
+/* 3. 하단 대시보드 레이아웃 */
+.dashboard-section {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+/* 좌측 기록 패널 */
+.panel {
+  background-color: var(--panel-bg);
+  border-radius: 12px;
+  padding: 1.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.panel h3 {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.8rem;
+  letter-spacing: 0.05em;
+}
+
+.history-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.history-list li {
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  padding: 0.3rem 0;
+}
+
+.history-list .index {
+  color: var(--text-muted);
+  width: 25px;
+}
+
+.history-list .time {
+  font-weight: 600;
+  flex: 1;
+}
+
+.history-list .time.good { color: var(--green-color); }
+.history-list .time.best { color: #f59e0b; }
+
+.history-list .actions button {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  margin-left: 0.5rem;
+  cursor: pointer;
+}
+
+.history-list .actions button:hover {
+  color: var(--text-main);
+}
+
+/* 우측 통계 그리드 */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.8rem;
+}
+
+.stat-card, .stat-cardHighlight {
+  background-color: var(--card-bg);
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 85px;
+  border: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.stat-cardHighlight {
+  background-color: var(--card-highlight);
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  align-self: flex-end;
+}
+
+/* 반응형 모바일 대응 */
+@media (max-width: 768px) {
+  .dashboard-section {
+    grid-template-columns: 1fr;
+  }
+  .timer-display {
+    font-size: 5.5rem;
+  }
+}
