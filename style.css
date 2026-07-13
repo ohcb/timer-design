@@ -1,13 +1,12 @@
-/* Color Palette & Basic Settings */
+/* 깔끔하고 매트한 다크 테마 */
 :root {
-  --bg-main: #090d16;
-  --bg-panel: #111622;
-  --bg-element: #1b2234;
-  --text-main: #f3f4f6;
-  --text-muted: #6b7280;
-  --accent: #3b82f6;
-  --green: #10b981;
-  --red: #ef4444;
+  --bg-color: #0b0e14;
+  --panel-bg: #121620;
+  --text-main: #ffffff;
+  --text-muted: #566176;
+  --border-color: #1e2533;
+  --green-accent: #22c55e;
+  --orange-accent: #f97316;
 }
 
 * {
@@ -18,307 +17,299 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background-color: var(--bg-main);
+  background-color: var(--bg-color);
   color: var(--text-main);
-  min-height: 100vh;
   display: flex;
   justify-content: center;
+  min-height: 100vh;
 }
 
-/* App View Container (Optimized for Mobile view first) */
+/* 모바일 뷰 최적화 컨테이너 */
 .app-container {
   width: 100%;
   max-width: 480px;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  padding-bottom: 75px; /* Spaces for bottom nav */
-  position: relative;
-  background-color: var(--bg-main);
+  padding-bottom: 70px; /* 탭바 공간 */
+  background-color: var(--bg-color);
 }
 
-/* 1. APP HEADER */
-.app-header {
+/* TOP BAR */
+.topbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .logo {
-  font-size: 1.5rem;
+  font-size: 1.35rem;
   font-weight: 800;
   font-style: italic;
-  letter-spacing: -0.05em;
-  color: var(--text-main);
+  letter-spacing: -0.03em;
 }
 
-.header-controls {
+.selectors {
   display: flex;
-  align-items: center;
   gap: 0.5rem;
 }
 
-.select-btn {
-  background-color: var(--bg-panel);
+/* AI 티 안나는 깔끔하고 색 없는 셀렉트 박스 */
+.selectors select {
+  background: none;
   color: var(--text-main);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 0.4rem 0.6rem;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 600;
+  border: 1px solid var(--border-color);
+  padding: 0.35rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
   outline: none;
   cursor: pointer;
 }
 
-.icon-btn {
-  background: none;
-  border: none;
-  font-size: 1.2rem;
-  cursor: pointer;
-  color: var(--text-main);
-}
-
-/* 2. SCRAMBLE ZONE */
+/* SCRAMBLE ZONE */
 .scramble-zone {
-  padding: 1rem;
+  padding: 1.2rem 1rem;
   text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
 }
 
 .scramble-text {
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 500;
   line-height: 1.4;
-  color: #d1d5db;
+  color: #cccccc;
   word-break: break-word;
+  margin-bottom: 0.6rem;
 }
 
-.scramble-actions {
+.scramble-buttons {
   display: flex;
-  gap: 0.75rem;
+  justify-content: center;
+  gap: 1rem;
 }
 
-.action-btn {
-  background: var(--bg-panel);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  color: var(--text-main);
-  padding: 0.3rem 0.6rem;
-  border-radius: 6px;
+/* 배경색 아예 없는 깔끔한 텍스트 형태의 버튼 스타일 */
+.text-link-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 500;
   cursor: pointer;
-  font-size: 0.85rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
-.action-btn:hover {
-  background: var(--bg-element);
+.text-link-btn:hover {
+  color: var(--text-main);
 }
 
-/* 3. MAIN TIMER DISPLAY */
-.timer-section {
+/* MAIN TIMER */
+.timer-main {
   flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 2rem 0;
+  padding: 3rem 0;
 }
 
 .timer-display {
   font-size: 5.5rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
 }
 
-.time-diff {
+.timer-deviation {
   font-size: 1.1rem;
   font-weight: 600;
+  color: var(--text-muted);
   margin-top: -0.2rem;
   font-variant-numeric: tabular-nums;
 }
-.time-diff.positive { color: var(--text-muted); }
-.time-diff.better { color: var(--green); }
-.time-diff.worse { color: var(--red); }
 
-.timer-mini-stats {
+.timer-sub-stats {
   display: flex;
-  gap: 1rem;
+  gap: 1.2rem;
   margin-top: 0.8rem;
   font-size: 0.9rem;
   color: var(--text-muted);
 }
 
-/* 4. BOTTOM DASHBOARD PANEL */
-.dashboard-panel {
-  background-color: var(--bg-panel);
-  border-radius: 24px 24px 0 0;
-  padding: 1.5rem 1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+/* DASHBOARD & PANELS */
+.dashboard {
+  padding: 0 1rem;
 }
 
-.dashboard-grid {
+.dashboard-content {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr; /* 좌측 데이터 정보창, 우측 전개도 */
+  gap: 1rem;
+}
+
+.data-columns {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
-.sub-panel h2 {
-  font-size: 0.85rem;
+.panel {
+  background-color: var(--panel-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.panel h2 {
+  font-size: 0.75rem;
   text-transform: uppercase;
   color: var(--text-muted);
   margin-bottom: 0.6rem;
   letter-spacing: 0.05em;
 }
 
-/* Recent Solves View */
+/* Recent Solves List */
 .solve-list {
   list-style: none;
   display: flex;
-  gap: 0.8rem;
-  overflow-x: auto;
-  padding-bottom: 0.4rem;
+  flex-direction: column;
+  gap: 0.35rem;
 }
 
 .solve-list li {
-  background: var(--bg-element);
-  padding: 0.4rem 0.8rem;
-  border-radius: 8px;
+  display: flex;
   font-size: 0.9rem;
-  white-space: nowrap;
 }
 
 .solve-list .idx {
   color: var(--text-muted);
-  font-size: 0.8rem;
-  margin-right: 0.2rem;
+  width: 20px;
 }
 
-/* Current & Best Table */
-.stats-table {
-  display: flex;
-  flex-direction: column;
-  background: var(--bg-element);
-  border-radius: 12px;
-  padding: 0.5rem;
+.solve-list .time {
+  font-weight: 600;
 }
+.solve-list .time.good { color: var(--green-accent); }
+.solve-list .time.best { color: var(--orange-accent); }
 
-.table-header, .table-row {
+/* Current & Best Stats Grid 크기 정돈 */
+.stats-grid {
   display: grid;
   grid-template-columns: 1.2fr 1fr 1fr;
-  padding: 0.4rem 0.5rem;
-  font-size: 0.9rem;
+  row-gap: 0.35rem;
+  font-size: 0.85rem;
 }
 
-.table-header {
+.grid-label {
   color: var(--text-muted);
-  font-size: 0.75rem;
-  font-weight: 700;
+  font-size: 0.7rem;
   text-transform: uppercase;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-weight: 700;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.2rem;
+  margin-bottom: 0.2rem;
 }
 
-.table-row strong {
+.stats-grid strong {
   font-weight: 600;
 }
 
-/* Scramble Diagram View Layout */
-.cube-diagram-placeholder {
-  background: var(--bg-element);
-  border-radius: 12px;
-  padding: 1rem;
+/* Scramble View (Cube Net Diagram) */
+.scramble-view {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+}
+
+.cube-net {
+  display: flex;
+  flex-direction: column;
+  margin-top: 0.5rem;
 }
 
 .net-row {
   display: flex;
 }
 
-.net-face {
-  width: 28px;
-  height: 28px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.face {
+  width: 22px;
+  height: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   font-weight: bold;
 }
 
-.net-face.blank { border-color: transparent; }
-.net-face.U { background-color: #ffffff; color: #000; }
-.net-face.D { background-color: #ffd500; color: #000; }
-.net-face.L { background-color: #ff5800; }
-.net-face.R { background-color: #ff0000; }
-.net-face.F { background-color: #009b48; }
-.net-face.B { background-color: #0045ad; }
+.face.empty { border-color: transparent; }
+.face.u-face { background-color: #ffffff; color: #000; }
+.face.d-face { background-color: #ffd500; color: #000; }
+.face.l-face { background-color: #ff5800; }
+.face.r-face { background-color: #ff0000; }
+.face.f-face { background-color: #009b48; }
+.face.b-face { background-color: #0045ad; }
 
-/* Tools Center Area Button */
-.tools-container {
+/* Tools Area Button */
+.tools-zone {
   display: flex;
   justify-content: center;
-  margin-top: 1.5rem;
+  margin: 1.2rem 0;
 }
 
-.tools-btn {
+/* 색을 아예 배제하고 테두리만 깔끔하게 남긴 매트 버튼 */
+.outline-btn {
   background: none;
-  border: 1px solid var(--text-muted);
+  border: 1px solid var(--border-color);
   color: var(--text-main);
-  padding: 0.5rem 2rem;
-  border-radius: 20px;
+  padding: 0.45rem 2.5rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
   cursor: pointer;
-  font-size: 0.9rem;
-  font-weight: 500;
-  transition: all 0.2s;
+  transition: background 0.15s;
 }
 
-.tools-btn:hover {
-  background: var(--text-main);
-  color: var(--bg-main);
+.outline-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
 }
 
-/* 5. BOTTOM NAVIGATION BAR */
-.bottom-nav {
+.minimal-btn {
+  background: none;
+  border: none;
+  color: var(--text-main);
+  cursor: pointer;
+}
+
+/* BOTTOM NAVIGATION (5 TABS) */
+.bottom-tabs {
   position: fixed;
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
   max-width: 480px;
-  height: 65px;
-  background-color: rgba(17, 22, 34, 0.95);
-  backdrop-filter: blur(10px);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  height: 60px;
+  background-color: var(--panel-bg);
+  border-top: 1px solid var(--border-color);
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   z-index: 100;
 }
 
-.nav-item {
+.tab-item {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   text-decoration: none;
   color: var(--text-muted);
-  gap: 0.2rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
-.nav-item.active {
+.tab-item.active {
   color: var(--text-main);
-}
-
-.nav-icon {
-  font-size: 1.2rem;
-}
-
-.nav-label {
-  font-size: 0.75rem;
-  font-weight: 500;
+  border-top: 2px solid var(--text-main);
 }
