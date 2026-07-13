@@ -9,105 +9,101 @@
 <body>
   <div class="app-container">
     
-    <header class="app-header">
-      <h1 class="logo">Cub3</h1>
-      <div class="header-controls">
-        <select class="select-btn" name="session">
+    <header class="topbar">
+      <div class="logo">Cub3</div>
+      <div class="selectors">
+        <select id="sessionSelect">
           <option>Session 1</option>
           <option>Session 2</option>
         </select>
-        <select class="select-btn" name="event">
-          <option>3x3x3</option>
-          <option>2x2x2</option>
-          <option>4x4x4</option>
-          <option>3x3 OH</option>
+        <select id="eventSelect">
+          <option>3x3</option>
+          <option>2x2</option>
+          <option>4x4</option>
         </select>
-        <button class="icon-btn settings-trigger" aria-label="Settings">⚙️</button>
       </div>
+      <button class="minimal-btn icon-btn">⚙️</button>
     </header>
 
     <section class="scramble-zone">
       <p class="scramble-text">U2 F2 U' R2 D B2 F2 D L2 U' L2 B2 L U' B' L' D' U2 L R' B R'</p>
-      <div class="scramble-actions">
-        <button class="action-btn" title="Copy">📋</button>
-        <button class="action-btn" title="Edit">✏️</button>
-        <button class="action-btn" title="Refresh">🔄</button>
+      <div class="scramble-buttons">
+        <button class="text-link-btn">Copy</button>
+        <button class="text-link-btn">Edit</button>
+        <button class="text-link-btn">Change</button>
       </div>
     </section>
 
-    <main class="timer-section">
+    <main class="timer-main">
       <div class="timer-display">0.00</div>
-      <div class="time-diff positive">+0.00</div>
-      <div class="timer-mini-stats">
+      <div class="timer-deviation">+0.00</div>
+      <div class="timer-sub-stats">
         <span>ao5: 8.94</span>
         <span>ao12: -</span>
       </div>
     </main>
 
-    <section class="dashboard-panel">
-      <div class="dashboard-grid">
+    <section class="dashboard">
+      
+      <div class="dashboard-content">
         
-        <div class="sub-panel recent-solves">
-          <h2>Recent Solves</h2>
-          <ul class="solve-list">
-            <li><span class="idx">5.</span> <span class="val">8.96</span></li>
-            <li><span class="idx">4.</span> <span class="val">8.56</span></li>
-            <li><span class="idx">3.</span> <span class="val">8.93</span></li>
-            <li><span class="idx">2.</span> <span class="val">9.52</span></li>
-            <li><span class="idx">1.</span> <span class="val">8.95</span></li>
-          </ul>
-        </div>
+        <div class="data-columns">
+          <div class="panel">
+            <h2>Recent Solves</h2>
+            <ul class="solve-list">
+              <li><span class="idx">5.</span> <span class="time good">8.96</span></li>
+              <li><span class="idx">4.</span> <span class="time best">8.56</span></li>
+              <li><span class="idx">3.</span> <span class="time good">8.93</span></li>
+              <li><span class="idx">2.</span> <span class="time">9.52</span></li>
+              <li><span class="idx">1.</span> <span class="time">8.95</span></li>
+            </ul>
+          </div>
 
-        <div class="sub-panel current-best">
-          <h2>Current & Best</h2>
-          <div class="stats-table">
-            <div class="table-header">
-              <span>Stat</span>
-              <span>Current</span>
-              <span>Best</span>
+          <div class="panel">
+            <h2>Current & Best</h2>
+            <div class="stats-grid">
+              <div class="grid-label">Stat</div>
+              <div class="grid-label">Current</div>
+              <div class="grid-label">Best</div>
+              
+              <div>Single</div><strong>8.56</strong><strong>8.56</strong>
+              <div>Mo3</div><strong>8.81</strong><strong>8.75</strong>
+              <div>Ao5</div><strong>8.94</strong><strong>8.94</strong>
+              <div>Ao12</div><strong>-</strong><strong>-</strong>
+              <div>Ao25</div><strong>-</strong><strong>-</strong>
+              <div>Ao100</div><strong>-</strong><strong>-</strong>
             </div>
-            <div class="table-row"><span>Single</span><strong>8.56</strong><strong>8.56</strong></div>
-            <div class="table-row"><span>Mo3</span><strong>8.81</strong><strong>8.75</strong></div>
-            <div class="table-row"><span>Ao5</span><strong>8.94</strong><strong>8.94</strong></div>
-            <div class="table-row"><span>Ao12</span><strong>-</strong><strong>-</strong></div>
-            <div class="table-row"><span>Ao25</span><strong>-</strong><strong>-</strong></div>
-            <div class="table-row"><span>Ao100</span><strong>-</strong><strong>-</strong></div>
           </div>
         </div>
 
-        <div class="sub-panel scramble-view">
+        <div class="panel scramble-view">
           <h2>Scramble View</h2>
-          <div class="cube-diagram-placeholder">
-            <div class="net-row"><div class="net-face blank"></div><div class="net-face U">U</div><div class="net-face blank"></div><div class="net-face blank"></div></div>
-            <div class="net-row"><div class="net-face L">L</div><div class="net-face F">F</div><div class="net-face R">R</div><div class="net-face B">B</div></div>
-            <div class="net-row"><div class="net-face blank"></div><div class="net-face D">D</div><div class="net-face blank"></div><div class="net-face blank"></div></div>
+          <div class="cube-net">
+            <div class="net-row">
+              <div class="face empty"></div><div class="face u-face">U</div><div class="face empty"></div><div class="face empty"></div>
+            </div>
+            <div class="net-row">
+              <div class="face l-face">L</div><div class="face f-face">F</div><div class="face r-face">R</div><div class="face b-face">B</div>
+            </div>
+            <div class="net-row">
+              <div class="face empty"></div><div class="face d-face">D</div><div class="face empty"></div><div class="face empty"></div>
+            </div>
           </div>
         </div>
 
       </div>
 
-      <div class="tools-container">
-        <button class="tools-btn">Tools</button>
+      <div class="tools-zone">
+        <button class="outline-btn">Tools</button>
       </div>
     </section>
 
-    <nav class="bottom-nav">
-      <a href="#" class="nav-item active">
-        <span class="nav-icon">⏱️</span>
-        <span class="nav-label">Timer</span>
-      </a>
-      <a href="#" class="nav-item">
-        <span class="nav-icon">📜</span>
-        <span class="nav-label">Records</span>
-      </a>
-      <a href="#" class="nav-item">
-        <span class="nav-icon">📊</span>
-        <span class="nav-label">Stats</span>
-      </a>
-      <a href="#" class="nav-item">
-        <span class="nav-icon">👤</span>
-        <span class="nav-label">Profile</span>
-      </a>
+    <nav class="bottom-tabs">
+      <a href="#" class="tab-item active">Timer</a>
+      <a href="#" class="tab-item">Records</a>
+      <a href="#" class="tab-item">Stats</a>
+      <a href="#" class="tab-item">Dohyun</a>
+      <a href="#" class="tab-item">Profile</a>
     </nav>
 
   </div>
