@@ -1,10 +1,10 @@
-/* 매트 다크 테마 고정 */
+/* 색상을 완전히 걷어낸 깔끔하고 매트한 룩 */
 :root {
   --bg-color: #0b0e14;
   --panel-bg: #121620;
   --text-main: #ffffff;
-  --text-muted: #62708a;
-  --border-light: #202736;
+  --text-muted: #566176;
+  --border-light: #1e2533;
 }
 
 * {
@@ -22,6 +22,7 @@ body {
   min-height: 100vh;
 }
 
+/* 화면 너비에 상관없이 3단 배치가 유지되도록 잡은 모바일 컨테이너 */
 .app-container {
   width: 100%;
   max-width: 480px;
@@ -36,12 +37,12 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem;
+  padding: 1.2rem 1rem;
   border-bottom: 1px solid var(--border-light);
 }
 
 .logo {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   font-weight: 900;
   font-style: italic;
   letter-spacing: -0.05em;
@@ -49,25 +50,28 @@ body {
 
 .header-center {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.6rem;
 }
 
+/* 라인과 배경색이 전혀 없이 텍스트만 보이도록 디자인한 셀렉트 박스 */
 .clean-select {
   background: none;
   color: var(--text-main);
   border: 1px solid var(--border-light);
-  padding: 0.4rem 0.7rem;
+  padding: 0.4rem 0.8rem;
   border-radius: 4px;
   font-size: 0.85rem;
   outline: none;
   cursor: pointer;
+  -webkit-appearance: none; /* 기본 화살표 제거 */
 }
 
-.ghost-icon-btn {
+.ghost-btn {
   background: none;
   border: none;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   cursor: pointer;
+  color: var(--text-main);
 }
 
 /* SCRAMBLE ZONE */
@@ -77,11 +81,11 @@ body {
 }
 
 .scramble-text {
-  font-size: 0.95rem;
+  font-size: 1rem;
   line-height: 1.4;
   color: #e2e8f0;
   word-break: break-word;
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.5rem;
 }
 
 .scramble-actions {
@@ -90,7 +94,8 @@ body {
   gap: 1.2rem;
 }
 
-.plain-text-btn {
+/* 색상 아예 없는 초미니멀 평면 텍스트 버튼 */
+.plain-btn {
   background: none;
   border: none;
   color: var(--text-muted);
@@ -101,24 +106,25 @@ body {
   text-underline-offset: 4px;
 }
 
-.plain-text-btn:hover {
+.plain-btn:hover {
   color: var(--text-main);
 }
 
-/* MAIN TIMER ZONES */
+/* MAIN TIMER */
 .timer-zone {
   flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 3rem 0;
+  padding: 3.5rem 0;
 }
 
 .timer-display {
-  font-size: 6rem;
+  font-size: 6.5rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
 }
 
 .time-diff {
@@ -132,22 +138,23 @@ body {
   display: flex;
   gap: 1.5rem;
   margin-top: 0.6rem;
-  font-size: 0.95rem;
+  font-size: 1rem;
   color: var(--text-muted);
 }
 
-/* DASHBOARD PANEL (기본 크기 및 시인성 업그레이드) */
+/* DASHBOARD PANEL (크기 확장 및 모바일 3분할 강제 적용) */
 .dashboard-panel {
   background-color: var(--panel-bg);
-  border: 1px solid var(--border-light);
+  border-top: 1px solid var(--border-light);
   border-radius: 20px 20px 0 0;
   padding: 1.5rem 1rem;
 }
 
 .dashboard-columns {
   display: grid;
-  grid-template-columns: 0.95fr 1.1fr 0.95fr;
-  gap: 0.75rem;
+  grid-template-columns: 1fr 1fr 1.1fr; /* 3개 레이아웃을 정확한 가로 비율로 유지 */
+  gap: 0.5rem;
+  align-items: min-content;
 }
 
 .col h3 {
@@ -155,17 +162,17 @@ body {
   text-transform: uppercase;
   color: var(--text-muted);
   margin-bottom: 0.8rem;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.02em;
 }
 
-/* 최근 기록 정보 목록 */
+/* 1단: 최근 기록 목록 */
 .solve-list {
   list-style: none;
-  font-size: 0.95rem; /* 글자 크기 업 */
+  font-size: 1rem;
 }
 
 .solve-list li {
-  margin-bottom: 0.45rem;
+  margin-bottom: 0.5rem;
   font-weight: 600;
 }
 
@@ -176,32 +183,32 @@ body {
   width: 20px;
 }
 
-/* 커렌트 & 베스트 테이블 */
+/* 2단: 커렌트 & 베스트 테이블 */
 .stats-table {
   display: flex;
   flex-direction: column;
-  font-size: 0.9rem; /* 글자 크기 업 */
+  font-size: 0.95rem;
 }
 
 .stats-table .row {
   display: grid;
-  grid-template-columns: 1.15fr 1fr 1fr;
-  padding: 0.25rem 0;
+  grid-template-columns: 1fr 1fr;
+  padding: 0.3rem 0;
 }
 
 .stats-table .row.header {
   color: var(--text-muted);
   font-weight: bold;
   border-bottom: 1px solid var(--border-light);
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.4rem;
   font-size: 0.75rem;
 }
 
-.stats-table .row span:not(:first-child) {
+.stats-table .row span {
   font-weight: 600;
 }
 
-/* 3x3 리얼 격자형 스크램블 뷰 */
+/* 3단: 3x3 실제 큐브 블록 단위 전개도 구현 */
 .cube-net {
   display: flex;
   flex-direction: column;
@@ -213,21 +220,21 @@ body {
 }
 
 .face {
-  width: 27px;
-  height: 27px;
+  width: 24px;
+  height: 24px;
 }
 
 .empty-face {
   background: transparent;
 }
 
-/* 3x3 픽셀 분할 내부 그리드 */
+/* 3x3 미세 격자 스타일 */
 .real-face {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
   gap: 1px;
-  background-color: #0b0e14; /* 블록 테두리 선 역할 */
+  background-color: #0b0e14;
   border: 1px solid #0b0e14;
 }
 
@@ -236,32 +243,33 @@ body {
   height: 100%;
 }
 
-/* 각 면의 기본 컬러 셋업 */
+/* 큐브 면별 색상 커스터마이징 */
 .u-face div { background-color: #ffffff; }
 .d-face div { background-color: #ffd500; }
-.l-face div { background-color: #ff5800; }
-.r-face div { background-color: #ff0000; }
-.f-face div { background-color: #009b48; }
-.b-face div { background-color: #0045ad; }
+.L-face div { background-color: #ff5800; }
+.R-face div { background-color: #ff0000; }
+.F-face div { background-color: #009b48; }
+.B-face div { background-color: #0045ad; }
 
-/* TOOLS AREA BUTTON */
+/* TOOLS AREA */
 .tools-area {
   display: flex;
   justify-content: center;
   margin-top: 1.5rem;
 }
 
+/* 선조차 없이 깔끔하게 떨어지는 투명 무색 버튼 */
 .clean-border-btn {
   background: none;
   border: 1px solid var(--border-light);
   color: var(--text-main);
-  padding: 0.5rem 2.5rem;
+  padding: 0.5rem 3rem;
   border-radius: 4px;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   cursor: pointer;
 }
 
-/* BOTTOM NAVIGATION */
+/* BOTTOM NAVIGATION (5 TABS) */
 .bottom-nav {
   position: fixed;
   bottom: 0;
@@ -283,7 +291,7 @@ body {
   justify-content: center;
   text-decoration: none;
   color: var(--text-muted);
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 600;
 }
 
