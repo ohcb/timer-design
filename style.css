@@ -1,13 +1,13 @@
-/* 전체 레이아웃 초기화 및 테마 설정 (다크 모드 기준) */
+/* Color Palette & Basic Settings */
 :root {
-  --bg-color: #0e121a;
-  --panel-bg: #161b26;
-  --card-bg: #1c2333;
-  --card-highlight: #242c3e;
-  --text-main: #ffffff;
-  --text-muted: #7e8a9f;
-  --accent-color: #3b82f6;
-  --green-color: #10b981;
+  --bg-main: #090d16;
+  --bg-panel: #111622;
+  --bg-element: #1b2234;
+  --text-main: #f3f4f6;
+  --text-muted: #6b7280;
+  --accent: #3b82f6;
+  --green: #10b981;
+  --red: #ef4444;
 }
 
 * {
@@ -18,168 +18,307 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background-color: var(--bg-color);
+  background-color: var(--bg-main);
   color: var(--text-main);
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
-  align-items: center;
 }
 
-.timer-container {
+/* App View Container (Optimized for Mobile view first) */
+.app-container {
   width: 100%;
-  max-width: 1000px;
-  height: 100vh;
-  padding: 2rem;
+  max-width: 480px;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
+  padding-bottom: 75px; /* Spaces for bottom nav */
+  position: relative;
+  background-color: var(--bg-main);
+}
+
+/* 1. APP HEADER */
+.app-header {
+  display: flex;
+  align-items: center;
   justify-content: space-between;
-}
-
-/* 1. 스크램블 스타일 */
-.scramble-section {
-  text-align: center;
   padding: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.scramble-text {
-  font-size: 1.4rem;
-  font-weight: 500;
-  letter-spacing: 0.05em;
-  line-height: 1.5;
-  color: #dfe5ff;
+.logo {
+  font-size: 1.5rem;
+  font-weight: 800;
+  font-style: italic;
+  letter-spacing: -0.05em;
+  color: var(--text-main);
 }
 
-/* 2. 타이머 디스플레이 스타일 */
-.timer-main {
-  text-align: center;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.timer-display {
-  font-size: 8.5rem;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.02em;
-  margin-bottom: 0.5rem;
-}
-
-.timer-summary {
-  display: flex;
-  gap: 1.5rem;
-  font-size: 1.2rem;
-  color: var(--text-muted);
-}
-
-/* 3. 하단 대시보드 레이아웃 */
-.dashboard-section {
-  display: grid;
-  grid-template-columns: 1fr 1.5fr;
-  gap: 2rem;
-  margin-top: 2rem;
-}
-
-/* 좌측 기록 패널 */
-.panel {
-  background-color: var(--panel-bg);
-  border-radius: 12px;
-  padding: 1.2rem;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.panel h3 {
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  margin-bottom: 0.8rem;
-  letter-spacing: 0.05em;
-}
-
-.history-list {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.history-list li {
+.header-controls {
   display: flex;
   align-items: center;
-  font-size: 1rem;
-  padding: 0.3rem 0;
+  gap: 0.5rem;
 }
 
-.history-list .index {
-  color: var(--text-muted);
-  width: 25px;
-}
-
-.history-list .time {
+.select-btn {
+  background-color: var(--bg-panel);
+  color: var(--text-main);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.4rem 0.6rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
   font-weight: 600;
-  flex: 1;
-}
-
-.history-list .time.good { color: var(--green-color); }
-.history-list .time.best { color: #f59e0b; }
-
-.history-list .actions button {
-  background: none;
-  border: none;
-  color: var(--text-muted);
-  font-size: 0.75rem;
-  margin-left: 0.5rem;
+  outline: none;
   cursor: pointer;
 }
 
-.history-list .actions button:hover {
+.icon-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
   color: var(--text-main);
 }
 
-/* 우측 통계 그리드 */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.8rem;
+/* 2. SCRAMBLE ZONE */
+.scramble-zone {
+  padding: 1rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.stat-card, .stat-cardHighlight {
-  background-color: var(--card-bg);
+.scramble-text {
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #d1d5db;
+  word-break: break-word;
+}
+
+.scramble-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.action-btn {
+  background: var(--bg-panel);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  color: var(--text-main);
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.action-btn:hover {
+  background: var(--bg-element);
+}
+
+/* 3. MAIN TIMER DISPLAY */
+.timer-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem 0;
+}
+
+.timer-display {
+  font-size: 5.5rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.time-diff {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-top: -0.2rem;
+  font-variant-numeric: tabular-nums;
+}
+.time-diff.positive { color: var(--text-muted); }
+.time-diff.better { color: var(--green); }
+.time-diff.worse { color: var(--red); }
+
+.timer-mini-stats {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.8rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+/* 4. BOTTOM DASHBOARD PANEL */
+.dashboard-panel {
+  background-color: var(--bg-panel);
+  border-radius: 24px 24px 0 0;
+  padding: 1.5rem 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.dashboard-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.sub-panel h2 {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.6rem;
+  letter-spacing: 0.05em;
+}
+
+/* Recent Solves View */
+.solve-list {
+  list-style: none;
+  display: flex;
+  gap: 0.8rem;
+  overflow-x: auto;
+  padding-bottom: 0.4rem;
+}
+
+.solve-list li {
+  background: var(--bg-element);
+  padding: 0.4rem 0.8rem;
   border-radius: 8px;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.solve-list .idx {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  margin-right: 0.2rem;
+}
+
+/* Current & Best Table */
+.stats-table {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-element);
+  border-radius: 12px;
+  padding: 0.5rem;
+}
+
+.table-header, .table-row {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  padding: 0.4rem 0.5rem;
+  font-size: 0.9rem;
+}
+
+.table-header {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.table-row strong {
+  font-weight: 600;
+}
+
+/* Scramble Diagram View Layout */
+.cube-diagram-placeholder {
+  background: var(--bg-element);
+  border-radius: 12px;
   padding: 1rem;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  min-height: 85px;
-  border: 1px solid rgba(255, 255, 255, 0.02);
+  align-items: center;
+  justify-content: center;
 }
 
-.stat-cardHighlight {
-  background-color: var(--card-highlight);
+.net-row {
+  display: flex;
 }
 
-.stat-label {
-  font-size: 0.75rem;
-  text-transform: uppercase;
+.net-face {
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: bold;
+}
+
+.net-face.blank { border-color: transparent; }
+.net-face.U { background-color: #ffffff; color: #000; }
+.net-face.D { background-color: #ffd500; color: #000; }
+.net-face.L { background-color: #ff5800; }
+.net-face.R { background-color: #ff0000; }
+.net-face.F { background-color: #009b48; }
+.net-face.B { background-color: #0045ad; }
+
+/* Tools Center Area Button */
+.tools-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.tools-btn {
+  background: none;
+  border: 1px solid var(--text-muted);
+  color: var(--text-main);
+  padding: 0.5rem 2rem;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.tools-btn:hover {
+  background: var(--text-main);
+  color: var(--bg-main);
+}
+
+/* 5. BOTTOM NAVIGATION BAR */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  height: 65px;
+  background-color: rgba(17, 22, 34, 0.95);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  z-index: 100;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
   color: var(--text-muted);
-  font-weight: 700;
+  gap: 0.2rem;
 }
 
-.stat-value {
-  font-size: 1.5rem;
-  font-weight: 700;
-  align-self: flex-end;
+.nav-item.active {
+  color: var(--text-main);
 }
 
-/* 반응형 모바일 대응 */
-@media (max-width: 768px) {
-  .dashboard-section {
-    grid-template-columns: 1fr;
-  }
-  .timer-display {
-    font-size: 5.5rem;
-  }
+.nav-icon {
+  font-size: 1.2rem;
+}
+
+.nav-label {
+  font-size: 0.75rem;
+  font-weight: 500;
 }
