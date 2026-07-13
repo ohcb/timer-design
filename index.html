@@ -11,99 +11,95 @@
     
     <header class="topbar">
       <div class="logo">Cub3</div>
-      <div class="selectors">
-        <select id="sessionSelect">
+      <div class="header-center">
+        <select class="clean-select">
           <option>Session 1</option>
           <option>Session 2</option>
         </select>
-        <select id="eventSelect">
+        <select class="clean-select">
           <option>3x3</option>
           <option>2x2</option>
           <option>4x4</option>
         </select>
       </div>
-      <button class="minimal-btn icon-btn">⚙️</button>
+      <button class="ghost-icon-btn">⚙️</button>
     </header>
 
     <section class="scramble-zone">
       <p class="scramble-text">U2 F2 U' R2 D B2 F2 D L2 U' L2 B2 L U' B' L' D' U2 L R' B R'</p>
-      <div class="scramble-buttons">
-        <button class="text-link-btn">Copy</button>
-        <button class="text-link-btn">Edit</button>
-        <button class="text-link-btn">Change</button>
+      <div class="scramble-actions">
+        <button class="plain-text-btn">Copy</button>
+        <button class="plain-text-btn">Edit</button>
+        <button class="plain-text-btn">Change</button>
       </div>
     </section>
 
-    <main class="timer-main">
+    <main class="timer-zone">
       <div class="timer-display">0.00</div>
-      <div class="timer-deviation">+0.00</div>
-      <div class="timer-sub-stats">
+      <div class="time-diff">+0.00</div>
+      <div class="timer-summary">
         <span>ao5: 8.94</span>
         <span>ao12: -</span>
       </div>
     </main>
 
-    <section class="dashboard">
-      
-      <div class="dashboard-content">
+    <section class="dashboard-panel">
+      <div class="dashboard-columns">
         
-        <div class="data-columns">
-          <div class="panel">
-            <h2>Recent Solves</h2>
-            <ul class="solve-list">
-              <li><span class="idx">5.</span> <span class="time good">8.96</span></li>
-              <li><span class="idx">4.</span> <span class="time best">8.56</span></li>
-              <li><span class="idx">3.</span> <span class="time good">8.93</span></li>
-              <li><span class="idx">2.</span> <span class="time">9.52</span></li>
-              <li><span class="idx">1.</span> <span class="time">8.95</span></li>
-            </ul>
-          </div>
+        <div class="col recent-solves">
+          <h3>Recent Solves</h3>
+          <ul class="solve-list">
+            <li><span class="num">5.</span> 8.96</li>
+            <li><span class="num">4.</span> 8.56</li>
+            <li><span class="num">3.</span> 8.93</li>
+            <li><span class="num">2.</span> 9.52</li>
+            <li><span class="num">1.</span> 8.95</li>
+          </ul>
+        </div>
 
-          <div class="panel">
-            <h2>Current & Best</h2>
-            <div class="stats-grid">
-              <div class="grid-label">Stat</div>
-              <div class="grid-label">Current</div>
-              <div class="grid-label">Best</div>
-              
-              <div>Single</div><strong>8.56</strong><strong>8.56</strong>
-              <div>Mo3</div><strong>8.81</strong><strong>8.75</strong>
-              <div>Ao5</div><strong>8.94</strong><strong>8.94</strong>
-              <div>Ao12</div><strong>-</strong><strong>-</strong>
-              <div>Ao25</div><strong>-</strong><strong>-</strong>
-              <div>Ao100</div><strong>-</strong><strong>-</strong>
+        <div class="col current-best">
+          <h3>Current & Best</h3>
+          <div class="stats-table">
+            <div class="row header">
+              <span>Stat</span><span>Cur</span><span>Best</span>
             </div>
+            <div class="row"><span>Single</span><span>8.56</span><span>8.56</span></div>
+            <div class="row"><span>Mo3</span><span>8.81</span><span>8.75</span></div>
+            <div class="row"><span>Ao5</span><span>8.94</span><span>8.94</span></div>
+            <div class="row"><span>Ao12</span><span>-</span><span>-</span></div>
+            <div class="row"><span>Ao25</span><span>-</span><span>-</span></div>
+            <div class="row"><span>Ao100</span><span>-</span><span>-</span></div>
           </div>
         </div>
 
-        <div class="panel scramble-view">
-          <h2>Scramble View</h2>
-          <div class="cube-net">
-            <div class="net-row">
-              <div class="face empty"></div><div class="face u-face">U</div><div class="face empty"></div><div class="face empty"></div>
+        <div class="col scramble-view">
+          <h3>Scramble View</h3>
+          <div class="cube-layout">
+            <div class="layout-row">
+              <div class="tile empty"></div><div class="tile face-u">U</div><div class="tile empty"></div><div class="tile empty"></div>
             </div>
-            <div class="net-row">
-              <div class="face l-face">L</div><div class="face f-face">F</div><div class="face r-face">R</div><div class="face b-face">B</div>
+            <div class="layout-row">
+              <div class="tile face-l">L</div><div class="tile face-f">F</div><div class="tile face-r">R</div><div class="tile face-b">B</div>
             </div>
-            <div class="net-row">
-              <div class="face empty"></div><div class="face d-face">D</div><div class="face empty"></div><div class="face empty"></div>
+            <div class="layout-row">
+              <div class="tile empty"></div><div class="tile face-d">D</div><div class="tile empty"></div><div class="tile empty"></div>
             </div>
           </div>
         </div>
 
       </div>
 
-      <div class="tools-zone">
-        <button class="outline-btn">Tools</button>
+      <div class="tools-area">
+        <button class="clean-border-btn">Tools</button>
       </div>
     </section>
 
-    <nav class="bottom-tabs">
-      <a href="#" class="tab-item active">Timer</a>
-      <a href="#" class="tab-item">Records</a>
-      <a href="#" class="tab-item">Stats</a>
-      <a href="#" class="tab-item">Dohyun</a>
-      <a href="#" class="tab-item">Profile</a>
+    <nav class="bottom-nav">
+      <a href="#" class="nav-tab active">Timer</a>
+      <a href="#" class="nav-tab">Records</a>
+      <a href="#" class="nav-tab">Stats</a>
+      <a href="#" class="nav-tab">Dohyun</a>
+      <a href="#" class="nav-tab">Profile</a>
     </nav>
 
   </div>
