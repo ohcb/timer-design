@@ -1,67 +1,115 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cube Timer Sandbox</title>
+  <title>Cub3 Timer</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="timer-container">
+  <div class="app-container">
     
-    <header class="scramble-section">
-      <p class="scramble-text">U2 F2 U' R2 D B2 F2 D L2 U' L2 B2 L U' B' L' D' U2 L R' B R'</p>
+    <header class="app-header">
+      <h1 class="logo">Cub3</h1>
+      <div class="header-controls">
+        <select class="select-btn" name="session">
+          <option>Session 1</option>
+          <option>Session 2</option>
+        </select>
+        <select class="select-btn" name="event">
+          <option>3x3x3</option>
+          <option>2x2x2</option>
+          <option>4x4x4</option>
+          <option>3x3 OH</option>
+        </select>
+        <button class="icon-btn settings-trigger" aria-label="Settings">⚙️</button>
+      </div>
     </header>
 
-    <main class="timer-main">
+    <section class="scramble-zone">
+      <p class="scramble-text">U2 F2 U' R2 D B2 F2 D L2 U' L2 B2 L U' B' L' D' U2 L R' B R'</p>
+      <div class="scramble-actions">
+        <button class="action-btn" title="Copy">📋</button>
+        <button class="action-btn" title="Edit">✏️</button>
+        <button class="action-btn" title="Refresh">🔄</button>
+      </div>
+    </section>
+
+    <main class="timer-section">
       <div class="timer-display">0.00</div>
-      <div class="timer-summary">
+      <div class="time-diff positive">+0.00</div>
+      <div class="timer-mini-stats">
         <span>ao5: 8.94</span>
         <span>ao12: -</span>
       </div>
     </main>
 
-    <footer class="dashboard-section">
-      
-      <div class="panel history-panel">
-        <h3>최근 기록</h3>
-        <ul class="history-list">
-          <li><span class="index">5.</span> <span class="time good">8.96</span> <span class="actions"><button>+2</button><button>DNF</button></span></li>
-          <li><span class="index">4.</span> <span class="time best">8.56</span> <span class="actions"><button>+2</button><button>DNF</button></span></li>
-          <li><span class="index">3.</span> <span class="time good">8.93</span> <span class="actions"><button>+2</button><button>DNF</button></span></li>
-          <li><span class="index">2.</span> <span class="time">9.52</span> <span class="actions"><button>+2</button><button>DNF</button></span></li>
-          <li><span class="index">1.</span> <span class="time">8.95</span> <span class="actions"><button>+2</button><button>DNF</button></span></li>
-        </ul>
+    <section class="dashboard-panel">
+      <div class="dashboard-grid">
+        
+        <div class="sub-panel recent-solves">
+          <h2>Recent Solves</h2>
+          <ul class="solve-list">
+            <li><span class="idx">5.</span> <span class="val">8.96</span></li>
+            <li><span class="idx">4.</span> <span class="val">8.56</span></li>
+            <li><span class="idx">3.</span> <span class="val">8.93</span></li>
+            <li><span class="idx">2.</span> <span class="val">9.52</span></li>
+            <li><span class="idx">1.</span> <span class="val">8.95</span></li>
+          </ul>
+        </div>
+
+        <div class="sub-panel current-best">
+          <h2>Current & Best</h2>
+          <div class="stats-table">
+            <div class="table-header">
+              <span>Stat</span>
+              <span>Current</span>
+              <span>Best</span>
+            </div>
+            <div class="table-row"><span>Single</span><strong>8.56</strong><strong>8.56</strong></div>
+            <div class="table-row"><span>Mo3</span><strong>8.81</strong><strong>8.75</strong></div>
+            <div class="table-row"><span>Ao5</span><strong>8.94</strong><strong>8.94</strong></div>
+            <div class="table-row"><span>Ao12</span><strong>-</strong><strong>-</strong></div>
+            <div class="table-row"><span>Ao25</span><strong>-</strong><strong>-</strong></div>
+            <div class="table-row"><span>Ao100</span><strong>-</strong><strong>-</strong></div>
+          </div>
+        </div>
+
+        <div class="sub-panel scramble-view">
+          <h2>Scramble View</h2>
+          <div class="cube-diagram-placeholder">
+            <div class="net-row"><div class="net-face blank"></div><div class="net-face U">U</div><div class="net-face blank"></div><div class="net-face blank"></div></div>
+            <div class="net-row"><div class="net-face L">L</div><div class="net-face F">F</div><div class="net-face R">R</div><div class="net-face B">B</div></div>
+            <div class="net-row"><div class="net-face blank"></div><div class="net-face D">D</div><div class="net-face blank"></div><div class="net-face blank"></div></div>
+          </div>
+        </div>
+
       </div>
 
-      <div class="stats-grid">
-        <div class="stat-card">
-          <span class="stat-label">pb</span>
-          <span class="stat-value">8.56</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-label">worst</span>
-          <span class="stat-value">9.52</span>
-        </div>
-        <div class="stat-cardHighlight">
-          <span class="stat-label">ao5</span>
-          <span class="stat-value">8.94</span>
-        </div>
-        <div class="stat-cardHighlight">
-          <span class="stat-label">ao5 pb</span>
-          <span class="stat-value">8.94</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-label">ao12</span>
-          <span class="stat-value">-</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-label">ao100</span>
-          <span class="stat-value">-</span>
-        </div>
+      <div class="tools-container">
+        <button class="tools-btn">Tools</button>
       </div>
+    </section>
 
-    </footer>
+    <nav class="bottom-nav">
+      <a href="#" class="nav-item active">
+        <span class="nav-icon">⏱️</span>
+        <span class="nav-label">Timer</span>
+      </a>
+      <a href="#" class="nav-item">
+        <span class="nav-icon">📜</span>
+        <span class="nav-label">Records</span>
+      </a>
+      <a href="#" class="nav-item">
+        <span class="nav-icon">📊</span>
+        <span class="nav-label">Stats</span>
+      </a>
+      <a href="#" class="nav-item">
+        <span class="nav-icon">👤</span>
+        <span class="nav-label">Profile</span>
+      </a>
+    </nav>
+
   </div>
 </body>
 </html>
