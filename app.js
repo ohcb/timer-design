@@ -21,12 +21,12 @@ const $ = (selector) => document.querySelector(selector);
 
 const elements = {
   app: $('#app'),
-  timerZone: $('#timerZone'),
-  timerDisplay: $('#timerDisplay'),
-  timerState: $('#timerState'),
-  timerHelp: $('#timerHelp'),
-  eventSelect: $('#eventSelect'),
-  sessionSelect: $('#sessionSelect'),
+  timerZone: $('#timer-Zone'),
+  timerDisplay: $('#timer-Display'),
+  timerState: $('#timer-State'),
+  timerHelp: $('#timer-Help'),
+  eventSelect: $('#event-Select'),
+  sessionSelect: $('#session-Select'),
   newSessionButton: $('#newSessionButton'),
   newScrambleButton: $('#newScrambleButton'),
   scrambleText: $('#scrambleText'),
