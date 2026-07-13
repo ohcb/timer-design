@@ -1,12 +1,10 @@
-/* 깔끔하고 매트한 다크 테마 */
+/* 기본 매트 다크 테마 설정 */
 :root {
   --bg-color: #0b0e14;
   --panel-bg: #121620;
   --text-main: #ffffff;
   --text-muted: #566176;
-  --border-color: #1e2533;
-  --green-accent: #22c55e;
-  --orange-accent: #f97316;
+  --border-light: #1e2638;
 }
 
 * {
@@ -24,13 +22,13 @@ body {
   min-height: 100vh;
 }
 
-/* 모바일 뷰 최적화 컨테이너 */
+/* 앱 전체 프레임 구조 (모바일 스케일 고정) */
 .app-container {
   width: 100%;
   max-width: 480px;
   display: flex;
   flex-direction: column;
-  padding-bottom: 70px; /* 탭바 공간 */
+  padding-bottom: 70px;
   background-color: var(--bg-color);
 }
 
@@ -40,26 +38,26 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 1rem;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-light);
 }
 
 .logo {
-  font-size: 1.35rem;
-  font-weight: 800;
+  font-size: 1.5rem;
+  font-weight: 900;
   font-style: italic;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.05em;
 }
 
-.selectors {
+.header-center {
   display: flex;
   gap: 0.5rem;
 }
 
-/* AI 티 안나는 깔끔하고 색 없는 셀렉트 박스 */
-.selectors select {
+/* 색상을 완전히 제거한 미니멀 드롭다운 버튼 */
+.clean-select {
   background: none;
   color: var(--text-main);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border-light);
   padding: 0.35rem 0.6rem;
   border-radius: 4px;
   font-size: 0.85rem;
@@ -67,29 +65,35 @@ body {
   cursor: pointer;
 }
 
+.ghost-icon-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
 /* SCRAMBLE ZONE */
 .scramble-zone {
-  padding: 1.2rem 1rem;
+  padding: 1rem;
   text-align: center;
 }
 
 .scramble-text {
   font-size: 0.95rem;
-  font-weight: 500;
   line-height: 1.4;
-  color: #cccccc;
+  color: #d1d5db;
   word-break: break-word;
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.5rem;
 }
 
-.scramble-buttons {
+.scramble-actions {
   display: flex;
   justify-content: center;
   gap: 1rem;
 }
 
-/* 배경색 아예 없는 깔끔한 텍스트 형태의 버튼 스타일 */
-.text-link-btn {
+/* 색상 없는 순수 텍스트 형태의 링크형 버튼 */
+.plain-text-btn {
   background: none;
   border: none;
   color: var(--text-muted);
@@ -100,190 +104,154 @@ body {
   text-underline-offset: 3px;
 }
 
-.text-link-btn:hover {
+.plain-text-btn:hover {
   color: var(--text-main);
 }
 
 /* MAIN TIMER */
-.timer-main {
+.timer-zone {
   flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 3rem 0;
+  padding: 2.5rem 0;
 }
 
 .timer-display {
   font-size: 5.5rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
-  letter-spacing: -0.03em;
 }
 
-.timer-deviation {
+.time-diff {
   font-size: 1.1rem;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--text-muted);
   margin-top: -0.2rem;
-  font-variant-numeric: tabular-nums;
 }
 
-.timer-sub-stats {
+.timer-summary {
   display: flex;
   gap: 1.2rem;
-  margin-top: 0.8rem;
+  margin-top: 0.5rem;
   font-size: 0.9rem;
   color: var(--text-muted);
 }
 
-/* DASHBOARD & PANELS */
-.dashboard {
-  padding: 0 1rem;
-}
-
-.dashboard-content {
-  display: grid;
-  grid-template-columns: 1.2fr 0.8fr; /* 좌측 데이터 정보창, 우측 전개도 */
-  gap: 1rem;
-}
-
-.data-columns {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.panel {
+/* DASHBOARD PANEL (손그림 가로 3분할 그리드 안착) */
+.dashboard-panel {
   background-color: var(--panel-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 1rem;
+  border: 1px solid var(--border-light);
+  border-radius: 16px 16px 0 0;
+  padding: 1.2rem 0.8rem;
 }
 
-.panel h2 {
+.dashboard-columns {
+  display: grid;
+  grid-template-columns: 0.9fr 1.2fr 0.9fr; /* 3개 레이아웃 정확히 분할 */
+  gap: 0.6rem;
+}
+
+.col h3 {
   font-size: 0.75rem;
   text-transform: uppercase;
   color: var(--text-muted);
   margin-bottom: 0.6rem;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.02em;
 }
 
-/* Recent Solves List */
+/* 1단 최근기록 목록 */
 .solve-list {
   list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
+  font-size: 0.85rem;
 }
 
 .solve-list li {
-  display: flex;
-  font-size: 0.9rem;
-}
-
-.solve-list .idx {
-  color: var(--text-muted);
-  width: 20px;
-}
-
-.solve-list .time {
+  margin-bottom: 0.3rem;
   font-weight: 600;
 }
-.solve-list .time.good { color: var(--green-accent); }
-.solve-list .time.best { color: var(--orange-accent); }
 
-/* Current & Best Stats Grid 크기 정돈 */
-.stats-grid {
-  display: grid;
-  grid-template-columns: 1.2fr 1fr 1fr;
-  row-gap: 0.35rem;
-  font-size: 0.85rem;
+.solve-list .num {
+  color: var(--text-muted);
+  font-weight: normal;
+  display: inline-block;
+  width: 16px;
 }
 
-.grid-label {
+/* 2단 커렌트 & 베스트 표 구조 */
+.stats-table {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.8rem;
+}
+
+.stats-table .row {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  padding: 0.2rem 0;
+}
+
+.stats-table .row.header {
   color: var(--text-muted);
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  font-weight: 700;
-  border-bottom: 1px solid var(--border-color);
-  padding-bottom: 0.2rem;
+  font-weight: bold;
+  border-bottom: 1px solid var(--border-light);
   margin-bottom: 0.2rem;
 }
 
-.stats-grid strong {
+.stats-table .row span:not(:first-child) {
   font-weight: 600;
 }
 
-/* Scramble View (Cube Net Diagram) */
-.scramble-view {
+/* 3단 스크램블 뷰 (미니 전개도 격자) */
+.cube-layout {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
 }
 
-.cube-net {
-  display: flex;
-  flex-direction: column;
-  margin-top: 0.5rem;
-}
-
-.net-row {
+.layout-row {
   display: flex;
 }
 
-.face {
-  width: 22px;
-  height: 22px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+.tile {
+  width: 16px;
+  height: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.65rem;
+  font-size: 0.55rem;
   font-weight: bold;
 }
 
-.face.empty { border-color: transparent; }
-.face.u-face { background-color: #ffffff; color: #000; }
-.face.d-face { background-color: #ffd500; color: #000; }
-.face.l-face { background-color: #ff5800; }
-.face.r-face { background-color: #ff0000; }
-.face.f-face { background-color: #009b48; }
-.face.b-face { background-color: #0045ad; }
+.tile.empty { border-color: transparent; }
+.tile.face-u { background-color: #ffffff; color: #000; }
+.tile.face-d { background-color: #ffd500; color: #000; }
+.tile.face-l { background-color: #ff5800; }
+.tile.face-r { background-color: #ff0000; }
+.tile.face-f { background-color: #009b48; }
+.tile.face-b { background-color: #0045ad; }
 
-/* Tools Area Button */
-.tools-zone {
+/* TOOLS AREA BUTTON */
+.tools-area {
   display: flex;
   justify-content: center;
-  margin: 1.2rem 0;
+  margin-top: 1.2rem;
 }
 
-/* 색을 아예 배제하고 테두리만 깔끔하게 남긴 매트 버튼 */
-.outline-btn {
+/* 테두리선만 연하게 남긴 깔끔한 사각형 버튼 */
+.clean-border-btn {
   background: none;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border-light);
   color: var(--text-main);
-  padding: 0.45rem 2.5rem;
+  padding: 0.4rem 2rem;
   border-radius: 4px;
   font-size: 0.85rem;
   cursor: pointer;
-  transition: background 0.15s;
 }
 
-.outline-btn:hover {
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.minimal-btn {
-  background: none;
-  border: none;
-  color: var(--text-main);
-  cursor: pointer;
-}
-
-/* BOTTOM NAVIGATION (5 TABS) */
-.bottom-tabs {
+/* BOTTOM NAVIGATION */
+.bottom-nav {
   position: fixed;
   bottom: 0;
   left: 50%;
@@ -292,13 +260,13 @@ body {
   max-width: 480px;
   height: 60px;
   background-color: var(--panel-bg);
-  border-top: 1px solid var(--border-color);
+  border-top: 1px solid var(--border-light);
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   z-index: 100;
 }
 
-.tab-item {
+.nav-tab {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -306,10 +274,9 @@ body {
   color: var(--text-muted);
   font-size: 0.85rem;
   font-weight: 600;
-  letter-spacing: -0.01em;
 }
 
-.tab-item.active {
+.nav-tab.active {
   color: var(--text-main);
   border-top: 2px solid var(--text-main);
 }
