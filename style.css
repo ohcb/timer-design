@@ -56,3 +56,12 @@ body {
   color: var(--accent-color);
   border-top: 2px solid var(--accent-color);
 }
+
+/* 탭 화면 숨김 및 표시 처리 */
+.tab-screen {
+  display: none !important; /* 기본적으로 모든 화면을 숨김 */
+}
+
+.tab-screen.active-screen {
+  display: block !important; /* active-screen 클래스가 붙은 화면만 노출 */
+}
