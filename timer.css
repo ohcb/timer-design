@@ -1,14 +1,3 @@
-/* 색상을 완전히 걷어낸 깔끔하고 매트한 룩 */
-:root {
-  --bg-color: #181818;
-  --panel-bg: #121620;
-  --text-main: #ffffff;
-  --text-muted: #566176;
-  --border-light: #1e2533;
-  --accent-color: #a855f7;
-}
-
-
 * {
   box-sizing: border-box;
   margin: 0;
