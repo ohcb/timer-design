@@ -7,159 +7,127 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  
   <div class="app-container">
-    
-    <nav class="bottom-nav">
-      <a href="#" class="nav-tab">Home</a>
-      <a href="#" class="nav-tab active">Timer</a>
-      <a href="#" class="nav-tab">Solves</a>
-      <a href="#" class="nav-tab">Stats</a>
-      <a href="#" class="nav-tab">Profile</a>
-    </nav>
 
-    <div class="main-content-wrapper">
+    <header class="topbar">
+      <div class="logo">Cub3</div>
+      <div class="header-center">
+        <select class="clean-select">
+          <option>Session 1</option>
+          <option>Session 2</option>
+        </select>
+        <select class="clean-select">
+          <option>3x3</option>
+          <option>2x2</option>
+          <option>4x4</option>
+        </select>
+      </div>
+      <button class="ghost-btn">⚙️</button>
+    </header>
 
-      <header class="topbar">
-        <div class="logo">Cub3</div>
-        <div class="header-center">
-          <select class="clean-select">
-            <option>Session 1</option>
-            <option>Session 2</option>
-          </select>
-          <select class="clean-select">
-            <option>3x3</option>
-            <option>2x2</option>
-            <option>4x4</option>
-          </select>
+    <div class="tab-contents">
+      
+      <div id="screen-home" class="tab-screen">
+        <div style="padding: 3rem 1.5rem; text-align: center; color: var(--text-muted);">
+          <h2>Home Screen</h2>
+          <p style="margin-top: 0.5rem; font-size: 0.9rem;">여기에 홈 대시보드 내용이 채워집니다.</p>
         </div>
-        <button class="ghost-btn">⚙️</button>
-      </header>
+      </div>
 
-      <div class="tab-contents">
+      <div id="screen-timer" class="tab-screen active-screen">
         
-        <div id="screen-home" class="tab-screen">
-          <div style="padding: 3rem 1.5rem; text-align: center; color: var(--text-muted);">
-            <h2>Home Screen</h2>
-            <p style="margin-top: 0.5rem; font-size: 0.9rem;">여기에 홈 대시보드 내용이 채워집니다.</p>
+        <section class="scramble-zone">
+          <p class="scramble-text">U2 F2 U' R2 D B2 F2 D L2 U' L2 B2 L U' B' L' D' U2 L R' B R'</p>
+          <div class="scramble-actions">
+            <button class="plain-btn">Copy</button>
+            <button class="plain-btn">Edit</button>
+            <button class="plain-btn">Change</button>
           </div>
-        </div>
+        </section>
 
-        <div id="screen-timer" class="tab-screen active-screen">
-          
-          <section class="scramble-zone">
-            <p class="scramble-text">U2 F2 U' R2 D B2 F2 D L2 U' L2 B2 L U' B' L' D' U2 L R' B R'</p>
-            <div class="scramble-actions">
-              <button class="plain-btn">Copy</button>
-              <button class="plain-btn">Edit</button>
-              <button class="plain-btn">Change</button>
+        <main class="timer-zone">
+          <div class="timer-display">0.00</div>
+          <div class="time-diff">+0.00</div>
+          <div class="timer-summary">
+            <span>ao5: 8.94</span>
+            <span>ao12: -</span>
+          </div>
+        </main>
+
+        <section class="dashboard-panel">
+          <div class="dashboard-columns">
+            
+            <div class="col recent-solves">
+              <h3>Recent Solves</h3>
+              <ul class="solve-list">
+                <li><span class="num">5.</span> 8.96</li>
+                <li><span class="num">4.</span> 8.56</li>
+                <li><span class="num">3.</span> 8.93</li>
+                <li><span class="num">2.</span> 9.52</li>
+                <li><span class="num">1.</span> 8.95</li>
+              </ul>
             </div>
-          </section>
 
-          <main class="timer-zone">
-            <div class="timer-display">0.00</div>
-            <div class="time-diff">+0.00</div>
-            <div class="timer-summary">
-              <span>ao5: 8.94</span>
-              <span>ao12: -</span>
-            </div>
-          </main>
-
-          <section class="dashboard-panel">
-            <div class="dashboard-columns">
-              
-              <div class="col recent-solves">
-                <h3>Recent Solves</h3>
-                <ul class="solve-list">
-                  <li><span class="num">5.</span> 8.96</li>
-                  <li><span class="num">4.</span> 8.56</li>
-                  <li><span class="num">3.</span> 8.93</li>
-                  <li><span class="num">2.</span> 9.52</li>
-                  <li><span class="num">1.</span> 8.95</li>
-                </ul>
-              </div>
-
-              <div class="col current-best">
-                <h3>Current & Best</h3>
-                <div class="stats-table">
-                  <div class="row header">
-                    <span>Cur</span><span>Best</span>
-                  </div>
-                  <div class="row"><span>8.56</span><span>8.56</span></div>
-                  <div class="row"><span>8.81</span><span>8.75</span></div>
-                  <div class="row"><span>8.94</span><span>8.94</span></div>
-                  <div class="row"><span>-</span><span>-</span></div>
-                  <div class="row"><span>-</span><span>-</span></div>
-                  <div class="row"><span>-</span><span>-</span></div>
+            <div class="col current-best">
+              <h3>Current & Best</h3>
+              <div class="stats-table">
+                <div class="row header">
+                  <span>Cur</span><span>Best</span>
                 </div>
+                <div class="row"><span>8.56</span><span>8.56</span></div>
+                <div class="row"><span>8.81</span><span>8.75</span></div>
+                <div class="row"><span>8.94</span><span>8.94</span></div>
+                <div class="row"><span>-</span><span>-</span></div>
+                <div class="row"><span>-</span><span>-</span></div>
+                <div class="row"><span>-</span><span>-</span></div>
               </div>
+            </div>
 
-              <div class="col scramble-view">
-                <h3>Scramble View</h3>
-                <div class="cube-net">
-                  <div class="net-row">
-                    <div class="face empty-face"></div>
-                    <div class="face real-face u-face">
-                      <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                    </div>
-                    <div class="face empty-face"></div>
-                    <div class="face empty-face"></div>
+            <div class="col scramble-view">
+              <h3>Scramble View</h3>
+              <div class="cube-net">
+                <div class="net-row">
+                  <div class="face empty-face"></div>
+                  <div class="face real-face u-face">
+                    <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
                   </div>
-                  <div class="net-row">
-                    <div class="face real-face L-face">
-                      <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                    </div>
-                    <div class="face real-face F-face">
-                      <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                    </div>
-                    <div class="face real-face R-face">
-                      <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                    </div>
-                    <div class="face real-face B-face">
-                      <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                    </div>
+                  <div class="face empty-face"></div>
+                  <div class="face empty-face"></div>
+                </div>
+                <div class="net-row">
+                  <div class="face real-face L-face">
+                    <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
                   </div>
-                  <div class="net-row">
-                    <div class="face empty-face"></div>
-                    <div class="face real-face d-face">
-                      <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                    </div>
-                    <div class="face empty-face"></div>
-                    <div class="face empty-face"></div>
+                  <div class="face real-face F-face">
+                    <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                  </div>
+                  <div class="face real-face R-face">
+                    <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                  </div>
+                  <div class="face real-face B-face">
+                    <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
                   </div>
                 </div>
+                <div class="net-row">
+                  <div class="face empty-face"></div>
+                  <div class="face real-face d-face">
+                    <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                  </div>
+                  <div class="face empty-face"></div>
+                  <div class="face empty-face"></div>
+                </div>
               </div>
-
             </div>
 
-            <div class="tools-area">
-              <button class="clean-border-btn">Quick Tools</button>
-            </div>
-          </section>
-          
-        </div>
-
-        <div id="screen-solves" class="tab-screen">
-          <div style="padding: 3rem 1.5rem; text-align: center; color: var(--text-muted);">
-            <h2>Solves Screen</h2>
-            <p style="margin-top: 0.5rem; font-size: 0.9rem;">여기에 모든 솔브 기록 상세 리스트가 들어옵니다.</p>
           </div>
-        </div>
 
-        <div id="screen-stats" class="tab-screen">
-          <div style="padding: 3rem 1.5rem; text-align: center; color: var(--text-muted);">
-            <h2>Stats Screen</h2>
-            <p style="margin-top: 0.5rem; font-size: 0.9rem;">여기에 최고 기록 갱신 그래프와 디테일 통계가 들어옵니다.</p>
+          <div class="tools-area">
+            <button class="clean-border-btn">Quick Tools</button>
           </div>
-        </div>
+        </section>
+        
+      </div>
 
-        <div id="screen-profile" class="tab-screen">
-          <div style="padding: 3rem 1.5rem; text-align: center; color: var(--text-muted);">
-            <h2>Profile Screen</h2>
-            <p style="margin-top: 0.5rem; font-size: 0.9rem;">여기에 다크모드 선택, 계정 및 유저 설정이 들어옵니다.</p>
-          </div>
-        </div>
-
-      </div> </div> </div> <script type="module" src="app.js"></script>
-</body>
-</html>
+      <div id="screen-solves" class="tab-screen">
+        <div style="padding: 3rem 1.5rem; text-align: center; color: var(--text-muted);">
+          <h2>Sol
