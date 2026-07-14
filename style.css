@@ -5,7 +5,9 @@
   --text-main: #ffffff;
   --text-muted: #566176;
   --border-light: #1e2533;
+  --accent-color: #3b82f6;
 }
+
 
 * {
   box-sizing: border-box;
@@ -296,6 +298,6 @@ body {
 }
 
 .nav-tab.active {
-  color: var(--text-main);
-  border-top: 2px solid var(--text-main);
+  color: var(--accent-color);
+  border-top: 2px solid var(--accent-color);
 }
