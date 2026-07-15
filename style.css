@@ -1,12 +1,12 @@
 @import url("timer.css");
 
 :root {
-  --bg-color: #202225; 
-  --panel-bg: #222222; 
-  --text-main: #ffffff;
-  --text-muted: #777777;
-  --border-light: #2d2d2d; 
-  --accent-color: #a855f7; 
+  --bg-color: #202225;     /* 선택하신 쿨 슬레이트 그레이 배경 */
+  --panel-bg: #18191c;     /* 패널과 하단바용 더 어두운 쿨 그레이 */
+  --text-main: #f2f3f5;    /* 부드러운 소프트 화이트 */
+  --text-muted: #8e9297;   /* 은은한 보조 회색 */
+  --border-light: #2f3136; /* 어두운 경계선 */
+  --accent-color: #a855f7; /* 포인트 보라색 */
 }
 
 * {
@@ -22,16 +22,17 @@ body {
   min-height: 100vh;
 }
 
-/* 기본 모바일 및 패드용 세로 레이아웃 */
+/* 1. 기본 앱 컨테이너 */
 .app-container {
   width: 100%;
   max-width: 480px;
   margin: 0 auto;
   min-height: 100vh;
   position: relative;
-  padding-bottom: 75px; /* 하단바 간섭 방지 여백 */
+  padding-bottom: 80px; 
 }
 
+/* 2. 상단 탑바 */
 .topbar {
   display: flex;
   justify-content: space-between;
@@ -65,7 +66,7 @@ body {
   cursor: pointer;
 }
 
-/* 탭 화면 제어 */
+/* 3. 탭 온오프 시스템 */
 .tab-screen {
   display: none;
 }
@@ -73,7 +74,7 @@ body {
   display: block;
 }
 
-/* 하단 탭 바 스타일 */
+/* 4. 하단 탭 바 (고정 가로형) */
 .bottom-nav {
   position: fixed;
   bottom: 0;
@@ -102,4 +103,133 @@ body {
 .nav-tab.active {
   color: var(--accent-color);
   border-top: 2px solid var(--accent-color);
+}
+
+
+/* ==========================================================================
+   ★ 원하는 배치로 되돌리기: 하단 대시보드 카드 영역 (Dashboard Panel) ★
+   ========================================================================== */
+
+/* 둥글고 어두운 카드형 메인 패널 */
+.dashboard-panel {
+  background-color: var(--panel-bg);
+  margin: 1.5rem 1rem;
+  padding: 1.5rem 1rem;
+  border-radius: 16px;
+  border: 1px solid var(--border-light);
+}
+
+/* 최근 기록, 통계, 큐브 넷을 가로 3단으로 예쁘게 나열 */
+.dashboard-columns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-bottom: 1.5rem;
+}
+
+/* 각 열의 타이틀 스타일 */
+.col h3 {
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.75rem;
+  white-space: nowrap;
+}
+
+/* 1번 열: 최근 기록 리스트 */
+.solve-list {
+  list-style: none;
+  font-size: 0.85rem;
+}
+.solve-list li {
+  margin-bottom: 0.35rem;
+  color: var(--text-main);
+}
+.solve-list li .num {
+  color: var(--text-muted);
+  margin-right: 4px;
+}
+
+/* 2번 열: Cur & Best 테이블 */
+.stats-table {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.85rem;
+}
+.stats-table .row {
+  display: flex;
+  justify-content: space-between;
+}
+.stats-table .row.header {
+  color: var(--text-muted);
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+.stats-table .row span {
+  width: 50%;
+  text-align: left;
+}
+.stats-table .row span:last-child {
+  text-align: right;
+}
+
+/* 3번 열: 큐브 전개도 레이아웃 */
+.cube-net {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.net-row {
+  display: flex;
+  gap: 2px;
+}
+.face {
+  width: 27px;
+  height: 27px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+}
+.empty-face {
+  visibility: hidden;
+}
+
+/* 큐브 각 면의 색상 데이터 설정 */
+.real-face div {
+  width: 100%;
+  height: 100%;
+  border-radius: 1px;
+}
+
+/* 큐브 전개도 파트별 기본 색상 채우기 (두 번째 사진의 알록달록한 모양 구현) */
+.u-face div { background-color: #ffffff; } /* 윗면 흰색 */
+.L-face div { background-color: #ff5800; } /* 왼쪽 주황색 */
+.F-face div { background-color: #009b48; } /* 앞면 초록색 */
+.R-face div { background-color: #b71234; } /* 오른쪽 빨간색 */
+.B-face div { background-color: #0046ad; } /* 뒷면 파란색 */
+.d-face div { background-color: #ffd500; } /* 밑면 노란색 */
+
+/* 하단 도구 단추 구역 */
+.tools-area {
+  display: flex;
+  justify-content: center;
+}
+
+.clean-border-btn {
+  background-color: transparent;
+  border: 1px solid var(--border-light);
+  color: var(--text-muted);
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.clean-border-btn:hover {
+  border-color: var(--text-muted);
+  color: var(--text-main);
 }
