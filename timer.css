@@ -43,28 +43,25 @@
   cursor: pointer;
 }
 
-/* 3. 탭 온오프 시스템 */
+/* 3. 탭 온오프 시스템 (모든 화면 기본 정렬을 가로 중앙으로 지정) */
 .tab-screen {
   display: none;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;   /* 👈 자식 요소들을 가로 방향 한가운데로 정렬 */
+  text-align: center;    /* 👈 텍스트들도 기본 중앙 정렬 */
+  box-sizing: border-box;
 }
+
 .tab-screen.active-screen {
-  display: block;
+  display: flex;         /* block 대신 flex를 써서 중앙 정렬이 무조건 작동하도록 강제 */
 }
 
 /* ==========================================================================
-   ★ 위쪽 타이머 메인 영역 (중앙 정렬 복구) ★
+   ★ 위쪽 타이머 메인 영역 정렬 및 간격 보정 ★
    ========================================================================== */
-/* 만약 HTML에 .timer-section 또는 .main-content 같은 메인 화면 감싸는 클래스가 있다면 
-   아래와 같이 중앙 정렬을 강제로 유지해주어야 합니다. */
-#timer-screen, .tab-screen {
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-}
 
-/* 스크램블 텍스트 정렬 및 여백 */
+/* 스크램블 텍스트 정렬 */
 .scramble {
   font-size: 1.1rem;
   line-height: 1.5;
@@ -74,33 +71,46 @@
   text-align: center;
 }
 
-/* 복사, 수정, 변경 버튼 그룹 */
-.scramble-actions {
-  display: flex;
+/* 복사, 수정, 변경 버튼들을 가로로 띄우고 중앙 배치 */
+.scramble-actions, 
+.tab-screen button:not(.clean-border-btn):not(.ghost-btn), 
+.tab-screen .action-btn {
+  display: inline-flex;
   justify-content: center;
   gap: 8px;
-  margin-bottom: 30px;
+  margin: 10px auto 20px auto;
 }
 
-.action-btn {
+/* Copy, Edit, Change 각 버튼 스타일 */
+.action-btn, 
+.tab-screen button:not(.clean-border-btn):not(.ghost-btn) {
   padding: 4px 12px;
   border-radius: 12px;
   font-size: 0.8rem;
   cursor: pointer;
+  border: 1px solid transparent;
 }
 
-/* 메인 타이머 숫자 배치 */
-.timer-display {
+/* 메인 타이머 숫자 (0.00) 배치 */
+.timer-display, 
+.tab-screen h1, 
+.tab-screen .time-display {
   font-size: 4.5rem;
   font-weight: bold;
-  margin: 40px 0 10px 0;
-  font-variant-numeric: tabular-nums; /* 숫자가 흔들리지 않게 고정 너비 지정 */
+  margin: 40px auto 10px auto;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  display: block;
 }
 
-/* 타이머 아래 자잘한 서브 텍스트 (+0.00, ao5 등) */
-.timer-subtext {
+/* 타이머 아래 서브 텍스트 (+0.00, ao5 등) */
+.timer-subtext, 
+.tab-screen p, 
+.tab-screen .sub-info {
   font-size: 1rem;
-  margin-bottom: 5px;
+  margin: 5px auto;
+  text-align: center;
+  display: block;
 }
 
 /* 4. 하단 탭 바 (고정 가로형) */
