@@ -3,14 +3,20 @@
 
 :root {
   --bg-color: #202225;     /* 쿨 슬레이트 그레이 배경 */
-  --panel-bg: #18191c;     
+  --panel-bg: #18191c;     /* 더 어두운 그레이 바 */
   --text-main: #f2f3f5;    /* 부드러운 소프트 화이트 */
   --text-muted: #8e9297;   /* 은은한 보조 회색 */
-  --border-light: #2f3136; 
-  --accent-color: #a855f7; 
+  --border-light: #2f3136; /* 어두운 경계선 */
+  --accent-color: #a855f7; /* 포인트 보라색 */
 }
 
-/* 통계 종류 글자색만 보조 회색으로 지정 */
+/* 전체 기본 테마색 적용 */
+body {
+  background-color: var(--bg-color);
+  color: var(--text-main);
+}
+
+/* 통계 종류 글자색 보조 회색으로 강제 유지 */
 .stats-table .row .stat-type {
   color: var(--text-muted);
 }
