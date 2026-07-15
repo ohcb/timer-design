@@ -1,24 +1,23 @@
 /* timer.css */
 
-/* 1. 기본 앱 컨테이너 */
+/* 기본 앱 구조 및 중앙 정렬 */
 .app-container {
   width: 100%;
   max-width: 480px;
   margin: 0 auto;
   min-height: 100vh;
   position: relative;
-  /* 대시보드가 고정(absolute)되어도 타이머 메인 콘텐츠가 가려지지 않게 하단 패딩 확보 */
+  /* 하단 영역이 가려지지 않도록 패딩 확보 */
   padding-bottom: 240px; 
   box-sizing: border-box;
 }
 
-/* 2. 상단 탑바 */
+/* 상단 탑바 헤더 */
 .topbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 15px;
-  border-bottom: 1px solid var(--border-light);
 }
 
 .logo {
@@ -32,9 +31,6 @@
 }
 
 .clean-select {
-  background-color: var(--panel-bg);
-  color: var(--text-main);
-  border: 1px solid var(--border-light);
   padding: 5px 10px;
   border-radius: 4px;
 }
@@ -46,7 +42,7 @@
   cursor: pointer;
 }
 
-/* 3. 탭 온오프 시스템 */
+/* 탭 전환 시스템 */
 .tab-screen {
   display: none;
 }
@@ -54,7 +50,7 @@
   display: block;
 }
 
-/* 4. 하단 탭 바 (고정 가로형) */
+/* 하단 고정 탭 바 */
 .bottom-nav {
   position: fixed;
   bottom: 0;
@@ -63,8 +59,6 @@
   width: 100%;
   max-width: 480px;
   height: 60px;
-  background-color: var(--panel-bg);
-  border-top: 1px solid var(--border-light);
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   z-index: 100;
@@ -75,36 +69,30 @@
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  color: var(--text-muted);
   font-size: 0.95rem;
   font-weight: 600;
 }
 
-.nav-tab.active {
-  color: var(--accent-color);
-  border-top: 2px solid var(--accent-color);
-}
-
 /* ==========================================================================
-   ★ 하단 대시보드 영역: 배치 고정 & 배경 및 테두리 투명화 ★
+   ★ 하단 대시보드 영역: 박스 투명화 및 바닥 탭바 위에 강제 고정 ★
    ========================================================================== */
 .dashboard-panel {
   position: absolute;
-  bottom: 60px;                  /* 하단 탭 바(60px) 위에 완전히 밀착 고정 */
+  bottom: 60px;                  /* 하단 내비바(60px) 바로 위에 착지 */
   left: 0;
   width: 100%;
   padding: 0 1rem 1rem 1rem;
   margin: 0;
   box-sizing: border-box;
   
-  /* 박스 영역 투명 처리 */
-  background-color: transparent; 
-  background: transparent;
-  border: none;                  
-  box-shadow: none;              
+  /* 테두리 및 배경상자 완전 투명화 */
+  background-color: transparent !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
-/* 최근 기록, 통계, 큐브 넷 가로 3단 정렬 */
+/* 가로 3단 그리드 정렬 */
 .dashboard-columns {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -112,32 +100,29 @@
   margin-bottom: 0.5rem;
 }
 
-/* 각 열 타이틀 */
+/* 각 구역 타이틀 */
 .col h3 {
   font-size: 0.75rem;
   font-weight: bold;
-  color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 0.75rem;
   white-space: nowrap;
 }
 
-/* 1번 열: 최근 기록 리스트 */
+/* 1번 열: 최근 기록 */
 .solve-list {
   list-style: none;
   font-size: 0.82rem;
 }
 .solve-list li {
   margin-bottom: 0.35rem;
-  color: var(--text-main);
 }
 .solve-list li .num {
-  color: var(--text-muted);
   margin-right: 4px;
 }
 
-/* 2번 열: Current & Best 테이블 (3열 정렬 고정) */
+/* 2번 열: Current & Best (가로 3열 정렬 고정) */
 .stats-table {
   display: flex;
   flex-direction: column;
@@ -152,22 +137,20 @@
 }
 
 .stats-table .row.header {
-  color: var(--text-muted);
   font-weight: bold;
   margin-bottom: 2px;
 }
 
-/* 각 열 비율 배분 (종류명 35% / 현재값 32.5% / 최고값 32.5%) */
+/* 가로 3열 비율 분배 */
 .stats-table .row span {
   width: 32.5%;
   text-align: right;
 }
 
-/* 맨 왼쪽 통계 종류 글자(time, ao5 등) 스타일 */
+/* 왼쪽 종류 표시 정렬 (time, mo3 등) */
 .stats-table .row .stat-type {
   width: 35%;
   text-align: left;
-  color: var(--text-muted);
   font-size: 0.75rem;
 }
 
@@ -199,31 +182,16 @@
   border-radius: 1px;
 }
 
-/* 큐브 스티커 기본 색상 세팅 */
-.u-face div { background-color: #ffffff; }
-.L-face div { background-color: #ff5800; }
-.F-face div { background-color: #009b48; }
-.R-face div { background-color: #b71234; }
-.B-face div { background-color: #0046ad; }
-.d-face div { background-color: #ffd500; }
-
-/* 하단 도구 버튼 공간 조절 */
+/* 하단 툴 버튼 */
 .tools-area {
   display: flex;
   justify-content: center;
 }
 .clean-border-btn {
   background-color: transparent;
-  border: 1px solid var(--border-light);
-  color: var(--text-muted);
   padding: 6px 12px;
   border-radius: 6px;
   font-size: 0.75rem;
   cursor: pointer;
   transition: all 0.2s;
-}
-
-.clean-border-btn:hover {
-  border-color: var(--text-muted);
-  color: var(--text-main);
 }
