@@ -107,16 +107,16 @@ body {
 
 
 /* ==========================================================================
-   ★ 원하는 배치로 되돌리기: 하단 대시보드 카드 영역 (Dashboard Panel) ★
+   ★ 하단 대시보드 카드 영역 수정 (테두리 제거 & 하단 정렬 밀착) ★
    ========================================================================== */
 
-/* 둥글고 어두운 카드형 메인 패널 */
 .dashboard-panel {
   background-color: var(--panel-bg);
-  margin: 1.5rem 1rem;
+  /* 양옆 마진은 유지하되, 위쪽 마진을 키우고 아래 마진을 없애 하단 앱 네비바 바로 위까지 밀어 내립니다 */
+  margin: 3rem 1rem 0 1rem; 
   padding: 1.5rem 1rem;
   border-radius: 16px;
-  border: 1px solid var(--border-light);
+  border: none; /* 👈 테두리(border) 깔끔하게 제거! */
 }
 
 /* 최근 기록, 통계, 큐브 넷을 가로 3단으로 예쁘게 나열 */
@@ -124,7 +124,7 @@ body {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 15px;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.2rem;
 }
 
 /* 각 열의 타이틀 스타일 */
@@ -152,11 +152,11 @@ body {
   margin-right: 4px;
 }
 
-/* 2번 열: Cur & Best 테이블 */
+/* 2번 열: Cur & Best 테이블 수정 */
 .stats-table {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px; /* 행 간격을 보기 좋게 약간 넓힘 */
   font-size: 0.85rem;
 }
 .stats-table .row {
@@ -175,6 +175,11 @@ body {
 .stats-table .row span:last-child {
   text-align: right;
 }
+/* 통계 행에서 레이블(이름) 색상을 은은하게 지정 */
+.stats-table .row .label {
+  color: var(--text-muted);
+}
+
 
 /* 3번 열: 큐브 전개도 레이아웃 */
 .cube-net {
