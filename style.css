@@ -3,24 +3,84 @@
 
 :root {
   --bg-color: #202225;     /* 쿨 슬레이트 그레이 배경 */
-  --panel-bg: #18191c;     /* 더 어두운 그레이 바 */
-  --text-main: #f2f3f5;    /* 부드러운 소프트 화이트 */
+  --panel-bg: #18191c;     /* 더 어두운 패널 그레이 */
+  --text-main: #f2f3f5;    /* 소프트 화이트 */
   --text-muted: #8e9297;   /* 은은한 보조 회색 */
   --border-light: #2f3136; /* 어두운 경계선 */
   --accent-color: #a855f7; /* 포인트 보라색 */
 }
 
-/* 전체 기본 테마색 적용 */
+/* 1. 전체 바디 테마 컬러 적용 */
 body {
   background-color: var(--bg-color);
   color: var(--text-main);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-/* 통계 종류 글자색 보조 회색으로 강제 유지 */
-.stats-table .row .stat-type {
+/* 2. 상단 탑바 디테일 색상 */
+.topbar {
+  border-bottom: 1px solid var(--border-light);
+}
+
+.clean-select {
+  background-color: var(--panel-bg);
+  color: var(--text-main);
+  border: 1px solid var(--border-light);
+}
+
+.ghost-btn {
+  color: var(--text-muted);
+}
+
+/* 3. 하단 탭 바 색상 */
+.bottom-nav {
+  background-color: var(--panel-bg);
+  border-top: 1px solid var(--border-light);
+}
+
+.nav-tab {
+  color: var(--text-muted);
+}
+
+.nav-tab.active {
+  color: var(--accent-color);
+  border-top: 2px solid var(--accent-color);
+}
+
+/* 4. 대시보드 내부 텍스트 색상들 */
+.col h3 {
+  color: var(--text-muted);
+}
+
+.solve-list li {
+  color: var(--text-main);
+}
+.solve-list li .num {
   color: var(--text-muted);
 }
 
 .stats-table .row.header {
   color: var(--text-muted);
+}
+
+.stats-table .row .stat-type {
+  color: var(--text-muted); /* time, mo3 등의 텍스트를 작고 연한 회색으로 */
+}
+
+/* 5. 큐브 전개도 각 스티커 색상 칠하기 */
+.u-face div { background-color: #ffffff; } /* 윗면 흰색 */
+.L-face div { background-color: #ff5800; } /* 왼쪽 주황색 */
+.F-face div { background-color: #009b48; } /* 앞면 초록색 */
+.R-face div { background-color: #b71234; } /* 오른쪽 빨간색 */
+.B-face div { background-color: #0046ad; } /* 뒷면 파란색 */
+.d-face div { background-color: #ffd500; } /* 밑면 노란색 */
+
+/* 6. 도구 버튼 스타일 */
+.clean-border-btn {
+  border: 1px solid var(--border-light);
+  color: var(--text-muted);
+}
+.clean-border-btn:hover {
+  border-color: var(--text-muted);
+  color: var(--text-main);
 }
