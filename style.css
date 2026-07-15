@@ -8,7 +8,7 @@
   --text-muted: #8e9297;   /* 은은한 보조 회색 */
   --border-light: #2f3136; /* 어두운 경계선 */
   --accent-color: #a855f7; /* 포인트 보라색 */
-  --btn-bg: #2f3136;       /* 버튼 기본 회색 */
+  --btn-bg: #2f3136;       /* 버튼 회색 배경 */
 }
 
 /* 1. 기본 글로벌 스타일 */
@@ -36,12 +36,14 @@ body {
 }
 
 /* 3. 복사/수정/변경 버튼 색상 복구 */
-.action-btn {
+.action-btn, 
+.tab-screen button:not(.clean-border-btn):not(.ghost-btn) {
   background-color: var(--btn-bg);
   color: var(--text-main);
   border: 1px solid var(--border-light);
 }
-.action-btn:hover {
+.action-btn:hover,
+.tab-screen button:not(.clean-border-btn):not(.ghost-btn):hover {
   background-color: var(--text-muted);
   color: var(--panel-bg);
 }
