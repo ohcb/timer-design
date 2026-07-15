@@ -107,27 +107,32 @@ body {
 
 
 /* ==========================================================================
-   ★ 하단 대시보드 카드 영역 수정 (테두리 제거 & 하단 정렬 밀착) ★
+   ★ 하단 대시보드 영역 수정: 박스 완전 투명화 & 하단 내비바 밀착 고정 ★
    ========================================================================== */
 
 .dashboard-panel {
-  background-color: var(--panel-bg);
-  /* 양옆 마진은 유지하되, 위쪽 마진을 키우고 아래 마진을 없애 하단 앱 네비바 바로 위까지 밀어 내립니다 */
-  margin: 3rem 1rem 0 1rem; 
-  padding: 1.5rem 1rem;
-  border-radius: 16px;
-  border: none; /* 👈 테두리(border) 깔끔하게 제거! */
+  background-color: transparent; /* 👈 배경 상자 완전 투명하게 제거! */
+  border: none;                  /* 👈 테두리 완벽 제거! */
+  box-shadow: none;              /* 👈 그림자 제거 */
+  
+  /* 화면 맨 밑 탭 바(높이 60px) 위에 딱 붙도록 절대 위치 고정 */
+  position: absolute;
+  bottom: 60px;                  /* 하단 내비바 높이만큼 띄워서 밀착 */
+  left: 0;
+  width: 100%;
+  padding: 0 1rem 1rem 1rem;     /* 양옆 여백만 유지 */
+  margin: 0;
 }
 
-/* 최근 기록, 통계, 큐브 넷을 가로 3단으로 예쁘게 나열 */
+/* 최근 기록, 통계, 큐브 넷 가로 3단 정렬 */
 .dashboard-columns {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 15px;
-  margin-bottom: 1.2rem;
+  gap: 12px;
+  margin-bottom: 0.5rem;
 }
 
-/* 각 열의 타이틀 스타일 */
+/* 각 열 타이틀 */
 .col h3 {
   font-size: 0.75rem;
   font-weight: bold;
@@ -141,7 +146,7 @@ body {
 /* 1번 열: 최근 기록 리스트 */
 .solve-list {
   list-style: none;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
 }
 .solve-list li {
   margin-bottom: 0.35rem;
@@ -152,41 +157,47 @@ body {
   margin-right: 4px;
 }
 
-/* 2번 열: Cur & Best 테이블 수정 */
+/* 2번 열: Current & Best 테이블 (3열 정렬 고정) */
 .stats-table {
   display: flex;
   flex-direction: column;
-  gap: 6px; /* 행 간격을 보기 좋게 약간 넓힘 */
-  font-size: 0.85rem;
+  gap: 5px;
+  font-size: 0.82rem;
 }
+
 .stats-table .row {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
+
 .stats-table .row.header {
   color: var(--text-muted);
   font-weight: bold;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
+
+/* 각 열 비율 배분 (종류명 35% / 현재값 32.5% / 최고값 32.5%) */
 .stats-table .row span {
-  width: 50%;
-  text-align: left;
-}
-.stats-table .row span:last-child {
+  width: 32.5%;
   text-align: right;
 }
-/* 통계 행에서 레이블(이름) 색상을 은은하게 지정 */
-.stats-table .row .label {
-  color: var(--text-muted);
+
+/* 맨 왼쪽 통계 종류 글자(time, ao5 등) 스타일 */
+.stats-table .row .stat-type {
+  width: 35%;
+  text-align: left;
+  color: var(--text-muted); /* 은은하고 작은 회색 글씨 */
+  font-size: 0.75rem;
 }
 
-
-/* 3번 열: 큐브 전개도 레이아웃 */
+/* 3번 열: 큐브 전개도 레이아웃 (위치 미세조정) */
 .cube-net {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 2px;
+  margin-top: 5px;
 }
 .net-row {
   display: flex;
@@ -202,38 +213,33 @@ body {
 .empty-face {
   visibility: hidden;
 }
-
-/* 큐브 각 면의 색상 데이터 설정 */
 .real-face div {
   width: 100%;
   height: 100%;
   border-radius: 1px;
 }
+.u-face div { background-color: #ffffff; }
+.L-face div { background-color: #ff5800; }
+.F-face div { background-color: #009b48; }
+.R-face div { background-color: #b71234; }
+.B-face div { background-color: #0046ad; }
+.d-face div { background-color: #ffd500; }
 
-/* 큐브 전개도 파트별 기본 색상 채우기 (두 번째 사진의 알록달록한 모양 구현) */
-.u-face div { background-color: #ffffff; } /* 윗면 흰색 */
-.L-face div { background-color: #ff5800; } /* 왼쪽 주황색 */
-.F-face div { background-color: #009b48; } /* 앞면 초록색 */
-.R-face div { background-color: #b71234; } /* 오른쪽 빨간색 */
-.B-face div { background-color: #0046ad; } /* 뒷면 파란색 */
-.d-face div { background-color: #ffd500; } /* 밑면 노란색 */
-
-/* 하단 도구 단추 구역 */
+/* 하단 도구 버튼 공간 조절 */
 .tools-area {
   display: flex;
   justify-content: center;
 }
-
 .clean-border-btn {
   background-color: transparent;
   border: 1px solid var(--border-light);
   color: var(--text-muted);
-  padding: 8px 16px;
+  padding: 6px 12px;
   border-radius: 6px;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   cursor: pointer;
-  transition: all 0.2s;
 }
+
 .clean-border-btn:hover {
   border-color: var(--text-muted);
   color: var(--text-main);
