@@ -1,69 +1,79 @@
 // timer.js
+let startTime = 0;
+let timerInterval = null;
+let isRunning = false;
+let isReady = false;
+
 export function initTimer() {
-  let timerInterval = null;
-  let startTime = 0;
-  let elapsedTime = 0;
-  let isRunning = false;
+  const timerDisplay = document.getElementById('timer-display'); // HTML의 시간 표시 엘리먼트
+  if (!timerDisplay) return;
 
-  // HTML의 <div class="timer-display">0.00</div>를 정확히 가져옵니다.
-  const timerDisplay = document.querySelector('.timer-display');
+  // 1. 키보드 스페이스바 이벤트 처리 (PC/패드 키보드용)
+  window.addEventListener('keydown', (e) => {
+    if (e.code !== 'Space') return;
+    e.preventDefault(); // 스크롤 방지
 
-  // 만약 태그를 못 찾으면 자바스크립트가 멈추지 않도록 방어 코드 추가
-  if (!timerDisplay) {
-    console.error("타이머 디스플레이(.timer-display) 태-그를 찾을 수 없습니다.");
-    return;
-  }
+    if (isRunning) {
+      // 실행 중일 때 누르면 멈춤
+      stopTimer();
+    } else if (!isReady) {
+      // 멈춰있을 때 누르고 있으면 시작 준비 (빨간색 불)
+      isReady = true;
+      timerDisplay.style.color = '#ff453a'; 
+    }
+  });
 
-  function formatTime(time) {
-    const seconds = Math.floor(time / 1000);
-    const milliseconds = Math.floor((time % 1000) / 10);
-    const msString = milliseconds < 10 ? '0' + milliseconds : milliseconds;
-    return `${seconds}.${msString}`;
-  }
+  window.addEventListener('keyup', (e) => {
+    if (e.code !== 'Space') return;
+    e.preventDefault();
 
-  function startTimer() {
-    startTime = Date.now() - elapsedTime;
-    timerInterval = setInterval(() => {
-      elapsedTime = Date.now() - startTime;
-      timerDisplay.textContent = formatTime(elapsedTime);
-    }, 10);
-    isRunning = true;
-  }
+    if (isReady && !isRunning) {
+      // 스페이스바를 떼는 순간 타이머 시작 (흰색 불)
+      isReady = false;
+      startTimer(timerDisplay);
+    }
+  });
 
-  function stopTimer() {
-    clearInterval(timerInterval);
-    isRunning = false;
-  }
-
-  function resetTimer() {
-    clearInterval(timerInterval);
-    elapsedTime = 0;
-    timerDisplay.textContent = "0.00";
-    isRunning = false;
-  }
-
-  function handleTrigger() {
+  // 2. 화면 터치/클릭 이벤트 처리 (모바일/태블릿 터치용)
+  timerDisplay.addEventListener('touchstart', (e) => {
+    e.preventDefault();
     if (isRunning) {
       stopTimer();
     } else {
-      if (elapsedTime > 0) {
-        resetTimer();
-      }
-      startTimer();
-    }
-  }
-
-  // PC 스페이스바
-  window.addEventListener('keydown', (event) => {
-    if (event.code === 'Space') {
-      event.preventDefault();
-      handleTrigger();
+      isReady = true;
+      timerDisplay.style.color = '#ff453a';
     }
   });
 
-  // 아이패드 터치 (타이머 숫자를 누르면 작동)
-  timerDisplay.style.cursor = 'pointer'; // 누를 수 있다는 표시
-  timerDisplay.addEventListener('click', () => {
-    handleTrigger();
+  timerDisplay.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    if (isReady && !isRunning) {
+      isReady = false;
+      startTimer(timerDisplay);
+    }
   });
+}
+
+function startTimer(display) {
+  isRunning = true;
+  startTime = Date.now();
+  display.style.color = '#ffffff';
+
+  timerInterval = setInterval(() => {
+    const elapsed = Date.now() - startTime;
+    display.textContent = (elapsed / 1000).toFixed(2); // 0.00 초 단위 표시
+  }, 10);
+}
+
+function stopTimer() {
+  isRunning = false;
+  clearInterval(timerInterval);
+  
+  const finalTime = display.textContent; // 측정된 최종 시간
+  saveSolve(finalTime); // 💡 여기서 기록을 배열이나 로컬스토리지에 저장!
+}
+
+function saveSolve(time) {
+  // 여기에 기록 리스트로 데이터를 보내주는 로직을 연결할 예정입니다.
+  console.log(`기록 저장됨: ${time}s`);
 }
