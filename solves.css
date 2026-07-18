@@ -1,4 +1,4 @@
-/* --- solves.css 수정본 --- */
+/* --- CUB3 Solves Tab UI --- */
 
 #screen-solves {
   padding: 16px;
@@ -6,16 +6,15 @@
   min-height: 100%;
   color: #fff;
   box-sizing: border-box;
-  text-align: left; /* 💡 전체 가운데 정렬 해제 */
+  text-align: left !important; /* 강제 좌측 정렬 */
 }
 
-/* 상단 매니저 */
+/* 상단 필터/컨트롤 영역 */
 .solves-control-manager {
   display: flex;
   flex-direction: column;
   gap: 16px;
   margin-bottom: 24px;
-  text-align: left;
 }
 
 .control-header-row {
@@ -24,28 +23,70 @@
   align-items: center;
 }
 
+.control-header-row h2 {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
 .control-filter-row {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   width: 100%;
 }
 
-/* 💡 기록 카드 전체 레이아웃 (가운데 정렬 깨부수기) */
+.event-dropdown {
+  background-color: #1e1e1e;
+  border: none;
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.filter-chips-container {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  white-space: nowrap;
+  flex-grow: 1;
+}
+.filter-chips-container::-webkit-scrollbar {
+  display: none;
+}
+
+.chip-btn {
+  background-color: #1e1e1e;
+  border: none;
+  color: #8e8e93;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+.chip-btn.active {
+  background-color: #9b5de5;
+  color: #fff;
+}
+
+/* 메인 카드 리스트 디자인 */
 .record-cards-list {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  padding-bottom: 80px;
-  text-align: left; /* 강제 좌측 정렬 */
+  gap: 12px;
+  text-align: left !important;
 }
 
 .record-card {
   background-color: #1e1e1e;
-  border-radius: 14px;
+  border-radius: 12px;
   padding: 16px;
-  display: flex; /* 💡 요소들을 가로로 배치 */
-  justify-content: space-between; /* 좌측과 우측을 양 끝으로 찢음 */
+  display: flex !important;
+  justify-content: space-between !important;
   align-items: center;
   cursor: pointer;
   box-sizing: border-box;
@@ -55,25 +96,56 @@
 .card-left {
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* 💡 왼쪽 정렬 */
+  align-items: flex-start !important;
   gap: 6px;
 }
 
+.time-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .record-time {
-  font-size: 1.6rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: #fff;
-  line-height: 1;
+}
+
+.badge {
+  font-size: 0.75rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.pb-badge {
+  background-color: rgba(255, 215, 0, 0.15);
+  color: #ffd700;
+}
+.tag-badge {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: #a0a0a0;
 }
 
 .card-right {
   display: flex;
   flex-direction: column;
-  align-items: flex-end; /* 💡 오른쪽 정렬 */
-  gap: 8px;
+  align-items: flex-end !important;
+  gap: 6px;
+}
+.card-date {
+  font-size: 0.8rem;
+  color: #666;
+}
+.bookmark-icon {
+  font-size: 1rem;
+  color: #444;
+}
+.bookmark-icon.active {
+  color: #ffd700;
 }
 
-/* 💡 바텀 시트 모달 (완벽히 숨기기 및 중앙 정렬 세팅) */
+/* 팝업 모달 (상세정보 화면) */
 .bottom-sheet-overlay {
   position: fixed;
   top: 0;
@@ -81,13 +153,12 @@
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.7);
-  display: none; /* 💡 평소엔 절대 안 보임 */
+  display: none; /* 기본 숨김 */
   justify-content: flex-end;
   flex-direction: column;
   z-index: 9999;
 }
 
-/* 오픈 클래스가 붙었을 때만 나타남 */
 .bottom-sheet-overlay.open {
   display: flex !important;
 }
@@ -96,20 +167,53 @@
   background-color: #1c1c1e;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
-  padding: 16px 20px 40px 20px;
-  max-height: 80%;
+  padding: 16px 20px 32px 20px;
+  max-height: 85%;
   overflow-y: auto;
-  text-align: center; /* 💡 바텀시트 내부는 이쁘게 가운데 정렬 */
   box-sizing: border-box;
 }
 
-/* 바텀 시트 내부 섹션들 정렬 */
-.sheet-section {
+.drag-handle {
+  width: 36px;
+  height: 5px;
+  background-color: #444;
+  border-radius: 3px;
+  margin: 0 auto 24px auto;
+}
+
+.sheet-main-info {
+  text-align: center;
+  margin-bottom: 24px;
+}
+.sheet-title-label {
+  font-size: 0.75rem;
+  color: #ffd700;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.sheet-main-time {
+  font-size: 3rem;
+  font-weight: 800;
+  margin: 6px 0 0 0;
+}
+
+.sheet-detail-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  text-align: left !important;
+}
+
+.detail-item {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-bottom: 20px;
-  align-items: center;
+}
+
+.item-label {
+  font-size: 0.85rem;
+  color: #8e8e93;
+  font-weight: 600;
 }
 
 .scramble-box-wrapper {
@@ -117,9 +221,26 @@
   background-color: #2c2c2e;
   border-radius: 10px;
   padding: 12px;
-  gap: 10px;
-  width: 100%;
-  box-sizing: border-box;
+  justify-content: space-between;
+  align-items: center;
+}
+.scramble-code {
+  margin: 0;
+  font-family: monospace;
+  font-size: 0.9rem;
+  color: #d1d1d6;
+  line-height: 1.4;
+}
+.copy-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.item-value {
+  font-size: 0.95rem;
+  color: #fff;
 }
 
 .segmented-control {
@@ -127,15 +248,65 @@
   background-color: #2c2c2e;
   border-radius: 8px;
   padding: 2px;
-  width: 100%;
-  max-width: 300px;
+  max-width: 240px;
+}
+.segment-btn {
+  flex: 1;
+  background: none;
+  border: none;
+  color: #8e8e93;
+  padding: 6px 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.segment-btn.active {
+  background-color: #48484a;
+  color: #fff;
+}
+
+.tags-container {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.add-tag-chip {
+  background: none;
+  border: 1px dashed #48484a;
+  color: #8e8e93;
+  padding: 6px 12px;
+  border-radius: 14px;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+.tag-chip {
+  background-color: #2c2c2e;
+  color: #d1d1d6;
+  padding: 6px 12px;
+  border-radius: 14px;
+  font-size: 0.8rem;
 }
 
 .sheet-actions-bar {
   display: flex;
   gap: 12px;
-  margin-top: 12px;
+  margin-top: 24px;
   border-top: 1px solid #2c2c2e;
   padding-top: 20px;
-  width: 100%;
+}
+.action-btn {
+  flex: 1;
+  background-color: #2c2c2e;
+  border: none;
+  color: #fff;
+  padding: 12px 0;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.delete-btn {
+  background-color: rgba(255, 69, 58, 0.1);
+  color: #ff453a;
 }
