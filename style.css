@@ -126,3 +126,27 @@ body {
   opacity: 1 !important;
 }
 
+/* ==========================================================================
+   ★ 노트북/낮은 화면에서 타이머 요소들이 서로 겹치는 현상 방지 ★
+   ========================================================================== */
+@media (max-height: 768px) {
+  /* 1. 0.00 타이머 글자 크기 줄이고 아래 간격 확보 */
+  .timer-display, [class*="timer-display"], [class*="time"] { 
+    font-size: 3.5rem !important; 
+    margin-bottom: 10px !important;
+  }
+  
+  /* 2. 겹쳐져 있는 CURRENT & BEST 및 ao5/ao12 구역 간격 조절 */
+  .current-best-area, .stats-summary, [class*="stats"], [class*="current"] {
+    font-size: 0.8rem !important;
+    line-height: 1.3 !important;
+  }
+
+  /* 3. 전체적인 세로 정렬 간격을 좁혀서 압축 */
+  .app-container, [class*="container"] {
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
+  }
+}
+
+
