@@ -209,36 +209,69 @@ body {
   .dashboard-columns .col.scramble-view { flex: 1.5; }
 }
 
-/* 1. 앱 전체를 감싸는 최상위 컨테이너 제한 풀기 */
+/* ==========================================================================
+   [전체 앱 통합 반응형 밸런스 조정]
+   ========================================================================== */
+
+/* 1. 최상위 부모 제한 해제 */
 .app-container {
   width: 100% !important;
-  max-width: 100% !important; /* 💡 좁게 묶여있던 가로폭 제한을 완전히 해제 */
+  max-width: 100% !important;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* 2. 상단 네비게이션 바(Topbar)도 가로로 꽉 차게 */
-.topbar {
-  width: 100% !important;
-  max-width: 100% !important;
-  box-sizing: border-box;
-  padding: 1rem 1.5rem; /* 양옆에 살짝 여백을 주어 로고가 너무 벽에 붙지 않게 조절 */
+/* 2. 모든 탭 화면의 최대 너비를 주어 모니터나 패드 가로에서 지나치게 찢어지는 것 방지 */
+.tab-contents {
+  width: 100%;
+  max-width: 1024px; /* 💡 아이패드 가로/세로에서 가장 이상적인 밸런스를 보여주는 가로폭 */
+  margin: 0 auto;    /* 늘어난 폭 안에서 가운데 정렬로 핏 유지 */
 }
 
-/* 3. 모든 탭 화면과 콘텐츠 영역 확장 */
-.tab-contents, .tab-screen {
+.tab-screen {
   width: 100% !important;
-  max-width: 100% !important;
   box-sizing: border-box;
+  padding: 1.5rem 1.2rem;
 }
 
-/* 4. 홈 화면의 컨테이너도 함께 확장 */
+/* 3. ⏱️ [Timer 탭 대응] 중앙 집중형 레이아웃 밸런스 패치 */
+#screen-timer {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 타이머 요소들을 중앙으로 정렬 */
+  gap: 2rem;
+}
+
+/* 타이머 표시 영역 상하 여백 정돈 */
+.timer-zone {
+  margin: 2rem 0;
+  text-align: center;
+  width: 100%;
+}
+
+/* 하단 3열 대시보드가 너무 양끝으로 찢어지지 않게 너비 제한 및 정돈 */
+.dashboard-panel {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.dashboard-columns {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 2rem; /* 💡 컬럼 사이의 간격을 단단하게 고정 */
+  width: 100%;
+}
+
+/* 하단 3열 각 칸이 균등하고 예쁘게 가로를 나눠 가지도록 설정 */
+.dashboard-columns .col {
+  flex: 1;
+  min-width: 0; /* 텍스트 넘침 방지 */
+}
+
+/* 4. 🏠 [Home 탭 대응] */
 .home-container {
   width: 100% !important;
-  max-width: 1200px !important; /* 태블릿/모니터에서 너무 끝까지 찢어지는 걸 막아주는 맥시멈 폭 */
-  margin: 0 auto;
-  padding: 1.5rem 1.2rem;
-  box-sizing: border-box;
+  max-width: 100% !important;
 }
-
