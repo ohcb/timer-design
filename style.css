@@ -126,9 +126,26 @@ body {
   opacity: 1 !important;
 }
 
-/* 타이머 글자 크기 원래대로 강제 복구 */
-.timer-display, [class*="timer-display"] {
-  font-size: 6rem !important; /* 원래 원하셨던 크기에 맞게 5rem ~ 7rem 숫자를 조절해 보세요! */
+/* ==========================================================================
+   ★ 폰트 크기 이상 비대화 및 겹침 현상 강제 복구 ★
+   ========================================================================== */
+
+/* 1. 거대해진 ao5, ao12 통계 글자 크기 정상화 */
+.current-best-area, 
+.stats-summary, 
+[class*="stats"] h2, 
+[class*="stats"] div {
+  font-size: 1rem !important; /* 글자 크기를 원래대로 작게 고정 */
+  font-weight: normal !important;
+  line-height: 1.5 !important;
+  position: relative !important;
+  top: 0 !important;
+  transform: none !important;
+}
+
+/* 2. 메인 타이머 숫자 0.00 크기 밸런스 조정 */
+.timer-display {
+  font-size: 5rem !important; 
   font-weight: bold !important;
-  margin-bottom: 20px !important;
+  margin: 20px 0 !important;
 }
