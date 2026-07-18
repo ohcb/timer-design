@@ -3,9 +3,6 @@ export function initTabs() {
   const tabs = document.querySelectorAll('.nav-tab');
   const screens = document.querySelectorAll('.tab-screen');
   const headerCenter = document.querySelector('.header-center');
-  
-  // 💡 홈 화면의 'Start Timer' 버튼
-  const startTimerBtn = document.querySelector('.start-timer-btn');
 
   if (tabs.length === 0 || screens.length === 0) return;
 
@@ -29,7 +26,7 @@ export function initTabs() {
     }
   });
 
-  // 하단 탭 클릭 제어
+  // 하단 탭 클릭 제어 (항상 작동해야 하는 핵심 코드)
   tabs.forEach(tab => {
     tab.addEventListener('click', (event) => {
       event.preventDefault();
@@ -54,13 +51,12 @@ export function initTabs() {
     });
   });
 
-  // 💡 너가 말한 핵심 아이디어: "스타트 타이머 버튼 누르면 그냥 내비 바 타이머 클릭해라"
+  // 💡 안전장치: 버튼이 존재할 때만 이벤트를 걸도록 순서를 아래로 내리고 if문으로 감싸기
+  const startTimerBtn = document.querySelector('.start-timer-btn');
   if (startTimerBtn) {
     startTimerBtn.addEventListener('click', () => {
-      // 내비게이션 탭 중에서 글자가 'Timer'인 버튼을 찾아서 진짜로 '클릭' 이벤트를 날림
-      const timerTab = Array.from(tabs).find(t => t.textContent.trim().toLowerCase() === 'timer');
-      if (timerTab) {
-        timerTab.click(); // 자바스크립트가 손가락 대신 눌러줍니다.
+      if (tabs[1]) {
+        tabs[1].click(); // 2번째 탭(Timer) 클릭 트리거
       }
     });
   }
