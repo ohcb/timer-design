@@ -1,4 +1,4 @@
-/* --- CUB3 Solves Tab UI (CubeDesk 스타일 3열 콤팩트 그리드) --- */
+/* --- CUB3 Solves Tab UI (CubeDesk 스타일 3열 콤팩트 그리드 완벽 교정) --- */
 
 #screen-solves {
   padding: 16px;
@@ -73,27 +73,30 @@
   color: #fff;
 }
 
-/* ⚡ [대수술] 쓸데없이 크지 않게 한 줄에 3개씩 들어가는 콤팩트 그리드 레이아웃 */
+/* ⚡ 한 줄에 3개씩 들어가는 콤팩트 그리드 레이아웃 */
 .record-cards-list {
   display: grid !important;
-  grid-template-columns: repeat(3, 1fr) !important; /* 💡 무조건 한 줄에 3개씩 배정 */
-  gap: 10px; /* 카드 사이 조밀한 간격 */
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 8px !important; 
   text-align: left !important;
 }
 
-/* 💡 레퍼런스 크기의 미니멀한 사각형 카드 디자인 */
+/* 💡 [수정] 빈 공간 주범인 aspect-ratio를 제거하고 슬림한 고정 높이(height) 적용 */
 .record-card {
   background-color: #1e1e1e;
-  border-radius: 10px;
-  padding: 12px 10px; /* 내부 여백 최소화 */
+  border-radius: 8px;
+  padding: 10px 12px !important; 
   display: flex !important;
-  flex-direction: column !important; /* 요소를 위아래로 배치하여 너비 축소 */
+  flex-direction: column !important; 
   justify-content: space-between !important;
   align-items: flex-start !important;
   cursor: pointer;
   box-sizing: border-box;
   width: 100%;
-  aspect-ratio: 1.1 / 1; /* 💡 약간 가로가 긴 예쁜 사각형 형태 유지 */
+  
+  aspect-ratio: unset !important; /* ⚠️ 비율 유지 해제 (여백 폭탄 제거) */
+  height: 68px !important;       /* 💡 텍스트 요소가 딱 컴팩트하게 채워지는 고정 높이 */
+  
   position: relative;
   transition: background-color 0.2s;
 }
@@ -102,16 +105,16 @@
   background-color: #252525;
 }
 
-/* PB 카드인 경우 테두리에 은은한 포인트 */
+/* PB 카드 테두리 골드 포인트 */
 .record-card.pb-card {
-  border: 1px solid rgba(255, 215, 0, 0.3);
+  border: 1px solid rgba(255, 215, 0, 0.35) !important;
 }
 
 .card-left {
   display: flex;
   flex-direction: column;
   align-items: flex-start !important;
-  gap: 4px;
+  gap: 2px;
   width: 100%;
 }
 
@@ -123,18 +126,17 @@
   justify-content: space-between;
 }
 
-/* 💡 핵심: 콤팩트하면서도 눈에 딱 들어오는 시간 폰트 */
 .record-time {
-  font-size: 1.2rem;
+  font-size: 1.15rem; /* 태블릿/모바일 화면에서 겉돌지 않는 최적의 텍스트 크기 */
   font-weight: 700;
   color: #fff;
-  letter-spacing: -0.5px;
+  letter-spacing: -0.3px;
 }
 
-/* 미니 배지들 스타일 다운사이징 */
+/* 배지 스타일 다운사이징 */
 .badge {
   font-size: 0.65rem;
-  padding: 1px 3px;
+  padding: 1px 4px;
   border-radius: 3px;
   font-weight: 600;
 }
@@ -149,16 +151,16 @@
   max-width: 60px;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis; /* 태그 길면 말줄임 */
+  text-overflow: ellipsis;
 }
 
-/* 우측 아래에 조그맣게 깔리는 날짜와 북마크 */
+/* 하단 날짜 및 북마크 일렬 정렬 */
 .card-right {
   display: flex;
   justify-content: space-between !important;
   align-items: center !important;
   width: 100%;
-  margin-top: auto; /* 무조건 카드 최하단에 붙도록 고정 */
+  margin-top: auto; 
 }
 
 .card-date {
@@ -175,7 +177,7 @@
 }
 
 /* ------------------------------------------------ */
-/* 🗂️ 모달 팝업 디테일 (너비 최적화) */
+/* 🗂️ [수정] 모달 팝업 디테일 (패딩 및 찌그러짐 보정) */
 /* ------------------------------------------------ */
 .bottom-sheet-overlay {
   position: fixed;
@@ -199,141 +201,10 @@
 .bottom-sheet-content {
   background-color: #18181a;
   border-radius: 16px;
-  padding: 20px;
+  padding: 24px 20px; /* 위아래 패딩 확보 */
   width: 100%;
-  max-width: 360px; /* 모달창 크기도 보기 좋게 조정 */
+  max-width: 360px; 
   max-height: 85%;
   overflow-y: auto;
   box-sizing: border-box;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-}
-
-.sheet-main-info {
-  text-align: center;
-  margin-bottom: 16px;
-  border-bottom: 1px solid #242426;
-  padding-bottom: 12px;
-}
-.sheet-title-label {
-  font-size: 0.75rem;
-  color: #ffd700;
-  font-weight: 700;
-}
-.sheet-main-time {
-  font-size: 2.4rem;
-  font-weight: 800;
-  margin: 4px 0 0 0;
-  color: #fff;
-}
-
-.sheet-detail-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.detail-item {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.item-label {
-  font-size: 0.75rem;
-  color: #8e8e93;
-  font-weight: 600;
-}
-
-.scramble-box-wrapper {
-  display: flex;
-  background-color: #222224;
-  border-radius: 6px;
-  padding: 8px 10px;
-  justify-content: space-between;
-  align-items: center;
-}
-.scramble-code {
-  margin: 0;
-  font-family: monospace;
-  font-size: 0.8rem;
-  color: #d1d1d6;
-  line-height: 1.3;
-  word-break: break-all;
-}
-.copy-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 0.85rem;
-}
-
-.item-value {
-  font-size: 0.85rem;
-  color: #fff;
-}
-
-.segmented-control {
-  display: flex;
-  background-color: #222224;
-  border-radius: 6px;
-  padding: 2px;
-}
-.segment-btn {
-  flex: 1;
-  background: none;
-  border: none;
-  color: #8e8e93;
-  padding: 5px 0;
-  font-size: 0.75rem;
-  font-weight: 600;
-  border-radius: 4px;
-  cursor: pointer;
-}
-.segment-btn.active {
-  background-color: #3a3a3c;
-  color: #fff;
-}
-
-.tags-container {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-.add-tag-chip {
-  background: none;
-  border: 1px dashed #3a3a3c;
-  color: #8e8e93;
-  padding: 4px 8px;
-  border-radius: 10px;
-  font-size: 0.7rem;
-}
-.tag-chip {
-  background-color: #222224;
-  color: #d1d1d6;
-  padding: 4px 8px;
-  border-radius: 10px;
-  font-size: 0.7rem;
-}
-
-.sheet-actions-bar {
-  display: flex;
-  gap: 8px;
-  margin-top: 16px;
-  border-top: 1px solid #242426;
-  padding-top: 12px;
-}
-.action-btn {
-  flex: 1;
-  background-color: #222224;
-  border: none;
-  color: #fff;
-  padding: 8px 0;
-  border-radius: 6px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-.delete-btn {
-  background-color: rgba(255, 69, 58, 0.1);
-  color: #ff453a;
-}
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5
