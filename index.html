@@ -31,12 +31,70 @@
 
     <div class="tab-contents">
       
-      <div id="screen-home" class="tab-screen">
-        <div style="padding: 3rem 1.5rem; text-align: center; color: var(--text-muted);">
-          <h2>Home Screen</h2>
-          <p style="margin-top: 0.5rem; font-size: 0.9rem;">여기에 홈 대시보드 내용이 채워집니다.</p>
+     <div id="screen-home" class="tab-screen">
+  
+  <div class="home-container">
+    
+    <header class="home-header">
+      <div class="profile-pic">👤</div>
+      <div class="greeting-text">
+        <h3>Welcome back, Cuber!</h3>
+        <p>오늘도 기록을 갱신해 볼까요?</p>
+      </div>
+    </header>
+
+    <section class="home-section">
+      <h4 class="section-title">Today's Performance</h4>
+      <div class="performance-grid">
+        <div class="perf-card">
+          <span class="card-label">Solves</span>
+          <span class="card-value">25</span>
+        </div>
+        <div class="perf-card">
+          <span class="card-label">Average</span>
+          <span class="card-value">12.34s</span>
+        </div>
+        <div class="perf-card highlight">
+          <span class="card-label">✨ PB</span>
+          <span class="card-value">8.56s</span>
         </div>
       </div>
+    </section>
+
+    <section class="home-section">
+      <button class="start-timer-btn">
+        <span>🚀 Start Timer</span>
+      </button>
+    </section>
+
+    <div class="home-flex-row">
+      <div class="home-card half">
+        <h4 class="section-title">Recent Solves</h4>
+        <ul class="mini-solve-list">
+          <li>1. 8.95s</li>
+          <li>2. 9.52s</li>
+          <li>3. 8.93s</li>
+        </ul>
+      </div>
+      
+      <div class="home-card half">
+        <h4 class="section-title">Goal Progress</h4>
+        <div class="progress-bar-container">
+          <div class="progress-bar" style="width: 70%;"></div>
+        </div>
+        <p class="progress-text">주간 목표 100회 중 70회 완료!</p>
+      </div>
+    </div>
+
+    <section class="home-section">
+      <div class="home-card full">
+        <h4 class="section-title">Weekly Summary & Tools</h4>
+        <p class="summary-text">이번 주에는 지난주보다 평균 기록이 0.5초 단축되었습니다! 🔥</p>
+        <div class="shortcut-badge">Featured Tool: OLL Trainer →</div>
+      </div>
+    </section>
+
+  </div></div>
 
       <div id="screen-timer" class="tab-screen active-screen">
         
