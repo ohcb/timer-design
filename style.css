@@ -209,3 +209,36 @@ body {
   .dashboard-columns .col.scramble-view { flex: 1.5; }
 }
 
+/* 1. 앱 전체를 감싸는 최상위 컨테이너 제한 풀기 */
+.app-container {
+  width: 100% !important;
+  max-width: 100% !important; /* 💡 좁게 묶여있던 가로폭 제한을 완전히 해제 */
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* 2. 상단 네비게이션 바(Topbar)도 가로로 꽉 차게 */
+.topbar {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box;
+  padding: 1rem 1.5rem; /* 양옆에 살짝 여백을 주어 로고가 너무 벽에 붙지 않게 조절 */
+}
+
+/* 3. 모든 탭 화면과 콘텐츠 영역 확장 */
+.tab-contents, .tab-screen {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box;
+}
+
+/* 4. 홈 화면의 컨테이너도 함께 확장 */
+.home-container {
+  width: 100% !important;
+  max-width: 1200px !important; /* 태블릿/모니터에서 너무 끝까지 찢어지는 걸 막아주는 맥시멈 폭 */
+  margin: 0 auto;
+  padding: 1.5rem 1.2rem;
+  box-sizing: border-box;
+}
+
