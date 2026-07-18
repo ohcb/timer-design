@@ -1,40 +1,27 @@
-/* --- CUB3 레코드 매니저 테마 (solves.css) --- */
+/* --- solves.css 수정본 --- */
 
 #screen-solves {
   padding: 16px;
-  background-color: #121212; /* Home 탭과 같은 아주 어두운 배경 */
+  background-color: #121212;
   min-height: 100%;
   color: #fff;
   box-sizing: border-box;
+  text-align: left; /* 💡 전체 가운데 정렬 해제 */
 }
 
-/* 1. 상단 컨트롤 매니저 */
+/* 상단 매니저 */
 .solves-control-manager {
   display: flex;
   flex-direction: column;
   gap: 16px;
   margin-bottom: 24px;
+  text-align: left;
 }
 
 .control-header-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.control-header-row h2 {
-  margin: 0;
-  font-size: 1.8rem;
-  font-weight: 700;
-}
-
-.icon-btn {
-  background: none;
-  border: none;
-  color: #a0a0a0;
-  font-size: 1.2rem;
-  cursor: pointer;
-  padding: 4px;
 }
 
 .control-filter-row {
@@ -44,76 +31,31 @@
   width: 100%;
 }
 
-/* 이벤트 드롭다운 */
-.event-dropdown {
-  background-color: #1e1e1e;
-  border: none;
-  color: #fff;
-  padding: 8px 12px;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  outline: none;
-  appearance: none;
-}
-
-/* 가로 스크롤 필터 칩 */
-.filter-chips-container {
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  white-space: nowrap;
-  flex-grow: 1;
-  scrollbar-width: none; /* 파이어폭스 스크롤 바 숨김 */
-}
-.filter-chips-container::-webkit-scrollbar {
-  display: none; /* 크롬/사파리 스크롤 바 숨김 */
-}
-
-.chip-btn {
-  background-color: #1e1e1e;
-  border: none;
-  color: #8e8e93;
-  padding: 8px 14px;
-  border-radius: 20px;
-  font-size: 0.85rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.chip-btn.active {
-  background-color: #9b5de5; /* 활성화 포인트 컬러 (원하는 색상으로 변경 가능) */
-  color: #fff;
-}
-
-/* 2. 기록 카드 리스트 구역 */
+/* 💡 기록 카드 전체 레이아웃 (가운데 정렬 깨부수기) */
 .record-cards-list {
   display: flex;
   flex-direction: column;
-  gap: 14px; /* 카드 간 충분한 여백 */
-  padding-bottom: 80px; /* 하단 내비바에 가려지지 않게 여백 */
+  gap: 14px;
+  padding-bottom: 80px;
+  text-align: left; /* 강제 좌측 정렬 */
 }
 
 .record-card {
-  background-color: #1e1e1e; /* 배경보다 살짝 밝은 다크 그레이 */
+  background-color: #1e1e1e;
   border-radius: 14px;
   padding: 16px;
-  display: flex;
-  justify-content: space-between;
+  display: flex; /* 💡 요소들을 가로로 배치 */
+  justify-content: space-between; /* 좌측과 우측을 양 끝으로 찢음 */
   align-items: center;
   cursor: pointer;
-  transition: transform 0.2s, background-color 0.2s;
-}
-
-.record-card:hover {
-  background-color: #252525;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .card-left {
   display: flex;
   flex-direction: column;
+  align-items: flex-start; /* 💡 왼쪽 정렬 */
   gap: 6px;
 }
 
@@ -121,218 +63,79 @@
   font-size: 1.6rem;
   font-weight: 700;
   color: #fff;
-}
-
-.card-badges {
-  display: flex;
-  gap: 6px;
-}
-
-.badge {
-  font-size: 0.75rem;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-weight: 600;
-}
-
-.pb-badge {
-  background-color: rgba(255, 215, 0, 0.15);
-  color: #ffd700;
-}
-
-.tag-badge {
-  background-color: rgba(255, 255, 255, 0.08);
-  color: #a0a0a0;
+  line-height: 1;
 }
 
 .card-right {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: flex-end; /* 💡 오른쪽 정렬 */
   gap: 8px;
 }
 
-.card-date {
-  font-size: 0.8rem;
-  color: #666;
-}
-
-.bookmark-icon {
-  font-size: 1rem;
-  color: #444;
-}
-
-.bookmark-icon.active {
-  color: #ffd700;
-}
-
-/* 3. 기록 관리 바텀 시트 (모달) */
+/* 💡 바텀 시트 모달 (완벽히 숨기기 및 중앙 정렬 세팅) */
 .bottom-sheet-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
-  display: none; /* 기본 숨김 */
+  background-color: rgba(0, 0, 0, 0.7);
+  display: none; /* 💡 평소엔 절대 안 보임 */
   justify-content: flex-end;
   flex-direction: column;
-  z-index: 999;
+  z-index: 9999;
 }
 
+/* 오픈 클래스가 붙었을 때만 나타남 */
 .bottom-sheet-overlay.open {
-  display: flex;
+  display: flex !important;
 }
 
 .bottom-sheet-content {
   background-color: #1c1c1e;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
-  padding: 16px 20px 32px 20px;
-  max-height: 85%;
+  padding: 16px 20px 40px 20px;
+  max-height: 80%;
   overflow-y: auto;
+  text-align: center; /* 💡 바텀시트 내부는 이쁘게 가운데 정렬 */
+  box-sizing: border-box;
 }
 
-.drag-handle {
-  width: 40px;
-  height: 5px;
-  background-color: #444;
-  border-radius: 3px;
-  margin: 0 auto 20px auto;
-}
-
-.sheet-header {
-  margin-bottom: 24px;
-}
-
-.sheet-title-label {
-  font-size: 0.75rem;
-  color: #ffd700;
-  font-weight: 700;
-  letter-spacing: 1px;
-}
-
-.sheet-main-time {
-  font-size: 2.8rem;
-  font-weight: 800;
-  margin: 4px 0 0 0;
-}
-
+/* 바텀 시트 내부 섹션들 정렬 */
 .sheet-section {
   display: flex;
   flex-direction: column;
   gap: 8px;
   margin-bottom: 20px;
+  align-items: center;
 }
 
-.sheet-section label {
-  font-size: 0.85rem;
-  color: #8e8e93;
-  font-weight: 600;
-}
-
-/* 스크램블 박스 */
 .scramble-box-wrapper {
   display: flex;
   background-color: #2c2c2e;
   border-radius: 10px;
   padding: 12px;
   gap: 10px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.scramble-box {
-  font-family: monospace;
-  font-size: 0.95rem;
-  color: #d1d1d6;
-  line-height: 1.4;
-  flex-grow: 1;
-}
-
-.copy-scramble-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1rem;
-}
-
-.sheet-text {
-  font-size: 1rem;
-  color: #e5e5ea;
-}
-
-/* 패널티 세그먼트 컨트롤 */
 .segmented-control {
   display: flex;
   background-color: #2c2c2e;
   border-radius: 8px;
   padding: 2px;
+  width: 100%;
+  max-width: 300px;
 }
 
-.segment-btn {
-  flex: 1;
-  background: none;
-  border: none;
-  color: #8e8e93;
-  padding: 8px 0;
-  font-size: 0.9rem;
-  font-weight: 600;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.segment-btn.active {
-  background-color: #48484a;
-  color: #fff;
-}
-
-/* 태그 매니저 */
-.tags-manager {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.add-tag-btn {
-  background: none;
-  border: 1px dashed #48484a;
-  color: #8e8e93;
-  padding: 6px 12px;
-  border-radius: 14px;
-  font-size: 0.8rem;
-  cursor: pointer;
-}
-
-.tag-chip {
-  background-color: #2c2c2e;
-  color: #d1d1d6;
-  padding: 6px 12px;
-  border-radius: 14px;
-  font-size: 0.8rem;
-}
-
-/* 하단 최종 액션 바 */
 .sheet-actions-bar {
   display: flex;
   gap: 12px;
   margin-top: 12px;
   border-top: 1px solid #2c2c2e;
   padding-top: 20px;
-}
-
-.action-btn {
-  flex: 1;
-  background-color: #2c2c2e;
-  border: none;
-  color: #fff;
-  padding: 12px 0;
-  border-radius: 10px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  text-align: center;
-}
-
-.action-btn.delete-record {
-  background-color: rgba(255, 69, 58, 0.1);
-  color: #ff453a;
+  width: 100%;
 }
