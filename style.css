@@ -105,14 +105,24 @@ body {
 /* ==========================================================================
    ★ 갤럭시/모바일 브라우저 강제 다크모드 색상 왜곡 (Auto-darkening) 원천 차단 ★
    ========================================================================== */
-.u-face div, .L-face div, .F-face div, .R-face div, .B-face div, .d-face div {
-  /* 1. 안드로이드 웹킷 계열 브라우저의 강제 다크모드 색상 조절 비활성화 */
+
+/* 1. 큐브 전개도 각 면의 클래식 원색 강제 고정 및 브라우저 필터 차단 */
+.u-face div { background-color: #ffffff !important; } /* 상(U): 하양 */
+.L-face div { background-color: #ff5800 !important; } /* 좌(L): 오렌지 */
+.F-face div { background-color: #009b48 !important; } /* 전(F): 초록 */
+.R-face div { background-color: #b71234 !important; } /* 우(R): 레드 */
+.B-face div { background-color: #0046ad !important; } /* 배(B): 블루 */
+.d-face div { background-color: #ffd500 !important; } /* 하(D): 노랑 */
+
+/* 2. 전개도 조각들과 메인 컨테이너에 브라우저가 억지로 색을 바꾸지 못하게 무력화 */
+.u-face div, .L-face div, .F-face div, .R-face div, .B-face div, .d-face div,
+.app-container {
+  /* 시스템이나 브라우저가 강제로 색상을 조정하는 것을 전면 거부 */
   forced-color-adjust: none !important;
   
-  /* 2. 그래픽 필터 왜곡 방지 */
+  /* 그래픽 필터 및 투명도 왜곡 방지 */
   filter: none !important;
-  
-  /* 3. 투명도 강제 고정 */
+  mix-blend-mode: normal !important;
   opacity: 1 !important;
 }
 
