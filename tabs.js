@@ -81,3 +81,20 @@ export function initTabs() {
     }
   });
 }
+    
+    // 2. 💡 사람 얼굴 사진(.profile-pic) 누르면 -> 프로필 화면으로 이동
+    else if (event.target.closest('.profile-pic')) {
+      screens.forEach(screen => {
+        screen.style.display = screen.id === 'screen-profile' ? 'block' : 'none';
+        if (screen.id === 'screen-profile') screen.classList.add('active-screen');
+        else screen.classList.remove('active-screen');
+      });
+
+      tabs.forEach(t => {
+        t.classList.toggle('active', t.textContent.trim().toLowerCase() === 'profile');
+      });
+
+      toggleHeaderCenter('screen-profile');
+    }
+  });
+}
