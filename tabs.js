@@ -54,20 +54,14 @@ export function initTabs() {
     });
   });
 
-      // 원인 분석용 디버깅 코드
+  // 💡 너가 말한 핵심 아이디어: "스타트 타이머 버튼 누르면 그냥 내비 바 타이머 클릭해라"
   if (startTimerBtn) {
-    console.log("Start Timer 버튼 찾음!", startTimerBtn);
-    
     startTimerBtn.addEventListener('click', () => {
-      console.log("버튼 클릭됨! 현재 tabs 상태:", tabs);
-      if (tabs[1]) {
-        console.log("2번째 탭 클릭 시도:", tabs[1]);
-        tabs[1].click(); 
-      } else {
-        console.log("tabs[1]을 찾을 수 없습니다.");
+      // 내비게이션 탭 중에서 글자가 'Timer'인 버튼을 찾아서 진짜로 '클릭' 이벤트를 날림
+      const timerTab = Array.from(tabs).find(t => t.textContent.trim().toLowerCase() === 'timer');
+      if (timerTab) {
+        timerTab.click(); // 자바스크립트가 손가락 대신 눌러줍니다.
       }
     });
-  } else {
-    console.log("Start Timer 버튼을 찾지 못했습니다. HTML 클래스명을 확인해 주세요.");
   }
-
+}
