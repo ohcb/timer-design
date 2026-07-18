@@ -126,3 +126,9 @@ body {
   opacity: 1 !important;
 }
 
+/* 타이머 글자 크기 원래대로 강제 복구 */
+.timer-display, [class*="timer-display"] {
+  font-size: 6rem !important; /* 원래 원하셨던 크기에 맞게 5rem ~ 7rem 숫자를 조절해 보세요! */
+  font-weight: bold !important;
+  margin-bottom: 20px !important;
+}
