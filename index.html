@@ -203,55 +203,121 @@
       </div>
 
       <div id="screen-solves" class="tab-screen">
-  <div class="stats-summary-container">
-    <div class="summary-card">
-      <span class="summary-label">Total Solves</span>
-      <span class="summary-value" id="stat-total">0</span>
+  <div class="solves-control-manager">
+    <div class="control-header-row">
+      <h2>Solves</h2>
+      <button class="icon-btn search-trigger">🔍</button>
     </div>
-    <div class="summary-card gold-border">
-      <span class="summary-label">🏆 Personal Best</span>
-      <span class="summary-value" id="stat-pb">--.--</span>
-    </div>
-    <div class="summary-card">
-      <span class="summary-label">Current Ao5</span>
-      <span class="summary-value" id="stat-ao5">--.--</span>
+    
+    <div class="control-filter-row">
+      <div class="event-selector-wrapper">
+        <select class="event-dropdown">
+          <option value="3x3">3x3 ▾</option>
+          <option value="2x2">2x2 ▾</option>
+          <option value="4x4">4x4 ▾</option>
+          <option value="OH">3x3 OH ▾</option>
+        </select>
+      </div>
+
+      <div class="filter-chips-container">
+        <button class="chip-btn active">All</button>
+        <button class="chip-btn">Singles</button>
+        <button class="chip-btn">Ao5</button>
+        <button class="chip-btn">Ao12</button>
+        <button class="chip-btn">Ao50</button>
+        <button class="chip-btn">Ao100</button>
+        <button class="chip-btn">⭐ PBs</button>
+        <button class="chip-btn">🔖 Bookmarked</button>
+        <button class="chip-btn">📂 Sessions</button>
+        <button class="chip-btn">🏷️ Tags</button>
+      </div>
+
+      <button class="icon-btn sort-btn">⇅</button>
     </div>
   </div>
 
-  <div class="solves-list-container">
-    <div class="list-header">
-      <h3>History Log</h3>
-      <button class="clear-all-btn">🧹 Clear All</button>
+  <div class="record-cards-list" id="record-cards-container">
+    <div class="record-card pb-card" data-id="1">
+      <div class="card-left">
+        <span class="record-time">11.82</span>
+        <div class="card-badges">
+          <span class="badge pb-badge">👑 PB</span>
+          <span class="badge tag-badge">#F2L</span>
+        </div>
+      </div>
+      <div class="card-right">
+        <span class="card-date">07/18</span>
+        <span class="bookmark-icon active">⭐</span>
+      </div>
     </div>
-    
-    <div class="table-wrapper">
-      <table class="solves-table">
-        <thead>
-          <tr>
-            <th style="width: 10%">#</th>
-            <th style="width: 25%">Time</th>
-            <th style="width: 45%">Scramble</th>
-            <th style="width: 20%">Date</th>
-          </tr>
-        </thead>
-        <tbody id="solves-tbody">
-          <tr>
-            <td>2</td>
-            <td class="solve-time-bold">14.25</td>
-            <td class="scramble-text">R U R' U' R F R2 U' R' U' R U R' F'</td>
-            <td>07/18</td>
-          </tr>
-          <tr>
-            <td>1</td>
-            <td class="solve-time-bold text-gold">11.82 👑</td>
-            <td class="scramble-text">D2 B2 L2 F2 U2 R2 D' F2 D L' B' F2 L D F' U' F' L2 R</td>
-            <td>07/18</td>
-          </tr>
-        </tbody>
-      </table>
+
+    <div class="record-card" data-id="2">
+      <div class="card-left">
+        <span class="record-time">14.25</span>
+        <div class="card-badges">
+          <span class="badge tag-badge">#OH</span>
+        </div>
+      </div>
+      <div class="card-right">
+        <span class="card-date">07/18</span>
+        <span class="bookmark-icon">☆</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-sheet-overlay" id="detail-bottom-sheet">
+    <div class="bottom-sheet-content">
+      <div class="drag-handle"></div>
+      
+      <div class="sheet-body">
+        <div class="sheet-header">
+          <span class="sheet-title-label">🏆 PERSONAL BEST</span>
+          <h1 class="sheet-main-time" id="sheet-time">11.82s</h1>
+        </div>
+
+        <div class="sheet-section">
+          <label>📋 Scramble</label>
+          <div class="scramble-box-wrapper">
+            <div class="scramble-box" id="sheet-scramble">D2 B2 L2 F2 U2 R2 D' F2 D L' B' F2 L D F' U' F' L2 R</div>
+            <button class="copy-scramble-btn">📋</button>
+          </div>
+        </div>
+
+        <div class="sheet-section-row">
+          <div class="sheet-section">
+            <label>📅 Date & Time</label>
+            <div class="sheet-text" id="sheet-date">2026.07.18 19:05:22</div>
+          </div>
+        </div>
+
+        <div class="sheet-section">
+          <label>⚠️ Penalty</label>
+          <div class="segmented-control">
+            <button class="segment-btn active" data-penalty="none">OK</button>
+            <button class="segment-btn" data-penalty="plus2">+2</button>
+            <button class="segment-btn" data-penalty="dnf">DNF</button>
+          </div>
+        </div>
+
+        <div class="sheet-section">
+          <label>🏷️ Tags</label>
+          <div class="tags-manager">
+            <button class="add-tag-btn">+ Add Tag</button>
+            <span class="tag-chip">#3x3</span>
+            <span class="tag-chip">#F2L_Practice</span>
+          </div>
+        </div>
+
+        <div class="sheet-actions-bar">
+          <button class="action-btn toggle-bookmark">⭐ Bookmark</button>
+          <button class="action-btn edit-note">✏️ Edit</button>
+          <button class="action-btn delete-record">🗑️ Delete</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
+
 
 
       <div id="screen-stats" class="tab-screen">
