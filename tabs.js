@@ -54,4 +54,20 @@ export function initTabs() {
     });
   });
 
+      // 원인 분석용 디버깅 코드
+  if (startTimerBtn) {
+    console.log("Start Timer 버튼 찾음!", startTimerBtn);
     
+    startTimerBtn.addEventListener('click', () => {
+      console.log("버튼 클릭됨! 현재 tabs 상태:", tabs);
+      if (tabs[1]) {
+        console.log("2번째 탭 클릭 시도:", tabs[1]);
+        tabs[1].click(); 
+      } else {
+        console.log("tabs[1]을 찾을 수 없습니다.");
+      }
+    });
+  } else {
+    console.log("Start Timer 버튼을 찾지 못했습니다. HTML 클래스명을 확인해 주세요.");
+  }
+
