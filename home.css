@@ -114,17 +114,27 @@
   border-radius: 4px;
 }
 
-/* 프로그레스 바 (체스닷컴 퍼즐 점수 바 느낌) */
-.progress-bar-container {
-  background-color: #312e2b;
-  height: 10px;
-  border-radius: 5px;
-  overflow: hidden;
-  margin-bottom: 8px;
+/* 이번 주 솔브 카운터 박스 스타일 */
+.weekly-counter-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 0;
+  gap: 2px;
 }
-.progress-bar {
-  background-color: #813d9c;
-  height: 100%;
-  border-radius: 5px;
+
+/* 큼직하고 볼드한 솔브 횟수 숫자 */
+.counter-number {
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: #cc73e1; /* Cub3 시그니처 보라색 포인트 */
+  line-height: 1;
 }
-.progress-text { font-size: 0.75rem; color: #989795; margin: 0; }
+
+/* 숫자 아래에 붙는 작은 단위 텍스트 */
+.counter-unit {
+  font-size: 0.8rem;
+  color: #989795;
+  font-weight: 500;
+}
