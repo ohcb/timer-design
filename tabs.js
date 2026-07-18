@@ -26,7 +26,7 @@ export function initTabs() {
     }
   });
 
-  // 하단 탭 클릭 제어 (항상 작동해야 하는 핵심 코드)
+  // 하단 탭 클릭 제어 (기본 내비게이션 기능)
   tabs.forEach(tab => {
     tab.addEventListener('click', (event) => {
       event.preventDefault();
@@ -51,52 +51,23 @@ export function initTabs() {
     });
   });
 
-     // 2. 💡 사람 얼굴 사진(.profile-pic) 누르면 -> 프로필 화면으로 이동
-    else if (event.target.closest('.profile-pic')) {
-      screens.forEach(screen => {
-        screen.style.display = screen.id === 'screen-profile' ? 'block' : 'none';
-        if (screen.id === 'screen-profile') screen.classList.add('active-screen');
-        else screen.classList.remove('active-screen');
-      });
-
-      tabs.forEach(t => {
-        t.classList.toggle('active', t.textContent.trim().toLowerCase() === 'profile');
-      });
-
-      toggleHeaderCenter('screen-profile');
-    }
-  });
-}
-
-    // 💡 [변경] 이벤트 위임 방식으로 어떤 상황에서든 클릭 잡아내기
+  // 💡 홈 화면 내의 버튼들 클릭 처리 (이벤트 위임 + 인덱스 방식)
   document.addEventListener('click', (event) => {
-    // 클릭된 요소가 .start-timer-btn 이거나, 그 안의 텍스트/아이콘일 때
+    
+    // 1. 스타트 버튼(.start-timer-btn) 누르면 -> 2번째 탭(Timer) 강제 클릭
     if (event.target.closest('.start-timer-btn')) {
-      
-      // 1. 모든 화면 숨기고 screen-timer만 켜기
-      screens.forEach(screen => {
-        if (screen.id === 'screen-timer') {
-          screen.style.display = 'block';
-          screen.classList.add('active-screen');
-        } else {
-          screen.style.display = 'none';
-          screen.classList.remove('active-screen');
-        }
-      });
-
-      // 2. 내비 바 불빛도 Timer로 옮기기
-      tabs.forEach(t => {
-        if (t.textContent.trim().toLowerCase() === 'timer') {
-          t.classList.add('active');
-        } else {
-          t.classList.remove('active');
-        }
-      });
-
-      // 3. 상단바 보여주기
-      toggleHeaderCenter('screen-timer');
+      if (tabs[1]) {
+        tabs[1].click();
+      }
+    }
+    
+    // 2. 프로필 사진(.profile-pic) 누르면 -> 5번째 탭(Profile) 강제 클릭
+    else if (event.target.closest('.profile-pic')) {
+      if (tabs[4]) {
+        tabs[4].click(); // 5번째 탭 클릭
+      } else {
+        tabs[tabs.length - 1].click(); // 탭이 5개가 안 될 경우 맨 마지막 탭 클릭
+      }
     }
   });
 }
-    
-  
