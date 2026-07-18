@@ -154,3 +154,58 @@ body {
   font-weight: bold !important;
   margin: 20px 0 !important;
 }
+
+/* ==========================================================================
+   1. 전체 앱 공통 및 모바일 퍼스트 (화면이 좁을 때 기본값)
+   ========================================================================== */
+
+/* 모든 탭 화면의 기본 컨테이너 여백 정돈 */
+.tab-screen {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 1rem; /* 모바일에서는 여백을 좁게 */
+}
+
+/* ⏱️ [Timer 탭] 모바일/세로 모드 구조 */
+/* 원래 가로 3열이었던 대시보드를 세로 1열로 툭 떨어뜨립니다. */
+.dashboard-columns {
+  display: flex;
+  flex-direction: column; /* 💡 좁은 화면에선 세로로 나열 */
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.dashboard-columns .col {
+  width: 100% !important; /* 각 칸이 억지로 버티지 못하게 100% 채우기 */
+}
+
+/* 큐브 전개도(Scramble View) 크기가 화면 밖으로 탈출하는 것 방지 */
+.cube-net {
+  max-width: 100%;
+  overflow-x: auto; 
+}
+
+
+/* ==========================================================================
+   2. 태블릿 및 데스크톱 가로 모드 대응 (화면 가로 너비 768px 또는 1024px 이상)
+   ========================================================================== */
+@media (min-width: 768px) {
+  
+  /* 화면이 넓어지면 패딩을 시원시원하게 넓힙니다. */
+  .tab-screen {
+    padding: 2rem; 
+  }
+
+  /* ⏱️ [Timer 탭] 태블릿/데스크톱 가로 복구 */
+  .dashboard-columns {
+    flex-direction: row; /* 💡 화면이 넓어지면 원래대로 가로 3열 배치 */
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  /* 각 컬럼 비율을 넓은 화면에 맞춰 적절히 분배 (기존 스타일에 맞게 조정 가능) */
+  .dashboard-columns .col.recent-solves { flex: 1; }
+  .dashboard-columns .col.current-best  { flex: 1.2; }
+  .dashboard-columns .col.scramble-view { flex: 1.5; }
+}
+
