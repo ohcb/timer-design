@@ -202,7 +202,8 @@
         </section>
       </div>
 
-      <div id="screen-solves" class="tab-screen">
+      
+  <<div id="screen-solves" class="tab-screen">
   <div class="solves-control-manager">
     <div class="control-header-row">
       <h2>Solves</h2>
@@ -214,7 +215,6 @@
         <select class="event-dropdown">
           <option value="3x3">3x3 ▾</option>
           <option value="2x2">2x2 ▾</option>
-          <option value="4x4">4x4 ▾</option>
           <option value="OH">3x3 OH ▾</option>
         </select>
       </div>
@@ -224,24 +224,23 @@
         <button class="chip-btn">Singles</button>
         <button class="chip-btn">Ao5</button>
         <button class="chip-btn">Ao12</button>
-        <button class="chip-btn">Ao50</button>
-        <button class="chip-btn">Ao100</button>
         <button class="chip-btn">⭐ PBs</button>
         <button class="chip-btn">🔖 Bookmarked</button>
-        <button class="chip-btn">📂 Sessions</button>
         <button class="chip-btn">🏷️ Tags</button>
       </div>
-
       <button class="icon-btn sort-btn">⇅</button>
     </div>
   </div>
 
   <div class="record-cards-list" id="record-cards-container">
+    
     <div class="record-card pb-card" data-id="1">
       <div class="card-left">
-        <span class="record-time">11.82</span>
-        <div class="card-badges">
+        <div class="time-row">
+          <span class="record-time">11.82</span>
           <span class="badge pb-badge">👑 PB</span>
+        </div>
+        <div class="tag-row">
           <span class="badge tag-badge">#F2L</span>
         </div>
       </div>
@@ -253,8 +252,10 @@
 
     <div class="record-card" data-id="2">
       <div class="card-left">
-        <span class="record-time">14.25</span>
-        <div class="card-badges">
+        <div class="time-row">
+          <span class="record-time">14.25</span>
+        </div>
+        <div class="tag-row">
           <span class="badge tag-badge">#OH</span>
         </div>
       </div>
@@ -263,56 +264,55 @@
         <span class="bookmark-icon">☆</span>
       </div>
     </div>
+
   </div>
 
   <div class="bottom-sheet-overlay" id="detail-bottom-sheet">
     <div class="bottom-sheet-content">
       <div class="drag-handle"></div>
       
-      <div class="sheet-body">
-        <div class="sheet-header">
-          <span class="sheet-title-label">🏆 PERSONAL BEST</span>
-          <h1 class="sheet-main-time" id="sheet-time">11.82s</h1>
-        </div>
+      <div class="sheet-main-info">
+        <span class="sheet-title-label">🏆 PERSONAL BEST</span>
+        <h1 class="sheet-main-time">11.82s</h1>
+      </div>
 
-        <div class="sheet-section">
-          <label>📋 Scramble</label>
+      <div class="sheet-detail-grid">
+        <div class="detail-item full-width">
+          <span class="item-label">📋 Scramble</span>
           <div class="scramble-box-wrapper">
-            <div class="scramble-box" id="sheet-scramble">D2 B2 L2 F2 U2 R2 D' F2 D L' B' F2 L D F' U' F' L2 R</div>
-            <button class="copy-scramble-btn">📋</button>
+            <p class="scramble-code">D2 B2 L2 F2 U2 R2 D' F2 D L' B' F2 L D F' U' F' L2 R</p>
+            <button class="copy-btn">📋</button>
           </div>
         </div>
 
-        <div class="sheet-section-row">
-          <div class="sheet-section">
-            <label>📅 Date & Time</label>
-            <div class="sheet-text" id="sheet-date">2026.07.18 19:05:22</div>
-          </div>
+        <div class="detail-item">
+          <span class="item-label">📅 Date & Time</span>
+          <span class="item-value">2026.07.18 19:05:22</span>
         </div>
 
-        <div class="sheet-section">
-          <label>⚠️ Penalty</label>
+        <div class="detail-item">
+          <span class="item-label">⚠️ Penalty</span>
           <div class="segmented-control">
-            <button class="segment-btn active" data-penalty="none">OK</button>
-            <button class="segment-btn" data-penalty="plus2">+2</button>
-            <button class="segment-btn" data-penalty="dnf">DNF</button>
+            <button class="segment-btn active">OK</button>
+            <button class="segment-btn">+2</button>
+            <button class="segment-btn">DNF</button>
           </div>
         </div>
 
-        <div class="sheet-section">
-          <label>🏷️ Tags</label>
-          <div class="tags-manager">
-            <button class="add-tag-btn">+ Add Tag</button>
+        <div class="detail-item full-width">
+          <span class="item-label">🏷️ Tags</span>
+          <div class="tags-container">
+            <button class="add-tag-chip">+ Add Tag</button>
             <span class="tag-chip">#3x3</span>
             <span class="tag-chip">#F2L_Practice</span>
           </div>
         </div>
+      </div>
 
-        <div class="sheet-actions-bar">
-          <button class="action-btn toggle-bookmark">⭐ Bookmark</button>
-          <button class="action-btn edit-note">✏️ Edit</button>
-          <button class="action-btn delete-record">🗑️ Delete</button>
-        </div>
+      <div class="sheet-actions-bar">
+        <button class="action-btn">⭐ Bookmark</button>
+        <button class="action-btn">✏️ Edit</button>
+        <button class="action-btn delete-btn">🗑️ Delete</button>
       </div>
     </div>
   </div>
