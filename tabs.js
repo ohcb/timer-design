@@ -54,12 +54,4 @@ export function initTabs() {
     });
   });
 
-    // 홈 화면의 '▶ Start Timer' 버튼 클릭 이벤트 (순서 기반으로 확실하게)
-  if (startTimerBtn) {
-    startTimerBtn.addEventListener('click', () => {
-      // tabs[0]은 Home, tabs[1]은 Timer입니다.
-      if (tabs[1]) {
-        tabs[1].click(); // 2번째 탭(Timer)을 강제로 클릭!
-      }
-    });
-  }
+    
