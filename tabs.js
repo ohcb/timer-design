@@ -51,6 +51,23 @@ export function initTabs() {
     });
   });
 
+     // 2. 💡 사람 얼굴 사진(.profile-pic) 누르면 -> 프로필 화면으로 이동
+    else if (event.target.closest('.profile-pic')) {
+      screens.forEach(screen => {
+        screen.style.display = screen.id === 'screen-profile' ? 'block' : 'none';
+        if (screen.id === 'screen-profile') screen.classList.add('active-screen');
+        else screen.classList.remove('active-screen');
+      });
+
+      tabs.forEach(t => {
+        t.classList.toggle('active', t.textContent.trim().toLowerCase() === 'profile');
+      });
+
+      toggleHeaderCenter('screen-profile');
+    }
+  });
+}
+
     // 💡 [변경] 이벤트 위임 방식으로 어떤 상황에서든 클릭 잡아내기
   document.addEventListener('click', (event) => {
     // 클릭된 요소가 .start-timer-btn 이거나, 그 안의 텍스트/아이콘일 때
@@ -82,19 +99,4 @@ export function initTabs() {
   });
 }
     
-    // 2. 💡 사람 얼굴 사진(.profile-pic) 누르면 -> 프로필 화면으로 이동
-    else if (event.target.closest('.profile-pic')) {
-      screens.forEach(screen => {
-        screen.style.display = screen.id === 'screen-profile' ? 'block' : 'none';
-        if (screen.id === 'screen-profile') screen.classList.add('active-screen');
-        else screen.classList.remove('active-screen');
-      });
-
-      tabs.forEach(t => {
-        t.classList.toggle('active', t.textContent.trim().toLowerCase() === 'profile');
-      });
-
-      toggleHeaderCenter('screen-profile');
-    }
-  });
-}
+  
