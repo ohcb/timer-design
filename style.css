@@ -1,5 +1,10 @@
 /* style.css */
+@import url("home.css");
 @import url("timer.css");
+@import url("solves.css");
+@import url("stats.css");
+@import url("profile.css");
+@import url("setting.css");
 
 :root {
   --bg-color: #202225;     /* 쿨 슬레이트 그레이 배경 */
