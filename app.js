@@ -1,5 +1,6 @@
 // app.js
 import { initTabs } from './tabs.js';
+import { initSolveManager } from './solve-bottom-sheet.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   console.log("App initialized");
