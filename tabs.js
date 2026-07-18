@@ -54,14 +54,12 @@ export function initTabs() {
     });
   });
 
-  // 💡 너가 말한 핵심 아이디어: "스타트 타이머 버튼 누르면 그냥 내비 바 타이머 클릭해라"
+    // 홈 화면의 '▶ Start Timer' 버튼 클릭 이벤트 (순서 기반으로 확실하게)
   if (startTimerBtn) {
     startTimerBtn.addEventListener('click', () => {
-      // 내비게이션 탭 중에서 글자가 'Timer'인 버튼을 찾아서 진짜로 '클릭' 이벤트를 날림
-      const timerTab = Array.from(tabs).find(t => t.textContent.trim().toLowerCase() === 'timer');
-      if (timerTab) {
-        timerTab.click(); // 자바스크립트가 손가락 대신 눌러줍니다.
+      // tabs[0]은 Home, tabs[1]은 Timer입니다.
+      if (tabs[1]) {
+        tabs[1].click(); // 2번째 탭(Timer)을 강제로 클릭!
       }
     });
   }
-}
