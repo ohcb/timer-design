@@ -51,13 +51,33 @@ export function initTabs() {
     });
   });
 
-  // 💡 안전장치: 버튼이 존재할 때만 이벤트를 걸도록 순서를 아래로 내리고 if문으로 감싸기
-  const startTimerBtn = document.querySelector('.start-timer-btn');
-  if (startTimerBtn) {
-    startTimerBtn.addEventListener('click', () => {
-      if (tabs[1]) {
-        tabs[1].click(); // 2번째 탭(Timer) 클릭 트리거
-      }
-    });
-  }
+    // 💡 [변경] 이벤트 위임 방식으로 어떤 상황에서든 클릭 잡아내기
+  document.addEventListener('click', (event) => {
+    // 클릭된 요소가 .start-timer-btn 이거나, 그 안의 텍스트/아이콘일 때
+    if (event.target.closest('.start-timer-btn')) {
+      
+      // 1. 모든 화면 숨기고 screen-timer만 켜기
+      screens.forEach(screen => {
+        if (screen.id === 'screen-timer') {
+          screen.style.display = 'block';
+          screen.classList.add('active-screen');
+        } else {
+          screen.style.display = 'none';
+          screen.classList.remove('active-screen');
+        }
+      });
+
+      // 2. 내비 바 불빛도 Timer로 옮기기
+      tabs.forEach(t => {
+        if (t.textContent.trim().toLowerCase() === 'timer') {
+          t.classList.add('active');
+        } else {
+          t.classList.remove('active');
+        }
+      });
+
+      // 3. 상단바 보여주기
+      toggleHeaderCenter('screen-timer');
+    }
+  });
 }
