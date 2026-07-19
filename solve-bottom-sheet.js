@@ -3,61 +3,56 @@ export function initSolvesManager() {
   const container = document.getElementById('record-cards-container');
   const sheet = document.getElementById('detail-bottom-sheet');
 
-  if (!container || !sheet) {
-    console.log("❌ 에러: 필수 컨테이너나 바텀시트를 찾을 수 없습니다.");
-    return;
-  }
-
-  const moreBtn = document.getElementById('sheet-more-btn');
-  const contextMenu = document.getElementById('sheet-context-menu');
-  
-  console.log("✅ 바텀시트 매니저 초기화 완료! 버튼 상태:", { moreBtn, contextMenu });
+  if (!container || !sheet) return;
 
   // 1. 카드 클릭 시 바텀 시트 열기
   container.addEventListener('click', (event) => {
     const card = event.target.closest('.record-card');
     if (!card) return;
-    console.log("📇 기록 카드 클릭됨 -> 바텀시트 엶");
     sheet.classList.add('open');
   });
 
-  // 2. 바텀 시트 내부 클릭 이벤트 처리
+  // 2. 바텀 시트 내부 클릭 이벤트 분기
   sheet.addEventListener('click', (event) => {
-    console.log("🎯 바텀시트 내부 클릭 감지됨:", event.target);
-    
-    // 💡 ⋮ 더보기 버튼 클릭 감지
+    // 💡 HTML 안에서 최신 상태의 메뉴 엘리먼트를 매번 확실하게 새로 찾음
+    const contextMenu = document.getElementById('sheet-context-menu');
+    if (!contextMenu) return;
+
+    // 💡 [Case 1] 더보기(⋮) 버튼을 눌렀을 때
     if (event.target.closest('#sheet-more-btn')) {
-      event.stopPropagation();
-      console.log("📱 더보기(⋮) 버튼 클릭됨!");
-      console.log("현재 메뉴의 display 상태:", contextMenu.style.display);
+      event.stopPropagation(); // 오버레이 클릭 방지
       
-      if (contextMenu.style.display === 'none' || contextMenu.style.display === '') {
-        contextMenu.style.display = 'flex';
-        console.log("-> 메뉴 엶 (display를 flex로 변경)");
+      // 현재 스타일 상태를 체크해서 직통으로 토글
+      if (contextMenu.style.getPropertyValue('display') === 'flex') {
+        contextMenu.style.setProperty('display', 'none', 'important');
       } else {
-        contextMenu.style.display = 'none';
-        console.log("-> 메뉴 닫음 (display를 none으로 변경)");
+        contextMenu.style.setProperty('display', 'flex', 'important');
       }
       return;
     }
 
-    // 메뉴 내부 아이템 클릭
+    // 💡 [Case 2] Edit 이나 Delete 메뉴 아이템을 눌렀을 때
     if (event.target.closest('.menu-item')) {
-      contextMenu.style.display = 'none';
+      contextMenu.style.setProperty('display', 'none', 'important');
+      
+      if (event.target.id === 'menu-delete') {
+        alert("🗑️ 삭제 기능이 곧 구현될 예정입니다!"); // 콘솔 대신 눈에 보이는 알림창으로 변경
+      }
       return;
     }
 
-    // 바깥 오버레이 클릭 시 닫기
+    // 💡 [Case 3] 흰색 박스 바깥(어두운 배경)을 눌렀을 때 바텀시트 완전히 닫기
     if (!event.target.closest('.bottom-sheet-content')) {
       sheet.classList.remove('open');
-      contextMenu.style.display = 'none';
+      contextMenu.style.setProperty('display', 'none', 'important');
     }
   });
 
-  // 바텀시트 밖의 화면 클릭 시 메뉴 닫기
+  // 3. 바텀시트 아예 바깥(화면 전체)을 누르면 미니 메뉴만 숨기기
   document.addEventListener('click', (event) => {
-    if (!event.target.closest('.more-menu-container')) {
-      if (contextMenu) contextMenu.style.display = 'none';
+    const contextMenu = document.getElementById('sheet-context-menu');
+    if (contextMenu && !event.target.closest('.more-menu-container')) {
+      contextMenu.style.setProperty('display', 'none', 'important');
     }
   });
 }
