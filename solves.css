@@ -214,10 +214,10 @@ div.bottom-sheet-overlay#detail-bottom-sheet .bottom-sheet-content {
   transform: unset !important;
   
   border-radius: 28px 28px 0 0 !important; 
-  padding: 24px 24px 60px 24px !important; 
+  padding: 24px 24px 80px 24px !important; 
   
-  /* 💡 화면의 92%까지 높이를 열어 스크롤 없이 버튼이 보이게 유도 */
-  max-height: 96vh !important; 
+  /* 💡 화면의 98%까지 높이를 열어 스크롤 없이 버튼이 보이게 유도 */
+  max-height: 98vh !important; 
   overflow-y: auto !important;
   box-sizing: border-box !important;
   box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.6) !important;
