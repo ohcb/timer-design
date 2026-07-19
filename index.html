@@ -278,54 +278,60 @@
         </div>
 
         <div class="bottom-sheet-overlay" id="detail-bottom-sheet">
-          <div class="bottom-sheet-content">
-            <div class="drag-handle"></div>
-            
-            <div class="sheet-main-info">
-              <span class="sheet-title-label">PERSONAL BEST</span>
-              <h1 class="sheet-main-time">11.82s</h1>
-            </div>
+  <div class="bottom-sheet-content">
+    <div class="bottom-sheet-handle"></div>
 
-            <div class="sheet-detail-grid">
-              <div class="detail-item full-width">
-                <span class="item-label">Scramble</span>
-                <div class="scramble-box-wrapper">
-                  <p class="scramble-code">D2 B2 L2 F2 U2 R2 D' F2 D L' B' F2 L D F' U' F' L2 R</p>
-                  <button class="copy-btn">📋</button>
-                </div>
-              </div>
-
-              <div class="detail-item">
-                <span class="item-label">Date & Time</span>
-                <span class="item-value">2026.07.18 19:05:22</span>
-              </div>
-
-              <div class="detail-item">
-                <span class="item-label">Penalty</span>
-                <div class="segmented-control">
-                  <button class="segment-btn active">OK</button>
-                  <button class="segment-btn">+2</button>
-                  <button class="segment-btn">DNF</button>
-                </div>
-              </div>
-
-              <div class="detail-item full-width">
-                <span class="item-label">Tags</span>
-                <div class="tags-container">
-                  <button class="add-tag-chip">+ Add Tag</button>
-                  <span class="tag-chip">#3x3</span>
-                  <span class="tag-chip">#F2L_Practice</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="sheet-actions-bar">
-              <button class="action-btn">Bookmark</button>
-              <button class="action-btn delete-btn">Delete</button>
-            </div>
+    <div class="sheet-header-actions">
+      <span class="sheet-title-label">PERSONAL BEST</span>
+      <div class="header-btn-group">
+        <button class="sheet-header-btn" id="sheet-bookmark-btn" title="Bookmark">🤍</button>
+        <div class="more-menu-container">
+          <button class="sheet-header-btn" id="sheet-more-btn" title="More Options">⋮</button>
+          <div class="sheet-context-menu" id="sheet-context-menu">
+            <button class="menu-item" id="menu-edit">✏️ Edit</button>
+            <button class="menu-item delete-item" id="menu-delete">🗑️ Delete</button>
           </div>
         </div>
       </div>
+    </div>
+
+    <div class="sheet-main-time">11.82s</div>
+
+    <div class="sheet-scramble-box">
+      <p class="scramble-text">D2 B2 L2 F2 U2 R2 D' F2 D L' B' F2 L D F' U' F' L2 R</p>
+      <button class="scramble-copy-btn" title="Copy Scramble">📋</button>
+    </div>
+
+    <div class="sheet-date-row">
+      <span class="date-label">Date & Time</span>
+      <span class="date-value">2026.07.18 19:05:22</span>
+    </div>
+
+    <div class="penalty-control-container">
+      <span class="section-title">Penalty</span>
+      <div class="penalty-segmented-control">
+        <button class="penalty-btn active" data-penalty="OK">OK</button>
+        <button class="penalty-btn" data-penalty="+2">+2</button>
+        <button class="penalty-btn" data-penalty="DNF">DNF</button>
+      </div>
+    </div>
+
+    <div class="sheet-note-container">
+      <span class="section-title">Notes</span>
+      <textarea class="sheet-note-input" placeholder="Add notes about this solve..."></textarea>
+    </div>
+
+    <div class="sheet-tag-container">
+      <span class="section-title">Tags</span>
+      <div class="sheet-tag-list">
+        <span class="sheet-tag-item">#3x3</span>
+        <span class="sheet-tag-item">#F2L</span>
+        <button class="add-tag-trigger">+ Add Tag</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
       <div id="screen-stats" class="tab-screen">
         <div style="padding: 3rem 1.5rem; text-align: center; color: var(--text-muted);">
