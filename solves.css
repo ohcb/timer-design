@@ -177,28 +177,45 @@
 }
 
 /* ================================================= */
-/* 🗂️ 바텀시트 본체 내부 레이아웃 교정 (안전 버전) */
+/* 🗂️ 바텀시트 오버레이 & 본체 정석 레이아웃 교정 */
 /* ================================================= */
 
-/* 💡 오버레이는 건드리지 않고, 오직 Solves 탭 시트의 '내용물 박스'만 안전하게 제어 */
-div.bottom-sheet-overlay#detail-bottom-sheet .bottom-sheet-content {
-  /* 기존 공통 스타일과 충돌 나지 않게 위치 초기화 */
+/* 1. 배경 오버레이 (정중앙 하단 정렬을 위한 Flex 선언) */
+div.bottom-sheet-overlay#detail-bottom-sheet {
   position: fixed !important;
-  bottom: 0 !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-  top: unset !important;
-  margin: 0 auto !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  background-color: rgba(0, 0, 0, 0.6) !important;
+  z-index: 999998 !important; /* 내비 바(9999999) 바로 아래 서열 */
   
+  /* 💡 내부 본체 박스를 무조건 화면 '가운데 아래'로 떨구는 정석 설정 */
+  display: flex !important;
+  justify-content: center !important;
+  align-items: flex-end !important; 
+}
+
+/* 2. 바텀시트 본체 (Flex 부모 덕분에 위치 잡기 수월해짐) */
+div.bottom-sheet-overlay#detail-bottom-sheet .bottom-sheet-content {
   background-color: #18181a !important;
   width: 100% !important;
   max-width: 500px !important; 
   border-radius: 28px 28px 0 0 !important; 
   
-  /* 💡 [핵심] 하단 패딩을 120px로 대폭 늘려서, 스크롤을 끝까지 내리면 Delete 버튼이 하단 내비 바 위로 무조건 기어 올라오게 만듭니다. */
-  padding: 24px 24px 120px 24px !important; 
+  /* 💡 붕 뜨거나 쏠리지 않도록 위치 속성 초기화 */
+  position: relative !important;
+  left: unset !important;
+  transform: unset !important;
+  top: unset !important;
+  bottom: 0 !important;
+  margin: 0 !important;
   
-  /* 💡 시트가 너무 길어져서 화면을 다 먹지 않도록 최대 높이 제한 및 스크롤 부여 */
+  /* 💡 하단 패딩을 넉넉히 주어 스크롤 시 버튼이 내비 바 위로 올라오게 만듦 */
+  padding: 24px 24px 130px 24px !important; 
+  
+  /* 💡 너무 길어지면 내부 스크롤 활성화 */
   max-height: 85vh !important; 
   max-height: 85dvh !important;
   overflow-y: auto !important;
