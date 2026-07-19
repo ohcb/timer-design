@@ -83,7 +83,9 @@
               </div>
               <p class="progress-text">Pace: +5 more than last week!</p>
             </div>
-          </div> <section class="home-section">
+          </div> 
+          
+          <section class="home-section">
             <div class="home-card full">
               <h4 class="section-title">Weekly Summary & Tools</h4>
               <p class="summary-text">Average improved by 0.5s this week! 🔥</p>
@@ -203,9 +205,119 @@
       </div>
 
       <div id="screen-solves" class="tab-screen">
-        <div style="padding: 3rem 1.5rem; text-align: center; color: var(--text-muted);">
-          <h2>Solves Screen</h2>
-          <p style="margin-top: 0.5rem; font-size: 0.9rem;">여기에 모든 솔브 기록 상세 리스트가 들어옵니다.</p>
+        <div class="solves-control-manager">
+          <div class="control-header-row">
+            <h2>Solves</h2>
+          </div>
+          
+          <div class="control-filter-row">
+            <div class="event-selector-wrapper">
+              <select class="event-dropdown">
+                <option value="3x3">3x3</option>
+                <option value="2x2">2x2</option>
+                <option value="OH">3x3 OH</option>
+              </select>
+            </div>
+
+            <div class="filter-chips-container">
+              <button class="chip-btn active">All</button>
+              <button class="chip-btn">PBs</button>
+              <button class="chip-btn">Bookmarked</button>
+              <button class="chip-btn">Tags</button>
+            </div>
+            <button class="icon-btn sort-btn">⇅</button>
+          </div>
+        </div>
+
+        <div class="record-cards-list" id="record-cards-container">
+          <div class="record-card pb-card" data-id="1">
+            <div class="card-left">
+              <div class="time-row">
+                <span class="record-time">11.82</span>
+                <span class="badge pb-badge">PB</span>
+              </div>
+              <span class="badge tag-badge">#F2L</span>
+            </div>
+            <div class="card-right">
+              <span class="card-date">07/18</span>
+              <span class="bookmark-icon active">⭐</span>
+            </div>
+          </div>
+
+          <div class="record-card" data-id="2">
+            <div class="card-left">
+              <div class="time-row">
+                <span class="record-time">14.25</span>
+              </div>
+              <span class="badge tag-badge">#PLL skip</span>
+            </div>
+            <div class="card-right">
+              <span class="card-date">07/18</span>
+              <span class="bookmark-icon">☆</span>
+            </div>
+          </div>
+
+          <div class="record-card" data-id="3">
+            <div class="card-left">
+              <div class="time-row">
+                <span class="record-time">15.61</span>
+              </div>
+              <span class="badge tag-badge">#3x3</span>
+            </div>
+            <div class="card-right">
+              <span class="card-date">07/17</span>
+              <span class="bookmark-icon">☆</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bottom-sheet-overlay" id="detail-bottom-sheet">
+          <div class="bottom-sheet-content">
+            <div class="drag-handle"></div>
+            
+            <div class="sheet-main-info">
+              <span class="sheet-title-label">PERSONAL BEST</span>
+              <h1 class="sheet-main-time">11.82s</h1>
+            </div>
+
+            <div class="sheet-detail-grid">
+              <div class="detail-item full-width">
+                <span class="item-label">Scramble</span>
+                <div class="scramble-box-wrapper">
+                  <p class="scramble-code">D2 B2 L2 F2 U2 R2 D' F2 D L' B' F2 L D F' U' F' L2 R</p>
+                  <button class="copy-btn">📋</button>
+                </div>
+              </div>
+
+              <div class="detail-item">
+                <span class="item-label">Date & Time</span>
+                <span class="item-value">2026.07.18 19:05:22</span>
+              </div>
+
+              <div class="detail-item">
+                <span class="item-label">Penalty</span>
+                <div class="segmented-control">
+                  <button class="segment-btn active">OK</button>
+                  <button class="segment-btn">+2</button>
+                  <button class="segment-btn">DNF</button>
+                </div>
+              </div>
+
+              <div class="detail-item full-width">
+                <span class="item-label">Tags</span>
+                <div class="tags-container">
+                  <button class="add-tag-chip">+ Add Tag</button>
+                  <span class="tag-chip">#3x3</span>
+                  <span class="tag-chip">#F2L_Practice</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="sheet-actions-bar">
+              <button class="action-btn">Bookmark</button>
+              <button class="action-btn delete-btn">Delete</button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -223,17 +335,13 @@
         </div>
       </div>
 
-    </div>
-
-    <nav class="bottom-nav">
-      <a href="#" class="nav-tab">Home</a>
-      <a href="#" class="nav-tab active">Timer</a>
-      <a href="#" class="nav-tab">Solves</a>
-      <a href="#" class="nav-tab">Stats</a>
-      <a href="#" class="nav-tab">Profile</a>
-    </nav>
-
-  </div>
+      <nav class="main-app-navigation">
+    <a href="#" class="nav-tab">Home</a>
+    <a href="#" class="nav-tab active">Timer</a>
+    <a href="#" class="nav-tab">Solves</a>
+    <a href="#" class="nav-tab">Stats</a>
+    <a href="#" class="nav-tab">Profile</a>
+  </nav>
 
   <script type="module" src="app.js"></script>
 </body>

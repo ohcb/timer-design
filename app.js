@@ -1,17 +1,19 @@
 // app.js
+
+// 1. 상단에 import 추가
 import { initTabs } from './tabs.js';
+import { initSolvesManager } from './solve-bottom-sheet.js'; // 💡 새로 만든 파일 연결
+import { initTimer } from './timer.js';
 
+// 앱이 실행될 때 호출되는 초기화 구역
 document.addEventListener('DOMContentLoaded', () => {
-  console.log("App initialized");
   
-  // 1. 탭 시스템 켜기
+  // 기존에 있던 내비게이션 탭 초기화
   initTabs();
-
-  // 2. 타이머 전용 버튼 동작 설정 (필요시 작동하도록 뼈대 유지)
-  const timerDisplay = document.querySelector('.timer-display');
-  if (timerDisplay) {
-    timerDisplay.addEventListener('click', () => {
-      console.log("Timer display clicked");
-    });
-  }
+  
+  // 💡 새로 추가한 바텀 시트 인터랙션 초기화
+  initSolvesManager();
+  
+  initTimer(); // 💡 타이머 기능 작동 시작!
 });
+
