@@ -343,6 +343,69 @@
     <a href="#" class="nav-tab">Profile</a>
   </nav>
 
+  </div> </div> <style>
+    .bottom-nav {
+      position: fixed !important;
+      bottom: 0 !important;
+      
+      /* 💡 부모 컨테이너가 어디에 있든 상관없이 브라우저 생 화면 맨 왼쪽(0)부터 오른쪽(0)까지 강제 밀착 */
+      left: 0px !important;
+      right: 0px !important;
+      width: 100vw !important; /* 👈 화면 가로 너비 100% 강제 사용 */
+      
+      height: 60px !important;
+      background-color: #18191c !important; /* 내부 패널 다크톤 색상 고정 */
+      border-top: 1px solid #2f3136 !important;
+      
+      /* 💡 내부 버튼들이 세로나 구석으로 뭉치지 않게 강제 가로 배열 및 균등 분배 */
+      display: flex !important;
+      flex-direction: row !important;
+      justify-content: space-around !important;
+      align-items: center !important;
+      
+      /* 혹시 모를 마진/패딩 밀림 원천 차단 */
+      margin: 0 !important;
+      padding: 0 !important;
+      z-index: 9999999 !important;
+      pointer-events: auto !important;
+      box-sizing: border-box !important;
+      
+      /* 💡 부모가 적용한 skew, translate, flex-shrink 등 정렬 왜곡 옵션 완전히 초기화 */
+      transform: none !important;
+      flex-shrink: 0 !important;
+    }
+    
+    /* 💡 버튼들이 구석에 뭉쳐서 찌그러지지 않게 1/5씩 공간을 강제로 찢어서 나눠 갖도록 설정 */
+    .bottom-nav .nav-tab {
+      flex: 1 !important;
+      width: 100% !important;
+      text-align: center !important;
+      color: #8e9297 !important;
+      text-decoration: none !important;
+      font-size: 0.9rem !important;
+      padding: 15px 0 !important;
+      display: block !important;
+    }
+    
+    .bottom-nav .nav-tab.active {
+      color: #a855f7 !important;
+      border-top: 2px solid #a855f7 !important;
+    }
+  </style>
+
+  <nav class="bottom-nav">
+    <a href="#" class="nav-tab">Home</a>
+    <a href="#" class="nav-tab active">Timer</a>
+    <a href="#" class="nav-tab">Solves</a>
+    <a href="#" class="nav-tab">Stats</a>
+    <a href="#" class="nav-tab">Profile</a>
+  </nav>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
+
+  
   <script type="module" src="app.js"></script>
 </body>
 </html>
