@@ -395,3 +395,130 @@ div.bottom-sheet-overlay#detail-bottom-sheet .bottom-sheet-content {
 
 .sheet-actions-bar {
   display: flex;
+
+
+/* 바텀시트 헤더 및 드롭다운 메뉴 스타일 */
+.sheet-header-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  position: relative;
+}
+
+.sheet-title-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #ffd700;
+  letter-spacing: 0.5px;
+}
+
+.header-btn-group {
+  display: flex;
+  gap: 8px;
+  position: relative;
+}
+
+.sheet-header-btn {
+  background: none;
+  border: none;
+  color: #8e8e93;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.sheet-header-btn:hover {
+  background-color: #2c2c2e;
+  color: #fff;
+}
+
+/* 💡 ⋮ 더보기 메뉴 컨테이너 및 드롭다운 */
+.more-menu-container {
+  position: relative;
+}
+
+.sheet-context-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #2c2c2e;
+  border-radius: 10px;
+  padding: 4px;
+  min-width: 110px;
+  display: none; /* JS로 제어 예정 */
+  flex-direction: column;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  z-index: 1000000;
+}
+
+.sheet-context-menu.show {
+  display: flex;
+}
+
+.menu-item {
+  background: none;
+  border: none;
+  color: #fff;
+  text-align: left;
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.menu-item:hover {
+  background-color: #3a3a3c;
+}
+
+.menu-item.delete-item {
+  color: #ff453a;
+}
+
+.menu-item.delete-item:hover {
+  background-color: rgba(255, 69, 58, 0.15);
+}
+
+/* 💡 날짜 행 스타일 */
+.sheet-date-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  margin-bottom: 20px;
+  color: #8e8e93;
+}
+
+/* 💡 노트 입력창 스타일 */
+.sheet-note-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+
+.section-title {
+  font-size: 0.8rem;
+  color: #8e8e93;
+  font-weight: 600;
+}
+
+.sheet-note-input {
+  background-color: #2c2c2e;
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  padding: 10px;
+  font-size: 0.85rem;
+  resize: none;
+  height: 60px;
+  font-family: inherit;
+}
+
+.sheet-note-input:focus {
+  outline: 1px solid #3a3a3c;
+}
