@@ -54,36 +54,46 @@ body {
   color: var(--panel-bg);
 }
 
-/* 4. 하단 탭 바 디자인 - 💡 터치 씹힘 및 튕김 완벽 해결 */
+/* 4. 하단 탭 바 디자인 - 💡 무조건 화면 바닥에 가로로 꽉 차게 고정 */
 .bottom-nav {
-  background-color: var(--panel-bg);
-  border-top: 1px solid var(--border-light);
-  
-  /* 💡 하단 바를 화면 맨 밑에 단단히 고정하고 터치 최우선 순위 부여 */
+  /* 다른 파일들이 방해하지 못하도록 최우선 고정 포지션 부여 */
   position: fixed !important;
   bottom: 0 !important;
   left: 0 !important;
+  right: 0 !important; /* 👈 왼쪽/오른쪽을 둘 다 0으로 당겨서 가로로 꽉 채웁니다 */
   width: 100% !important;
-  height: 60px;
+  height: 60px !important;
+  
+  /* 내부 정렬 */
   display: flex !important;
-  justify-content: space-around;
-  align-items: center;
-  z-index: 9999 !important; /* 그 어떤 투명 벽도 이 하단 바를 덮지 못하게 함 */
+  flex-direction: row !important; /* 👈 세로로 꺾이지 않고 무조건 가로 정렬 */
+  justify-content: space-around !important;
+  align-items: center !important;
+  
+  /* 시각 디자인 */
+  background-color: var(--panel-bg) !important;
+  border-top: 1px solid var(--border-light) !important;
+  z-index: 99999 !important; /* 👈 스크린샷의 그 어떤 요소보다 무조건 위로 올림 */
   pointer-events: auto !important;
+  box-sizing: border-box !important;
 }
 
-.nav-tab {
-  color: var(--text-muted);
-  text-decoration: none;
-  padding: 10px 20px;
-  flex: 1;
-  text-align: center;
+/* 💡 글자들이 찌그러지지 않고 균등하게 자리를 나누어 가지도록 강제 설정 */
+.bottom-nav .nav-tab {
+  flex: 1 !important; 
+  text-align: center !important;
+  color: var(--text-muted) !important;
+  text-decoration: none !important;
+  font-size: 0.9rem !important;
+  padding: 15px 0 !important;
+  display: block !important;
 }
 
-.nav-tab.active {
-  color: var(--accent-color);
-  border-top: 2px solid var(--accent-color);
+.bottom-nav .nav-tab.active {
+  color: var(--accent-color) !important;
+  border-top: 2px solid var(--accent-color) !important;
 }
+
 
 /* 5. 대시보드 세부 색상 */
 .col h3 {
