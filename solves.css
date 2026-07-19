@@ -177,20 +177,24 @@
 }
 
 /* ------------------------------------------------ */
-/* 🗂️ [수정] 모달 팝업 디테일 (패딩 및 찌그러짐 보정) */
+/* 🗂️ [전면 수정] 중앙 모달에서 하단 바텀시트로 변경 */
 /* ------------------------------------------------ */
+
+/* 배경 어두워지는 오버레이 (구조는 유지하되 정렬 방향 변경) */
 .bottom-sheet-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.75);
+  background-color: rgba(0, 0, 0, 0.6); /* 뒷배경을 약간 투명하게 조절 */
   display: none;
   justify-content: center;
-  align-items: center;
+  
+  /* 💡 핵심: 중앙 정렬이 아니라 '화면 아래쪽'에 붙도록 설정 */
+  align-items: flex-end !important; 
+  
   z-index: 9999;
-  padding: 16px;
   box-sizing: border-box;
 }
 
@@ -198,13 +202,205 @@
   display: flex !important;
 }
 
+/* ⚡ 팝업창에서 바텀시트 형태로 전면 개조 */
 .bottom-sheet-content {
   background-color: #18181a;
-  border-radius: 16px;
-  padding: 24px 20px; /* 위아래 패딩 확보 */
+  
+  /* 💡 위쪽 모서리만 둥글게 깎아서 바텀시트 느낌 강조 */
+  border-radius: 20px 20px 0 0 !important; 
+  
+  padding: 24px 20px 40px 20px !important; /* 아래쪽 여백(40px)을 주어 기기 하단 바와의 간격 확보 */
   width: 100%;
-  max-width: 360px; 
-  max-height: 85%;
+  max-width: 450px; /* 패드나 PC에서도 너무 퍼지지 않게 적정 너비 제한 */
+  
+  /* 💡 최대 높이를 지정하고 내부 스크롤이 작동하도록 설정 */
+  max-height: 80% !important; 
   overflow-y: auto;
   box-sizing: border-box;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5); /* 그림자를 위쪽으로 은은하게 */
+  
+  /* 🚀 스윽 올라오는 느낌을 주기 위한 애니메이션 준비 */
+  animation: slideUp 0.3s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+/* 바텀시트가 아래에서 위로 올라오는 부드러운 애니메이션 */
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* 상단 정보 영역 */
+.sheet-main-info {
+  text-align: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #242426;
+  padding-bottom: 16px;
+  position: relative;
+}
+
+/* 💡 바텀시트 특유의 '끌어내리는 손잡이 바(Handle)' 가상 요소로 추가 */
+.sheet-main-info::before {
+  content: '';
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 4px;
+  background-color: #3a3a3c;
+  border-radius: 2px;
+}
+
+.sheet-title-label {
+  font-size: 0.75rem;
+  color: #ffd700;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sheet-main-time {
+  font-size: 2.8rem; /* 시간을 조금 더 시원하게 키움 */
+  font-weight: 800;
+  margin: 6px 0 0 0;
+  color: #fff;
+  letter-spacing: -0.5px;
+}
+
+/* 내부 상세 그리드 간격 조절 */
+.sheet-detail-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.item-label {
+  font-size: 0.75rem;
+  color: #8e8e93;
+  font-weight: 600;
+}
+
+/* 스크램블 박스 */
+.scramble-box-wrapper {
+  display: flex !important;
+  background-color: #222224;
+  border-radius: 8px;
+  padding: 12px 14px !important; 
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.scramble-code {
+  margin: 0;
+  font-family: monospace;
+  font-size: 0.85rem;
+  color: #d1d1d6;
+  line-height: 1.4;
+  word-break: break-all;
+}
+
+.copy-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: #8e8e93;
+}
+
+/* 패널티 세그먼트 컨트롤 버튼 */
+.segmented-control {
+  display: flex;
+  background-color: #222224;
+  border-radius: 8px;
+  padding: 3px;
+}
+
+.segment-btn {
+  flex: 1;
+  background: none;
+  border: none;
+  color: #8e8e93;
+  padding: 8px 0; /* 터치하기 편하게 높이 업 */
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.segment-btn.active {
+  background-color: #3a3a3c;
+  color: #fff;
+}
+
+/* 태그 영역 */
+.tags-container {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  width: 100%;
+}
+
+.add-tag-chip {
+  background: none;
+  border: 1px dashed #3a3a3c;
+  color: #8e8e93;
+  padding: 6px 12px !important;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.tag-chip {
+  background-color: #222224;
+  color: #d1d1d6;
+  padding: 6px 12px !important;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+/* 하단 액션 버튼 바 */
+.sheet-actions-bar {
+  display: flex;
+  gap: 10px;
+  margin-top: 24px;
+  border-top: 1px solid #242426;
+  padding-top: 16px;
+}
+
+.action-btn {
+  flex: 1;
+  background-color: #222224;
+  border: none;
+  color: #fff;
+  padding: 12px 0; /* 버튼을 좀 더 든든하고 누르기 쉽게 수정 */
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+}
+
+.delete-btn {
+  background-color: rgba(255, 69, 58, 0.1);
+  color: #ff453a;
+}
