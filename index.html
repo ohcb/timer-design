@@ -206,28 +206,34 @@
 
       <div id="screen-solves" class="tab-screen">
         <div class="solves-control-manager">
-          <div class="control-header-row">
-            <h2>Solves</h2>
-          </div>
-          
-          <div class="control-filter-row">
-            <div class="event-selector-wrapper">
-              <select class="event-dropdown">
-                <option value="3x3">3x3</option>
-                <option value="2x2">2x2</option>
-                <option value="OH">3x3 OH</option>
-              </select>
-            </div>
+  <div class="control-header-row">
+    <h2>Solves</h2>
+    <select class="event-dropdown">
+      <option value="3x3">3x3</option>
+      <option value="4x4">4x4</option>
+      <option value="5x5">5x5</option>
+    </select>
+  </div>
 
-            <div class="filter-chips-container">
-              <button class="chip-btn active">All</button>
-              <button class="chip-btn">PBs</button>
-              <button class="chip-btn">Bookmarked</button>
-              <button class="chip-btn">Tags</button>
-            </div>
-            <button class="icon-btn sort-btn">⇅</button>
-          </div>
-        </div>
+  <div class="control-action-bar">
+    <div class="view-selector-container">
+      <button class="view-btn active" data-view="singles">Singles</button>
+      <button class="view-btn" data-view="ao5">Ao5</button>
+      <button class="view-btn" data-view="ao12">Ao12</button>
+      <button class="view-btn" data-view="ao100">Ao100</button>
+    </div>
+
+    <div class="action-button-group">
+      <button class="icon-control-btn" id="filter-trigger-btn">
+        <span>⏳</span> Filter
+      </button>
+      <button class="icon-control-btn" id="sort-trigger-btn">
+        <span>↕️</span> Sort
+      </button>
+    </div>
+  </div>
+</div>
+
 
         <div class="record-cards-list" id="record-cards-container">
           <div class="record-card pb-card" data-id="1">
