@@ -73,7 +73,7 @@
   color: #fff;
 }
 
-/* ⚡ 한 줄에 3개씩 들어가는 콤팩트 그리드 레이아웃 */
+/* 한 줄에 3개씩 들어가는 콤팩트 그리드 레이아웃 */
 .record-cards-list {
   display: grid !important;
   grid-template-columns: repeat(3, 1fr) !important;
@@ -81,7 +81,7 @@
   text-align: left !important;
 }
 
-/* 💡 [수정] 빈 공간 주범인 aspect-ratio를 제거하고 슬림한 고정 높이(height) 적용 */
+/* [수정] 빈 공간 주범인 aspect-ratio를 제거하고 슬림한 고정 높이(height) 적용 */
 .record-card {
   background-color: #1e1e1e;
   border-radius: 8px;
@@ -94,8 +94,8 @@
   box-sizing: border-box;
   width: 100%;
   
-  aspect-ratio: unset !important; /* ⚠️ 비율 유지 해제 (여백 폭탄 제거) */
-  height: 68px !important;       /* 💡 텍스트 요소가 딱 컴팩트하게 채워지는 고정 높이 */
+  aspect-ratio: unset !important; /* 비율 유지 해제 (여백 폭탄 제거) */
+  height: 68px !important;       /* 텍스트 요소가 딱 컴팩트하게 채워지는 고정 높이 */
   
   position: relative;
   transition: background-color 0.2s;
