@@ -180,7 +180,7 @@
 /* 🗂️ 바텀시트 최종 안전 교정 (JS 매칭 버전) */
 /* ================================================= */
 
-/* 1. 배경 오버레이 (초기 상태: 무조건 숨김) */
+/* 1. 배경 오버레이 (기본 상태: 무조건 숨김, 서열 최상위) */
 div.bottom-sheet-overlay#detail-bottom-sheet {
   position: fixed !important;
   top: 0 !important;
@@ -190,21 +190,16 @@ div.bottom-sheet-overlay#detail-bottom-sheet {
   height: 100dvh !important;
   background-color: rgba(0, 0, 0, 0.6) !important;
   z-index: 999998 !important;
-  
-  /* 💡 상태 제어와 충돌하지 않도록 기본 상태를 명확히 분리 */
-  display: none !important; 
   justify-content: center !important;
-  align-items: flex-end !important; 
+  align-items: flex-end !important;
+  
+  /* 💡 다른 CSS나 인라인 스타일이 켜는 걸 방지하기 위해 display 숨김을 최상위 서열로 지정 */
+  display: none !important; 
 }
 
-/* 💡 open 클래스가 '있을 때만' flex로 보여주기 */
+/* 💡 오직 open 클래스가 붙었을 때만 화면에 표시 */
 div.bottom-sheet-overlay#detail-bottom-sheet.open {
   display: flex !important;
-}
-
-/* 💡 만약 open 클래스가 '없다면' 모든걸 무시하고 무조건 숨기기 (철통 방어 🛡️) */
-div.bottom-sheet-overlay#detail-bottom-sheet:not(.open) {
-  display: none !important;
 }
 
 /* 2. 바텀시트 본체 */
