@@ -177,10 +177,10 @@
 }
 
 /* ================================================= */
-/* 🗂️ [최종 조치] 외부 충돌 스타일 무력화 및 하단 고정 */
+/* 🗂️ 바텀시트 위치 및 높이 긴급 교정 (아이패드/모바일 완벽 대응) */
 /* ================================================= */
 
-/* 1. 바깥 배경 오버레이: 무조건 화면 아래 정렬 */
+/* 1. 오버레이 바깥 배경: 강제로 뷰포트 바닥까지 꽉 채우기 */
 div.bottom-sheet-overlay#detail-bottom-sheet {
   position: fixed !important;
   top: 0 !important;
@@ -192,46 +192,48 @@ div.bottom-sheet-overlay#detail-bottom-sheet {
   margin: 0 !important;
   padding: 0 !important;
   
-  /* 내부 컨텐츠를 무조건 바닥(flex-end)으로 밀어내기 */
-  display: none !important; 
+  display: none !important;
   justify-content: center !important;
+  
+  /* 💡 핵심: 어떤 기기에서든 무조건 '화면 최하단 바닥'에 붙도록 강제 */
   align-items: flex-end !important; 
 }
 
-/* 자바스크립트로 open 클래스가 붙었을 때 */
 div.bottom-sheet-overlay#detail-bottom-sheet.open {
   display: flex !important;
 }
 
-/* 2. 내부 실물 시트: 중앙 정렬 속성 완전 초기화 및 바닥 안착 */
+/* 2. 바텀시트 실물 본체: 하단 공백 제거 및 스크롤 확보 */
 div.bottom-sheet-overlay#detail-bottom-sheet .bottom-sheet-content {
   background-color: #18181a !important;
   width: 100% !important;
-  max-width: 460px !important; /* 태블릿에서도 이쁘게 잡히는 너비 */
+  max-width: 480px !important;
   
-  /* ⚠️ 기존의 중앙 배치(top: 50%, transform 등)를 완전히 강제 해제 */
+  /* 💡 붕 뜨게 만들던 원인인 margin, position 방해 요소 완전 거세 */
   position: relative !important;
+  margin: 0 auto !important; 
   top: unset !important;
   left: unset !important;
-  bottom: 0 !important;
   transform: unset !important;
-  margin: 0 auto !important; 
   
-  /* 바텀시트 특유의 상단 둥근 모서리 */
+  /* 💡 하단 모서리는 깎지 않고(0) 바닥에 칼같이 밀착 */
   border-radius: 24px 24px 0 0 !important; 
   
-  /* 패딩 정돈 (기기 하단 바 고려해 아래쪽 패딩 확보) */
-  padding: 16px 20px 40px 20px !important; 
-  max-height: 85% !important; 
+  /* 💡 버튼이 잘리지 않도록 안쪽 아래 여백을 충분히 확보 */
+  padding: 16px 20px 32px 20px !important; 
+  
+  /* 💡 화면을 너무 가리지 않으면서, 내용이 많으면 내부 스크롤이 돌게 조절 */
+  max-height: 85vh !important; 
   overflow-y: auto !important;
   box-sizing: border-box !important;
   box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5) !important;
   
-  /* 아래에서 위로 부드럽게 올라오는 애니메이션 */
+  /* 등장 애니메이션 축을 바닥(bottom)으로 고정 */
+  transform-origin: bottom !important;
   animation: slideUpSheet 0.25s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
 }
 
-/* 애니메이션 */
+/* 아래에서 위로 착 붙으며 올라오는 애니메이션 */
 @keyframes slideUpSheet {
   from {
     transform: translateY(100%) !important;
@@ -239,153 +241,4 @@ div.bottom-sheet-overlay#detail-bottom-sheet .bottom-sheet-content {
   to {
     transform: translateY(0) !important;
   }
-}
-
-/* ------------------------------------------------ */
-/* 내부 컴포넌트 디테일 보정 */
-/* ------------------------------------------------ */
-
-/* HTML에 새로 추가하신 드래그 핸들 바 스타일링 */
-.drag-handle {
-  width: 40px !important;
-  height: 4px !important;
-  background-color: #3a3a3c !important;
-  border-radius: 2px !important;
-  margin: 0 auto 16px auto !important;
-}
-
-.sheet-main-info {
-  text-align: center;
-  margin-bottom: 20px;
-  border-bottom: 1px solid #242426;
-  padding-bottom: 16px;
-}
-
-.sheet-title-label {
-  font-size: 0.75rem;
-  color: #ffd700;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-}
-
-.sheet-main-time {
-  font-size: 2.8rem;
-  font-weight: 800;
-  margin: 6px 0 0 0;
-  color: #fff;
-}
-
-.sheet-detail-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.detail-item {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.item-label {
-  font-size: 0.75rem;
-  color: #8e8e93;
-  font-weight: 600;
-}
-
-.scramble-box-wrapper {
-  display: flex !important;
-  background-color: #222224;
-  border-radius: 8px;
-  padding: 12px 14px !important; 
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-}
-
-.scramble-code {
-  margin: 0;
-  font-family: monospace;
-  font-size: 0.85rem;
-  color: #d1d1d6;
-  line-height: 1.4;
-  word-break: break-all;
-}
-
-.copy-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 0.95rem;
-}
-
-.segmented-control {
-  display: flex;
-  background-color: #222224;
-  border-radius: 8px;
-  padding: 3px;
-}
-
-.segment-btn {
-  flex: 1;
-  background: none;
-  border: none;
-  color: #8e8e93;
-  padding: 8px 0;
-  font-size: 0.8rem;
-  font-weight: 600;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.segment-btn.active {
-  background-color: #3a3a3c;
-  color: #fff;
-}
-
-.tags-container {
-  display: flex !important;
-  flex-wrap: wrap !important;
-  gap: 8px !important;
-}
-
-.add-tag-chip, .tag-chip {
-  padding: 6px 12px !important;
-  border-radius: 8px;
-  font-size: 0.75rem;
-  white-space: nowrap;
-}
-.add-tag-chip {
-  background: none;
-  border: 1px dashed #3a3a3c;
-  color: #8e8e93;
-}
-.tag-chip {
-  background-color: #222224;
-  color: #d1d1d6;
-}
-
-.sheet-actions-bar {
-  display: flex;
-  gap: 10px;
-  margin-top: 24px;
-  border-top: 1px solid #242426;
-  padding-top: 16px;
-}
-
-.action-btn {
-  flex: 1;
-  background-color: #222224;
-  border: none;
-  color: #fff;
-  padding: 12px 0;
-  border-radius: 8px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.delete-btn {
-  background-color: rgba(255, 69, 58, 0.1);
-  color: #ff453a;
 }
