@@ -177,10 +177,10 @@
 }
 
 /* ================================================= */
-/* 🗂️ 바텀시트 위치 및 높이 긴급 교정 (아이패드/모바일 완벽 대응) */
+/* 🗂️ 바텀시트 높이 및 스크롤 완벽 최적화 (버튼 잘림 해결) */
 /* ================================================= */
 
-/* 1. 오버레이 바깥 배경: 강제로 뷰포트 바닥까지 꽉 채우기 */
+/* 1. 배경 오버레이 (화면 전체 고정) */
 div.bottom-sheet-overlay#detail-bottom-sheet {
   position: fixed !important;
   top: 0 !important;
@@ -195,7 +195,7 @@ div.bottom-sheet-overlay#detail-bottom-sheet {
   display: none !important;
   justify-content: center !important;
   
-  /* 💡 핵심: 어떤 기기에서든 무조건 '화면 최하단 바닥'에 붙도록 강제 */
+  /* 💡 시트가 화면 밑바닥에 딱 걸치도록 정렬 */
   align-items: flex-end !important; 
 }
 
@@ -203,37 +203,36 @@ div.bottom-sheet-overlay#detail-bottom-sheet.open {
   display: flex !important;
 }
 
-/* 2. 바텀시트 실물 본체: 하단 공백 제거 및 스크롤 확보 */
+/* 2. 바텀시트 본체: 화면 크기에 맞춰 유연하게 조절 */
 div.bottom-sheet-overlay#detail-bottom-sheet .bottom-sheet-content {
   background-color: #18181a !important;
   width: 100% !important;
-  max-width: 480px !important;
+  max-width: 480px !important; /* 패드에서 보기 좋은 적당한 너비 */
   
-  /* 💡 붕 뜨게 만들던 원인인 margin, position 방해 요소 완전 거세 */
+  /* 위치 왜곡 요소 전부 초기화 */
   position: relative !important;
-  margin: 0 auto !important; 
   top: unset !important;
   left: unset !important;
   transform: unset !important;
+  margin: 0 auto !important;
   
-  /* 💡 하단 모서리는 깎지 않고(0) 바닥에 칼같이 밀착 */
+  /* 💡 바텀시트 무드: 위쪽 모서리만 부드럽게 라운딩 */
   border-radius: 24px 24px 0 0 !important; 
   
-  /* 💡 버튼이 잘리지 않도록 안쪽 아래 여백을 충분히 확보 */
-  padding: 16px 20px 32px 20px !important; 
+  /* 💡 패딩: 아래쪽 버튼들이 하단 탭바나 화면 끝에 너무 붙지 않게 여백 확보 */
+  padding: 20px 20px 32px 20px !important; 
   
-  /* 💡 화면을 너무 가리지 않으면서, 내용이 많으면 내부 스크롤이 돌게 조절 */
-  max-height: 85vh !important; 
+  /* 💡 핵심: 패드 화면에서도 버튼이 절대 잘리지 않도록 최대 높이를 제한하고 내부 스크롤 활성화 */
+  max-height: 75vh !important; 
   overflow-y: auto !important;
   box-sizing: border-box !important;
   box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5) !important;
   
-  /* 등장 애니메이션 축을 바닥(bottom)으로 고정 */
-  transform-origin: bottom !important;
+  /* 부드럽게 쓱 올라오는 애니메이션 */
   animation: slideUpSheet 0.25s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
 }
 
-/* 아래에서 위로 착 붙으며 올라오는 애니메이션 */
+/* 애니메이션 축 고정 */
 @keyframes slideUpSheet {
   from {
     transform: translateY(100%) !important;
