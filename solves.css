@@ -177,55 +177,36 @@
 }
 
 /* ================================================= */
-/* 🗂️ 바텀시트 오버레이 & 본체 최적화 (이 부분으로 교체) */
+/* 🗂️ 바텀시트 본체 내부 레이아웃 교정 (안전 버전) */
 /* ================================================= */
 
-/* 1. 배경 오버레이 (Solves 탭 전용 오버레이의 높이 자체를 내비 바 위로 제한) */
-div.bottom-sheet-overlay#detail-bottom-sheet {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 100vw !important;
-  
-  /* 💡 오버레이 바닥이 하단 내비 바(60px) 위에서 딱 끝나게 만듭니다 */
-  height: calc(100vh - 60px) !important;
-  height: calc(100dvh - 60px) !important;
-  
-  /* 내비 바가 무조건 위에 뜨도록 z-index 서열 유지 */
-  z-index: 999998 !important; 
-}
-
-/* 2. 바텀시트 본체 (이제 굳어버린 부모 바닥에 딱 붙임) */
+/* 💡 오버레이는 건드리지 않고, 오직 Solves 탭 시트의 '내용물 박스'만 안전하게 제어 */
 div.bottom-sheet-overlay#detail-bottom-sheet .bottom-sheet-content {
+  /* 기존 공통 스타일과 충돌 나지 않게 위치 초기화 */
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  top: unset !important;
+  margin: 0 auto !important;
+  
   background-color: #18181a !important;
   width: 100% !important;
   max-width: 500px !important; 
-  
-  /* 💡 부모 바닥이 이미 내비 바 위이므로, 이제 0 자리에 편하게 붙이면 끝납니다 */
-  position: absolute !important;
-  bottom: 0 !important; 
-  left: 50% !important;
-  top: unset !important;
-  margin: 0 !important;
-  
   border-radius: 28px 28px 0 0 !important; 
-  padding: 24px 24px 40px 24px !important; 
   
-  /* 💡 오버레이 영역을 넘지 않도록 최대 높이 100% 락킹 */
-  max-height: 100% !important; 
+  /* 💡 [핵심] 하단 패딩을 120px로 대폭 늘려서, 스크롤을 끝까지 내리면 Delete 버튼이 하단 내비 바 위로 무조건 기어 올라오게 만듭니다. */
+  padding: 24px 24px 120px 24px !important; 
   
+  /* 💡 시트가 너무 길어져서 화면을 다 먹지 않도록 최대 높이 제한 및 스크롤 부여 */
+  max-height: 85vh !important; 
+  max-height: 85dvh !important;
   overflow-y: auto !important;
+  
   box-sizing: border-box !important;
   box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.6) !important;
-  
-  transform-origin: bottom !important;
-  animation: slideUpSheetDynamic 0.25s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
 }
 
-@keyframes slideUpSheetDynamic {
-  from { transform: translate(-50%, 100%) !important; opacity: 0; }
-  to { transform: translate(-50%, 0) !important; opacity: 1; }
-}
 
 
 
