@@ -23,6 +23,7 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
   margin: 0;
   padding: 0;
+  padding-bottom: 70px; /* 💡 하단 고정 바가 화면을 가리지 않도록 바닥 여백 확보 */
 }
 
 /* 2. 탑바 색상 */
@@ -53,14 +54,30 @@ body {
   color: var(--panel-bg);
 }
 
-/* 4. 하단 탭 바 디자인 */
+/* 4. 하단 탭 바 디자인 - 💡 터치 씹힘 및 튕김 완벽 해결 */
 .bottom-nav {
   background-color: var(--panel-bg);
   border-top: 1px solid var(--border-light);
+  
+  /* 💡 하단 바를 화면 맨 밑에 단단히 고정하고 터치 최우선 순위 부여 */
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 60px;
+  display: flex !important;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 9999 !important; /* 그 어떤 투명 벽도 이 하단 바를 덮지 못하게 함 */
+  pointer-events: auto !important;
 }
 
 .nav-tab {
   color: var(--text-muted);
+  text-decoration: none;
+  padding: 10px 20px;
+  flex: 1;
+  text-align: center;
 }
 
 .nav-tab.active {
@@ -110,22 +127,16 @@ body {
 /* ==========================================================================
    ★ 갤럭시/모바일 브라우저 강제 다크모드 색상 왜곡 (Auto-darkening) 원천 차단 ★
    ========================================================================== */
+.u-face div { background-color: #ffffff !important; } 
+.L-face div { background-color: #ff5800 !important; } 
+.F-face div { background-color: #009b48 !important; } 
+.R-face div { background-color: #b71234 !important; } 
+.B-face div { background-color: #0046ad !important; } 
+.d-face div { background-color: #ffd500 !important; } 
 
-/* 1. 큐브 전개도 각 면의 클래식 원색 강제 고정 및 브라우저 필터 차단 */
-.u-face div { background-color: #ffffff !important; } /* 상(U): 하양 */
-.L-face div { background-color: #ff5800 !important; } /* 좌(L): 오렌지 */
-.F-face div { background-color: #009b48 !important; } /* 전(F): 초록 */
-.R-face div { background-color: #b71234 !important; } /* 우(R): 레드 */
-.B-face div { background-color: #0046ad !important; } /* 배(B): 블루 */
-.d-face div { background-color: #ffd500 !important; } /* 하(D): 노랑 */
-
-/* 2. 전개도 조각들과 메인 컨테이너에 브라우저가 억지로 색을 바꾸지 못하게 무력화 */
 .u-face div, .L-face div, .F-face div, .R-face div, .B-face div, .d-face div,
 .app-container {
-  /* 시스템이나 브라우저가 강제로 색상을 조정하는 것을 전면 거부 */
   forced-color-adjust: none !important;
-  
-  /* 그래픽 필터 및 투명도 왜곡 방지 */
   filter: none !important;
   mix-blend-mode: normal !important;
   opacity: 1 !important;
@@ -134,13 +145,11 @@ body {
 /* ==========================================================================
    ★ 폰트 크기 이상 비대화 및 겹침 현상 강제 복구 ★
    ========================================================================== */
-
-/* 1. 거대해진 ao5, ao12 통계 글자 크기 정상화 */
 .current-best-area, 
 .stats-summary, 
 [class*="stats"] h2, 
 [class*="stats"] div {
-  font-size: 1rem !important; /* 글자 크기를 원래대로 작게 고정 */
+  font-size: 1rem !important; 
   font-weight: normal !important;
   line-height: 1.5 !important;
   position: relative !important;
@@ -148,7 +157,6 @@ body {
   transform: none !important;
 }
 
-/* 2. 메인 타이머 숫자 0.00 크기 밸런스 조정 */
 .timer-display {
   font-size: 5rem !important; 
   font-weight: bold !important;
@@ -158,52 +166,42 @@ body {
 /* ==========================================================================
    1. 전체 앱 공통 및 모바일 퍼스트 (화면이 좁을 때 기본값)
    ========================================================================== */
-
-/* 모든 탭 화면의 기본 컨테이너 여백 정돈 */
 .tab-screen {
   width: 100%;
   box-sizing: border-box;
-  padding: 1rem; /* 모바일에서는 여백을 좁게 */
+  padding: 1rem; 
 }
 
-/* ⏱️ [Timer 탭] 모바일/세로 모드 구조 */
-/* 원래 가로 3열이었던 대시보드를 세로 1열로 툭 떨어뜨립니다. */
 .dashboard-columns {
   display: flex;
-  flex-direction: column; /* 💡 좁은 화면에선 세로로 나열 */
+  flex-direction: column; 
   gap: 1.5rem;
   width: 100%;
 }
 
 .dashboard-columns .col {
-  width: 100% !important; /* 각 칸이 억지로 버티지 못하게 100% 채우기 */
+  width: 100% !important; 
 }
 
-/* 큐브 전개도(Scramble View) 크기가 화면 밖으로 탈출하는 것 방지 */
 .cube-net {
   max-width: 100%;
   overflow-x: auto; 
 }
 
-
 /* ==========================================================================
    2. 태블릿 및 데스크톱 가로 모드 대응 (화면 가로 너비 768px 또는 1024px 이상)
    ========================================================================== */
 @media (min-width: 768px) {
-  
-  /* 화면이 넓어지면 패딩을 시원시원하게 넓힙니다. */
   .tab-screen {
     padding: 2rem; 
   }
 
-  /* ⏱️ [Timer 탭] 태블릿/데스크톱 가로 복구 */
   .dashboard-columns {
-    flex-direction: row; /* 💡 화면이 넓어지면 원래대로 가로 3열 배치 */
+    flex-direction: row; 
     justify-content: space-between;
     align-items: flex-start;
   }
 
-  /* 각 컬럼 비율을 넓은 화면에 맞춰 적절히 분배 (기존 스타일에 맞게 조정 가능) */
   .dashboard-columns .col.recent-solves { flex: 1; }
   .dashboard-columns .col.current-best  { flex: 1.2; }
   .dashboard-columns .col.scramble-view { flex: 1.5; }
@@ -212,8 +210,6 @@ body {
 /* ==========================================================================
    [전체 앱 통합 반응형 밸런스 조정]
    ========================================================================== */
-
-/* 1. 최상위 부모 제한 해제 */
 .app-container {
   width: 100% !important;
   max-width: 100% !important;
@@ -222,11 +218,10 @@ body {
   box-sizing: border-box;
 }
 
-/* 2. 모든 탭 화면의 최대 너비를 주어 모니터나 패드 가로에서 지나치게 찢어지는 것 방지 */
 .tab-contents {
   width: 100%;
-  max-width: 1024px; /* 💡 아이패드 가로/세로에서 가장 이상적인 밸런스를 보여주는 가로폭 */
-  margin: 0 auto;    /* 늘어난 폭 안에서 가운데 정렬로 핏 유지 */
+  max-width: 1024px; 
+  margin: 0 auto;    
 }
 
 .tab-screen {
@@ -235,22 +230,19 @@ body {
   padding: 1.5rem 1.2rem;
 }
 
-/* 3. ⏱️ [Timer 탭 대응] 중앙 집중형 레이아웃 밸런스 패치 */
 #screen-timer {
   display: flex;
   flex-direction: column;
-  align-items: center; /* 타이머 요소들을 중앙으로 정렬 */
+  align-items: center; 
   gap: 2rem;
 }
 
-/* 타이머 표시 영역 상하 여백 정돈 */
 .timer-zone {
   margin: 2rem 0;
   text-align: center;
   width: 100%;
 }
 
-/* 하단 3열 대시보드가 너무 양끝으로 찢어지지 않게 너비 제한 및 정돈 */
 .dashboard-panel {
   width: 100%;
   margin-top: 1rem;
@@ -260,17 +252,15 @@ body {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  gap: 2rem; /* 💡 컬럼 사이의 간격을 단단하게 고정 */
+  gap: 2rem; 
   width: 100%;
 }
 
-/* 하단 3열 각 칸이 균등하고 예쁘게 가로를 나눠 가지도록 설정 */
 .dashboard-columns .col {
   flex: 1;
-  min-width: 0; /* 텍스트 넘침 방지 */
+  min-width: 0; 
 }
 
-/* 4. 🏠 [Home 탭 대응] */
 .home-container {
   width: 100% !important;
   max-width: 100% !important;
