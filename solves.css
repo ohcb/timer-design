@@ -180,62 +180,43 @@
 /* 🗂️ 바텀시트 오버레이 & 본체 최적화 (이 부분 전체 교체) */
 /* ================================================= */
 
-/* 1. 배경 오버레이 (내비 바 아래로 들어가도록 서열 원상 복구) */
-div.bottom-sheet-overlay#detail-bottom-sheet {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 100vw !important;
-  height: 100vh !important;
-  background-color: rgba(0, 0, 0, 0.6) !important;
-  
-  /* 💡 내비 바(9999999)보다 살짝 낮게 주어 내비 바가 무조건 위에 뜨게 합니다 */
-  z-index: 999998 !important; 
-  
-  margin: 0 !important;
-  padding: 0 !important;
-  display: none !important;
-  justify-content: center !important;
-  align-items: flex-end !important; 
-}
-
-/* 2. 바텀시트 본체 (내비 바 위에서 딱 멈추고 안쪽 여백 확보) */
+/* 2. 바텀시트 본체 (하단 내비 바 바로 위에 고정 + 내부 잘림 방지) */
 div.bottom-sheet-overlay#detail-bottom-sheet .bottom-sheet-content {
   background-color: #18181a !important;
   width: 100% !important;
   max-width: 500px !important; 
   
-  position: relative !important;
-  margin: 0 auto !important; 
+  /* 💡 위치 기준을 화면 맨 밑이 아니라, 하단 탭 바 바로 위(60px)로 강제 지정합니다 */
+  position: absolute !important;
+  bottom: 60px !important; 
+  left: 50% !important;
+  transform: translateX(-50%) !important;
   top: unset !important;
-  left: unset !important;
-  transform: unset !important;
+  margin: 0 !important;
   
   border-radius: 28px 28px 0 0 !important; 
   
-  /* 💡 시트 자체 바닥에 30px 기본 여백을 줍니다 */
-  padding: 24px 24px 30px 24px !important; 
+  /* 💡 시트 내부에 충분한 바닥 여백을 주어 스크롤 시 맨 밑 버튼이 완벽히 보이게 함 */
+  padding: 24px 24px 40px 24px !important; 
   
-  /* 💡 내비 바 높이(60px)만큼 화면 아래에서 띄워 올립니다! */
-  margin-bottom: 60px !important; 
-  
-  /* 💡 전체 높이도 화면 전체에서 내비 바 두께만큼 뺀 크기로 제한 */
-  max-height: calc(100dvh - 60px) !important; 
+  /* 💡 가장 중요: 시트 전체 높이가 하단 바 위에서부터 화면 상단까지만 채우도록 제한 */
+  max-height: calc(100vh - 80px) !important; 
+  max-height: calc(100dvh - 80px) !important;
   
   overflow-y: auto !important;
   box-sizing: border-box !important;
   box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.6) !important;
   
   transform-origin: bottom !important;
-  animation: slideUpSheet 0.25s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
+  /* 애니메이션에서 transform이 충돌하지 않도록 조정 */
+  animation: slideUpSheetDynamic 0.25s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
 }
 
-
-
-@keyframes slideUpSheet {
-  from { transform: translateY(100%) !important; }
-  to { transform: translateY(0) !important; }
+@keyframes slideUpSheetDynamic {
+  from { transform: translate(-50%, 100%) !important; opacity: 0; }
+  to { transform: translate(-50%, 0) !important; opacity: 1; }
 }
+
 
 /* ================================================= */
 /* 🧩 바텀시트 내부 컴포넌트 스타일 (그대로 유지 혹은 덮어쓰기) */
