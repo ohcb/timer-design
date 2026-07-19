@@ -54,32 +54,39 @@ body {
   color: var(--panel-bg);
 }
 
-/* 4. 하단 탭 바 디자인 - 최종 완성 */
+/* 4. 하단 탭 바 디자인 - 외부 CSS 억까 차단 및 완전 고정 */
 .bottom-nav {
+  /* 💡 부모 컨테이너가 좁든 찌그러졌든 무시하고 기기 화면(Viewport) 기준으로 강제 고정 */
   position: fixed !important;
   bottom: 0 !important;
   left: 0 !important;
-  width: 100% !important;
+  
+  /* 💡 너비를 100%가 아니라 화면 전체 폭(100vw)으로 강제 지정 */
+  width: 100vw !important; 
   height: 60px !important;
-  background-color: var(--panel-bg) !important;
+  background-color: #18191c !important; /* var(--panel-bg) 대신 확실한 색상 주입 */
   border-top: 1px solid var(--border-light) !important;
   
-  /* 내부 버튼들 가로로 이쁘게 나열 */
+  /* 💡 내부 요소들을 가로로 쫙 펴주는 flex 강제 설정 */
   display: flex !important;
   flex-direction: row !important;
   justify-content: space-around !important;
   align-items: center !important;
   
-  z-index: 999999 !important;
-  pointer-events: auto !important;
-  box-sizing: border-box !important;
+  /* 💡 상위 부모가 준 왜곡이나 밀림 현상을 완벽히 무력화 */
   margin: 0 !important;
   padding: 0 !important;
+  transform: none !important;
+  flex-shrink: 0 !important;
+  z-index: 9999999 !important;
+  pointer-events: auto !important;
+  box-sizing: border-box !important;
 }
 
-/* 내부 탭 메뉴 글자 스타일 */
+/* 내부 탭 메뉴 글자 스타일 - 1/5 등분 강제 차지 */
 .bottom-nav .nav-tab {
   flex: 1 !important;
+  width: 100% !important;
   text-align: center !important;
   color: var(--text-muted) !important;
   text-decoration: none !important;
@@ -92,6 +99,7 @@ body {
   color: var(--accent-color) !important;
   border-top: 2px solid var(--accent-color) !important;
 }
+
 
 
 /* 5. 대시보드 세부 색상 */
