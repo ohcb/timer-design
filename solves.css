@@ -177,10 +177,10 @@
 }
 
 /* ================================================= */
-/* 🗂️ 바텀시트 오버레이 & 본체 정석 레이아웃 교정 */
+/* 🗂️ 바텀시트 최종 안전 교정 (JS 매칭 버전) */
 /* ================================================= */
 
-/* 1. 배경 오버레이 (정중앙 하단 정렬을 위한 Flex 선언) */
+/* 1. 배경 오버레이 (초기 상태 복구 및 화면 전체 확보) */
 div.bottom-sheet-overlay#detail-bottom-sheet {
   position: fixed !important;
   top: 0 !important;
@@ -189,39 +189,42 @@ div.bottom-sheet-overlay#detail-bottom-sheet {
   height: 100vh !important;
   height: 100dvh !important;
   background-color: rgba(0, 0, 0, 0.6) !important;
-  z-index: 999998 !important; /* 내비 바(9999999) 바로 아래 서열 */
+  z-index: 999998 !important; /* 내비 바(9999999) 바로 아래 유지 */
   
-  /* 💡 내부 본체 박스를 무조건 화면 '가운데 아래'로 떨구는 정석 설정 */
-  display: flex !important;
+  display: none !important;
   justify-content: center !important;
   align-items: flex-end !important; 
 }
 
-/* 2. 바텀시트 본체 (Flex 부모 덕분에 위치 잡기 수월해짐) */
+div.bottom-sheet-overlay#detail-bottom-sheet.open {
+  display: flex !important; /* 오픈 시 무조건 아래 중앙 정렬 */
+}
+
+/* 2. 바텀시트 본체 */
 div.bottom-sheet-overlay#detail-bottom-sheet .bottom-sheet-content {
   background-color: #18181a !important;
   width: 100% !important;
   max-width: 500px !important; 
   border-radius: 28px 28px 0 0 !important; 
   
-  /* 💡 붕 뜨거나 쏠리지 않도록 위치 속성 초기화 */
   position: relative !important;
-  left: unset !important;
-  transform: unset !important;
+  margin: 0 auto !important;
   top: unset !important;
   bottom: 0 !important;
-  margin: 0 !important;
+  left: unset !important;
+  transform: unset !important;
   
-  /* 💡 하단 패딩을 넉넉히 주어 스크롤 시 버튼이 내비 바 위로 올라오게 만듦 */
+  /* 💡 하단 패딩 130px로 내용물들을 내비 바 위로 완벽하게 밀어 올림 */
   padding: 24px 24px 130px 24px !important; 
   
-  /* 💡 너무 길어지면 내부 스크롤 활성화 */
-  max-height: 85vh !important; 
-  max-height: 85dvh !important;
+  /* 💡 너무 길어지면 내부에서 부드럽게 스크롤 */
+  max-height: 85dvh !important; 
   overflow-y: auto !important;
-  
   box-sizing: border-box !important;
   box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.6) !important;
+  
+  transform-origin: bottom !important;
+  animation: slideUpSheet 0.25s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
 }
 
 
