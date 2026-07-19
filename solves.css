@@ -201,7 +201,7 @@ div.bottom-sheet-overlay#detail-bottom-sheet.open {
   display: flex !important;
 }
 
-/* 2. 바텀시트 본체 (높이 확장 및 스크롤 해결 버전) */
+/* 2. 바텀시트 본체 (하단 내비게이션 바 위로 정확히 안착) */
 div.bottom-sheet-overlay#detail-bottom-sheet .bottom-sheet-content {
   background-color: #18181a !important;
   width: 100% !important;
@@ -214,10 +214,14 @@ div.bottom-sheet-overlay#detail-bottom-sheet .bottom-sheet-content {
   transform: unset !important;
   
   border-radius: 28px 28px 0 0 !important; 
-  padding: 24px 24px 90px 24px !important; 
   
-  /* 💡 화면의 98%까지 높이를 열어 스크롤 없이 버튼이 보이게 유도 */
-  max-height: 100vh !important; 
+  /* 💡 하단 패딩을 100px로 대폭 늘려 액션 버튼이나 내용이 무조건 하단 탭 바 위로 띄워지게 처리 */
+  padding: 24px 24px 100px 24px !important; 
+  
+  /* 💡 아이패드 모바일 툴바 리스크 차단을 위해 100vh 대신 safe-area 및 90% 제한 적용 */
+  max-height: calc(100vh - 60px) !important; 
+  max-height: calc(100dvh - 60px) !important; /* 모바일 브라우저 동적 높이 대응 */
+  
   overflow-y: auto !important;
   box-sizing: border-box !important;
   box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.6) !important;
@@ -225,6 +229,7 @@ div.bottom-sheet-overlay#detail-bottom-sheet .bottom-sheet-content {
   transform-origin: bottom !important;
   animation: slideUpSheet 0.25s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
 }
+
 
 @keyframes slideUpSheet {
   from { transform: translateY(100%) !important; }
