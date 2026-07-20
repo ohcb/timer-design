@@ -66,25 +66,26 @@ export function initTabs() {
     });
   });
 
-  // 💡 홈 화면 내 버튼 클릭 시 순서(인덱스) 기반 직통 제어
+    // 💡 [버그 2 최종 진압] data-tab 이름표 기반 직통 제어
   document.addEventListener('click', (event) => {
-    let targetIndex = -1;
     let targetTabName = '';
 
+    // 1. 스타트 버튼 클릭 시 -> timer 이름표 타겟팅
     if (event.target.closest('.start-timer-btn')) {
-      targetIndex = 1;
       targetTabName = 'timer';
     }
+    // 2. 프로필 사진 클릭 시 -> profile 이름표 타겟팅
     else if (event.target.closest('.profile-pic')) {
-      targetIndex = 4;
       targetTabName = 'profile';
     }
 
-    if (targetIndex !== -1 && tabs[targetIndex]) {
+    if (targetTabName) {
       const targetScreenId = `screen-${targetTabName}`;
 
+      // [1] 상단바 노출 제어
       toggleHeaderCenter(targetScreenId);
 
+      // [2] 모든 화면 숨기고 해당 화면만 켜기
       screens.forEach(screen => {
         if (screen && screen.id === targetScreenId) {
           screen.style.display = 'block';
@@ -95,13 +96,13 @@ export function initTabs() {
         }
       });
 
-      tabs.forEach((tab, index) => {
-        if (index === targetIndex) {
+      // [3] data-tab 이름표가 일치하는 내비바 버튼만 정확하게 불 켜기
+      tabs.forEach(tab => {
+        if (tab && tab.getAttribute('data-tab') === targetTabName) {
           tab.classList.add('active');
-        } else {
+        } else if (tab) {
           tab.classList.remove('active');
         }
       });
     }
   });
-}
