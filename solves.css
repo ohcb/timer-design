@@ -432,3 +432,10 @@ div.bottom-sheet-overlay#detail-bottom-sheet .bottom-sheet-content {
   cursor: pointer !important;
   padding: 4px 8px !important;
 }
+
+/* 🖤 카드 리스트 컨테이너 배경을 완전히 투명하게 해서 뒤쪽 회색 테마가 비치도록 강제 적용 */
+.record-cards-list {
+  background-color: transparent !important;
+  background: transparent !important;
+}
+
