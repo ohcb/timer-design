@@ -529,3 +529,54 @@ div.bottom-sheet-overlay#detail-bottom-sheet .bottom-sheet-content {
 .sheet-note-input:focus {
   outline: 1px solid #3a3a3c;
 }
+
+
+/* 💡 삭제 시 카드가 스르륵 사라지는 효과 */
+.record-card.removing {
+  animation: fadeOutCard 0.3s forwards;
+}
+
+@keyframes fadeOutCard {
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+    height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-bottom: 0;
+  }
+}
+
+/* 💡 실행 취소(Undo) 토스트 알림바 스타일 */
+.undo-toast {
+  position: fixed;
+  bottom: 90px; /* 내비게이션 바 위에 딱 걸치게 세팅 */
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background-color: #333;
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+  z-index: 999999;
+  opacity: 0;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
+}
+
+.undo-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.undo-btn {
+  background: none;
+  border: none;
+  color: #ffb800; /* 포인트 컬러 (노란색/주황색 계열) */
+  font-weight: bold;
+  cursor: pointer;
+  padding: 4px 8px;
+  font-size: 0.95rem;
+}
