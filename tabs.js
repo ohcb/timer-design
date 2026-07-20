@@ -16,29 +16,32 @@ export function initTabs() {
     }
   }
 
-  // 💡 [버그 1 완벽 해결] 초기 상태 로드 시, 켜져 있는 화면에 맞춰 내비바 버튼도 강제 하이라이트!
-  screens.forEach(screen => {
-    if (screen.classList.contains('active-screen')) {
-      screen.style.display = 'block';
-      toggleHeaderCenter(screen.id);
+  // 💡 [안전장치 보강] 초기 상태 로드
+  try {
+    screens.forEach(screen => {
+      if (screen && screen.classList.contains('active-screen')) {
+        screen.style.display = 'block';
+        toggleHeaderCenter(screen.id);
 
-      // 현재 켜진 화면 ID (예: screen-timer)에서 'screen-'을 떼고 'timer' 추출
-      const currentTabName = screen.id.replace('screen-', '');
-      
-      // 내비바 버튼 중 글씨가 일치하는 녀석에게 active 강제 부여하여 첫 진입 싱크 맞춤
-      tabs.forEach(tab => {
-        if (tab.textContent.trim().toLowerCase() === currentTabName) {
-          tab.classList.add('active');
-        } else {
-          tab.classList.remove('active');
+        if (screen.id) {
+          const currentTabName = screen.id.replace('screen-', '');
+          tabs.forEach(tab => {
+            if (tab && tab.textContent.trim().toLowerCase() === currentTabName) {
+              tab.classList.add('active');
+            } else if (tab) {
+              tab.classList.remove('active');
+            }
+          });
         }
-      });
-    } else {
-      screen.style.display = 'none';
-    }
-  });
+      } else if (screen) {
+        screen.style.display = 'none';
+      }
+    });
+  } catch (e) {
+    console.error("초기화 중 에러가 발생했으나 무시하고 탭 클릭 기능을 활성화합니다.", e);
+  }
 
-  // 하단 탭 클릭 제어 (기본 내비게이션 기능)
+  // 💡 하단 탭 클릭 제어 (여기는 이제 무조건 실행됩니다)
   tabs.forEach(tab => {
     tab.addEventListener('click', (event) => {
       event.preventDefault();
@@ -52,10 +55,10 @@ export function initTabs() {
       toggleHeaderCenter(targetScreenId);
 
       screens.forEach(screen => {
-        if (screen.id === targetScreenId) {
+        if (screen && screen.id === targetScreenId) {
           screen.style.display = 'block';
           screen.classList.add('active-screen');
-        } else {
+        } else if (screen) {
           screen.style.display = 'none';
           screen.classList.remove('active-screen');
         }
@@ -63,42 +66,35 @@ export function initTabs() {
     });
   });
 
-  // 💡 [버그 2 완벽 해결] 홈 화면 내 버튼 클릭 시 순서(인덱스) 기반 직통 제어
-  // HTML 내의 글씨 오타나 이미지 태그 유무에 상관없이 무조건 지정된 순서의 탭을 정교하게 제어합니다.
+  // 💡 홈 화면 내 버튼 클릭 시 순서(인덱스) 기반 직통 제어
   document.addEventListener('click', (event) => {
     let targetIndex = -1;
     let targetTabName = '';
 
-    // 1. 스타트 버튼(.start-timer-btn) 클릭 시 -> 2번째 탭 (인덱스 1, timer)
     if (event.target.closest('.start-timer-btn')) {
       targetIndex = 1;
       targetTabName = 'timer';
     }
-    // 2. 프로필 사진(.profile-pic) 클릭 시 -> 5번째 탭 (인덱스 4, profile)
     else if (event.target.closest('.profile-pic')) {
       targetIndex = 4;
       targetTabName = 'profile';
     }
 
-    // 매칭된 버튼 순서가 있다면 실행
     if (targetIndex !== -1 && tabs[targetIndex]) {
       const targetScreenId = `screen-${targetTabName}`;
 
-      // [1] 상단바 노출 여부 제어
       toggleHeaderCenter(targetScreenId);
 
-      // [2] 모든 화면 숨기고 해당 화면만 켜기
       screens.forEach(screen => {
-        if (screen.id === targetScreenId) {
+        if (screen && screen.id === targetScreenId) {
           screen.style.display = 'block';
           screen.classList.add('active-screen');
-        } else {
+        } else if (screen) {
           screen.style.display = 'none';
           screen.classList.remove('active-screen');
         }
       });
 
-      // [3] ★텍스트 무시★ 순서 번호가 일치하는 내비바 버튼만 불 켜기
       tabs.forEach((tab, index) => {
         if (index === targetIndex) {
           tab.classList.add('active');
