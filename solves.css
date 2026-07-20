@@ -395,3 +395,32 @@ div.bottom-sheet-overlay#detail-bottom-sheet .bottom-sheet-content {
 
 .sheet-actions-bar {
   display: flex;
+
+
+  /* ================================================= */
+/* 🎨 위쪽 영역의 물 빠진 회색을 빼고 아래쪽 정답 색상과 일체화 */
+/* ================================================= */
+
+/* 1. 상단 화면 베이스를 완전히 투명하게 하거나 아래쪽 판때기 색상과 동기화 */
+#screen-solves, 
+.tab-screen#screen-solves {
+  background-color: transparent !important;
+  background: transparent !important;
+}
+
+/* 2. 카드 그리드 리스트와 컨트롤 매니저 배경도 전부 투명화해서 배경 단층 제거 */
+.solves-control-manager,
+.record-cards-list {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* 3. 투명해진 카드들이 너무 묻히지 않도록, 카드 자체의 배경색만 살짝 고급스러운 다크로 포인트 */
+.record-card {
+  background-color: #1c1c1e !important; /* 주변 정답 배경보다 반 톤 밝은 세련된 카드 색상 */
+}
+
+.record-card:hover {
+  background-color: #2c2c2e !important; /* 호버/터치 시 피드백 */
+}
+
