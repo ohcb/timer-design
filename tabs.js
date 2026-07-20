@@ -64,24 +64,24 @@ export function initTabs() {
     });
   });
 
-  // 💡 [버그 2 해결] 홈 화면 내의 버튼들 클릭 처리
-  // 이벤트를 뺏기지 않도록 내부 수동 탭 전환 로직을 안전하게 리팩토링했습니다.
+  // 💡 [버그 2 최종 해결] 홈 화면 내의 버튼들 클릭 처리 (순서 기반 인덱스 방식)
   document.addEventListener('click', (event) => {
     
-    // 1. 스타트 버튼(.start-timer-btn) 누르면 -> Timer 탭 클릭 효과
+    // 1. 스타트 버튼(.start-timer-btn) 누르면 -> 2번째 탭(Timer) 강제 클릭
+    // 배열 순서는 0부터 시작하므로 [1]이 두 번째 탭인 Timer가 됩니다.
     if (event.target.closest('.start-timer-btn')) {
-      const timerTab = Array.from(tabs).find(t => t.textContent.trim().toLowerCase() === 'timer');
-      if (timerTab) {
-        timerTab.click(); // 강제로 Timer 탭 클릭 이벤트 트리거
+      if (tabs[1]) {
+        tabs[1].click(); 
       }
     }
     
-    // 2. 프로필 사진(.profile-pic) 누르면 -> Profile 탭 클릭 효과
+    // 2. 프로필 사진(.profile-pic) 누르면 -> 5번째 탭(Profile) 강제 클릭
+    // 배열 순서상 [4]가 다섯 번째 탭인 Profile이 됩니다.
     else if (event.target.closest('.profile-pic')) {
-      const profileTab = Array.from(tabs).find(t => t.textContent.trim().toLowerCase() === 'profile');
-      if (profileTab) {
-        profileTab.click(); // 강제로 Profile 탭 클릭 이벤트 트리거
+      if (tabs[4]) {
+        tabs[4].click(); 
+      } else {
+        tabs[tabs.length - 1].click(); // 혹시 탭 개수가 부족하면 맨 마지막 탭 클릭
       }
     }
   });
-}
