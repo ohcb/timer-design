@@ -180,31 +180,39 @@
       </div>
 
       <div id="screen-solves" class="tab-screen">
-        <div class="solves-control-manager">
-          <div class="control-header-row">
-            <h2>Solves</h2>
-            <select class="event-dropdown">
-              <option value="3x3">3x3</option>
-              <option value="4x4">4x4</option>
-              <option value="5x5">5x5</option>
-            </select>
-          </div>
+  
+  <div class="solves-control-manager">
+    
+    <div class="control-left-group">
+      <select class="custom-dropdown event-dropdown">
+        <option value="3x3">3x3</option>
+        <option value="4x4">4x4</option>
+        <option value="5x5">5x5</option>
+      </select>
 
-          <div class="stats-format-container">
-            <select id="stats-format-select" class="custom-dropdown">
-              <option value="single">Single</option>
-              <option value="ao5" selected>Ao5</option>
-              <option value="ao12">Ao12</option>
-              <option value="ao50">Ao50</option>
-              <option value="ao100">Ao100</option>
-            </select>
-          </div>
+      <select id="stats-format-select" class="custom-dropdown format-dropdown">
+        <option value="single">Single</option>
+        <option value="ao5" selected>Ao5</option>
+        <option value="ao12">Ao12</option>
+        <option value="ao50">Ao50</option>
+        <option value="ao100">Ao100</option>
+      </select>
+    </div>
 
-          <div class="action-button-group">
-            <button class="icon-control-btn" id="filter-trigger-btn"><span>⏳</span> Filter</button>
-            <button class="icon-control-btn" id="sort-trigger-btn"><span>↕️</span> Sort</button>
-          </div>
-        </div>
+    <div class="control-right-group">
+      <button class="icon-control-btn" id="filter-trigger-btn">
+        <span>⏳</span> Filter
+      </button>
+      <button class="icon-control-btn" id="sort-trigger-btn">
+        <span>↕️</span> Sort
+      </button>
+    </div>
+
+  </div>
+
+  <div class="record-cards-list" id="record-cards-container">
+    </div>
+</div>
 
         <div class="record-cards-list" id="record-cards-container">
           <div class="record-card pb-card" data-id="1">
