@@ -16,7 +16,7 @@ export function initTabs() {
     }
   }
 
-  // 💡 [버그 1 해결] 초기 상태 로드 시, 열려있는 화면에 맞춰 내비바 버튼도 강제 하이라이트!
+  // 💡 [버그 1 완벽 해결] 초기 상태 로드 시, 켜져 있는 화면에 맞춰 내비바 버튼도 강제 하이라이트!
   screens.forEach(screen => {
     if (screen.classList.contains('active-screen')) {
       screen.style.display = 'block';
@@ -25,7 +25,7 @@ export function initTabs() {
       // 현재 켜진 화면 ID (예: screen-timer)에서 'screen-'을 떼고 'timer' 추출
       const currentTabName = screen.id.replace('screen-', '');
       
-      // 내비바 버튼 중 글씨가 일치하는 녀석에게 active 강제 부여
+      // 내비바 버튼 중 글씨가 일치하는 녀석에게 active 강제 부여하여 첫 진입 싱크 맞춤
       tabs.forEach(tab => {
         if (tab.textContent.trim().toLowerCase() === currentTabName) {
           tab.classList.add('active');
@@ -46,7 +46,6 @@ export function initTabs() {
       tabs.forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
 
-      // 💡 공백이나 대소문자 때문에 매칭 실패하는 걸 방지하기 위해 정교하게 처리
       const tabName = tab.textContent.trim().toLowerCase();
       const targetScreenId = `screen-${tabName}`;
 
@@ -64,21 +63,25 @@ export function initTabs() {
     });
   });
 
-    // 💡 [버그 2 최종 해결] 홈 화면 내 버튼 클릭 시 화면+내비바 불빛 직통 전환
+  // 💡 [버그 2 완벽 해결] 홈 화면 내 버튼 클릭 시 순서(인덱스) 기반 직통 제어
+  // HTML 내의 글씨 오타나 이미지 태그 유무에 상관없이 무조건 지정된 순서의 탭을 정교하게 제어합니다.
   document.addEventListener('click', (event) => {
+    let targetIndex = -1;
     let targetTabName = '';
 
-    // 1. 스타트 버튼(.start-timer-btn) 클릭 시 -> timer 탭 타겟팅
+    // 1. 스타트 버튼(.start-timer-btn) 클릭 시 -> 2번째 탭 (인덱스 1, timer)
     if (event.target.closest('.start-timer-btn')) {
+      targetIndex = 1;
       targetTabName = 'timer';
     }
-    // 2. 프로필 사진(.profile-pic) 클릭 시 -> profile 탭 타겟팅
+    // 2. 프로필 사진(.profile-pic) 클릭 시 -> 5번째 탭 (인덱스 4, profile)
     else if (event.target.closest('.profile-pic')) {
+      targetIndex = 4;
       targetTabName = 'profile';
     }
 
-    // 타겟팅된 탭이 있다면 화면과 내비바를 동시에 강제로 바꿉니다.
-    if (targetTabName) {
+    // 매칭된 버튼 순서가 있다면 실행
+    if (targetIndex !== -1 && tabs[targetIndex]) {
       const targetScreenId = `screen-${targetTabName}`;
 
       // [1] 상단바 노출 여부 제어
@@ -95,9 +98,9 @@ export function initTabs() {
         }
       });
 
-      // [3] 모든 내비바 불빛 끄고 해당 버튼만 불 켜기
-      tabs.forEach(tab => {
-        if (tab.textContent.trim().toLowerCase() === targetTabName) {
+      // [3] ★텍스트 무시★ 순서 번호가 일치하는 내비바 버튼만 불 켜기
+      tabs.forEach((tab, index) => {
+        if (index === targetIndex) {
           tab.classList.add('active');
         } else {
           tab.classList.remove('active');
@@ -105,3 +108,4 @@ export function initTabs() {
       });
     }
   });
+}
