@@ -6,103 +6,94 @@ export function initTabs() {
 
   if (tabs.length === 0 || screens.length === 0) return;
 
-  // 상단바 노출 여부를 체크하는 미니 함수
+  // 1. 상단바 노출 여부를 체크하는 미니 함수
   function toggleHeaderCenter(screenId) {
     if (!headerCenter) return;
-    if (screenId === 'screen-timer') {
-      headerCenter.style.display = 'flex';
-    } else {
-      headerCenter.style.display = 'none';
-    }
+    headerCenter.style.display = (screenId === 'screen-timer') ? 'flex' : 'none';
   }
 
-  // 💡 [안전장치 보강] 초기 상태 로드
-  try {
-    screens.forEach(screen => {
-      if (screen && screen.classList.contains('active-screen')) {
-        screen.style.display = 'block';
-        toggleHeaderCenter(screen.id);
+  // 🎯 [핵심] 현재 활성화된 화면(active-screen)을 보고 내비바 불빛을 알아서 켜주는 함수
+  function syncNavWithActiveScreen() {
+    // 현재 켜져 있는 화면을 찾습니다.
+    const activeScreen = document.querySelector('.tab-screen.active-screen');
+    if (!activeScreen) return;
 
-        if (screen.id) {
-          const currentTabName = screen.id.replace('screen-', '');
-          tabs.forEach(tab => {
-            if (tab && tab.textContent.trim().toLowerCase() === currentTabName) {
-              tab.classList.add('active');
-            } else if (tab) {
-              tab.classList.remove('active');
-            }
-          });
-        }
-      } else if (screen) {
-        screen.style.display = 'none';
+    // 예: 'screen-timer' -> 'timer' 추출
+    const currentTabName = activeScreen.id.replace('screen-', '');
+
+    // 내비바 버튼들을 돌면서 글씨가 일치하는 녀석만 불 켜기
+    tabs.forEach(tab => {
+      if (tab.textContent.trim().toLowerCase() === currentTabName) {
+        tab.classList.add('active');
+      } else {
+        tab.classList.remove('active');
       }
     });
-  } catch (e) {
-    console.error("초기화 중 에러가 발생했으나 무시하고 탭 클릭 기능을 활성화합니다.", e);
+
+    // 상단바 노출 여부도 화면 ID에 맞춰 자동으로 연동
+    toggleHeaderCenter(activeScreen.id);
   }
 
-  // 💡 하단 탭 클릭 제어 (여기는 이제 무조건 실행됩니다)
+  // 2. 초기 상태 로드 (첫 진입 시 활성화된 화면에 맞춰 내비바 자동 싱크)
+  screens.forEach(screen => {
+    if (screen.classList.contains('active-screen')) {
+      screen.style.display = 'block';
+    } else {
+      screen.style.display = 'none';
+    }
+  });
+  syncNavWithActiveScreen(); // 👈 여기서 첫 화면 내비바 불빛을 알아서 켭니다.
+
+
+  // 3. 하단 탭 클릭 제어
   tabs.forEach(tab => {
     tab.addEventListener('click', (event) => {
       event.preventDefault();
 
-      tabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-
       const tabName = tab.textContent.trim().toLowerCase();
       const targetScreenId = `screen-${tabName}`;
 
-      toggleHeaderCenter(targetScreenId);
-
+      // 화면들만 먼저 싹 정리하고 타겟 화면에 active-screen 붙이기
       screens.forEach(screen => {
-        if (screen && screen.id === targetScreenId) {
+        if (screen.id === targetScreenId) {
           screen.style.display = 'block';
           screen.classList.add('active-screen');
-        } else if (screen) {
+        } else {
           screen.style.display = 'none';
           screen.classList.remove('active-screen');
         }
       });
+
+      // 👈 "화면이 바뀌었으니 내비바 너는 알아서 불 켜라" 호출
+      syncNavWithActiveScreen(); 
     });
   });
 
-    // 💡 [버그 2 최종 진압] data-tab 이름표 기반 직통 제어
+
+  // 4. 홈 화면 내의 특수 버튼들 클릭 제어
   document.addEventListener('click', (event) => {
-    let targetTabName = '';
+    let targetScreenId = '';
 
-    // 1. 스타트 버튼 클릭 시 -> timer 이름표 타겟팅
     if (event.target.closest('.start-timer-btn')) {
-      targetTabName = 'timer';
-    }
-    // 2. 프로필 사진 클릭 시 -> profile 이름표 타겟팅
-    else if (event.target.closest('.profile-pic')) {
-      targetTabName = 'profile';
+      targetScreenId = 'screen-timer';
+    } else if (event.target.closest('.profile-pic')) {
+      targetScreenId = 'screen-profile';
     }
 
-    if (targetTabName) {
-      const targetScreenId = `screen-${targetTabName}`;
-
-      // [1] 상단바 노출 제어
-      toggleHeaderCenter(targetScreenId);
-
-      // [2] 모든 화면 숨기고 해당 화면만 켜기
+    // 버튼이 눌리면 오직 "화면만 교체"합니다. 내비바 코드는 건드리지도 않습니다.
+    if (targetScreenId) {
       screens.forEach(screen => {
-        if (screen && screen.id === targetScreenId) {
+        if (screen.id === targetScreenId) {
           screen.style.display = 'block';
           screen.classList.add('active-screen');
-        } else if (screen) {
+        } else {
           screen.style.display = 'none';
           screen.classList.remove('active-screen');
         }
       });
 
-      // [3] data-tab 이름표가 일치하는 내비바 버튼만 정확하게 불 켜기
-      tabs.forEach(tab => {
-        if (tab && tab.getAttribute('data-tab') === targetTabName) {
-          tab.classList.add('active');
-        } else if (tab) {
-          tab.classList.remove('active');
-        }
-      });
+      // 👈 "화면 열렸으니 내비바 너도 알아서 표시해라" 호출
+      syncNavWithActiveScreen(); 
     }
   });
+}
