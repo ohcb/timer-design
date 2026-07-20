@@ -1,10 +1,22 @@
 // tabs.js
 export function initTabs() {
   const tabs = document.querySelectorAll('.nav-tab');
-  const screens = document.querySelectorAll('.tab-screen');
+  
+  // 💡 [수정] 클래스명 하나만 쓰지 말고, 태그나 부모 관계를 명시해서 '진짜 메인 화면 5개'만 가져옵니다.
+  // 사용자님의 HTML 구조에 맞춰 아래 3가지 옵션 중 하나를 선택해 보세요. (보통 옵션 1이나 2가 맞습니다)
+  
+  // [옵션 1] 메인 화면들이 <main> 태그 바로 아래에 나란히 배치되어 있는 경우 (가장 추천)
+  const screens = document.querySelectorAll('main > .tab-screen');
+  
+  // [옵션 2] 만약 위 코드로 해결이 안 된다면, ID를 명시해서 직접 5개만 묶는 방법 (가장 안전)
+  // const screens = document.querySelectorAll('#screen-home, #screen-timer, #screen-solves, #screen-stats, #screen-profile');
+
   const headerCenter = document.querySelector('.header-center');
 
   if (tabs.length === 0 || screens.length === 0) return;
+  
+  // ... 이 뒤의 함수와 이벤트 로직(toggleHeaderCenter, syncNavWithActiveScreen 등)은 그대로 유지하시면 됩니다!
+
 
   // 1. 상단바 노출 여부를 체크하는 미니 함수
   function toggleHeaderCenter(screenId) {
