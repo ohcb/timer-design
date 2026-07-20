@@ -64,24 +64,44 @@ export function initTabs() {
     });
   });
 
-  // 💡 [버그 2 최종 해결] 홈 화면 내의 버튼들 클릭 처리 (순서 기반 인덱스 방식)
+    // 💡 [버그 2 최종 해결] 홈 화면 내 버튼 클릭 시 화면+내비바 불빛 직통 전환
   document.addEventListener('click', (event) => {
-    
-    // 1. 스타트 버튼(.start-timer-btn) 누르면 -> 2번째 탭(Timer) 강제 클릭
-    // 배열 순서는 0부터 시작하므로 [1]이 두 번째 탭인 Timer가 됩니다.
+    let targetTabName = '';
+
+    // 1. 스타트 버튼(.start-timer-btn) 클릭 시 -> timer 탭 타겟팅
     if (event.target.closest('.start-timer-btn')) {
-      if (tabs[1]) {
-        tabs[1].click(); 
-      }
+      targetTabName = 'timer';
     }
-    
-    // 2. 프로필 사진(.profile-pic) 누르면 -> 5번째 탭(Profile) 강제 클릭
-    // 배열 순서상 [4]가 다섯 번째 탭인 Profile이 됩니다.
+    // 2. 프로필 사진(.profile-pic) 클릭 시 -> profile 탭 타겟팅
     else if (event.target.closest('.profile-pic')) {
-      if (tabs[4]) {
-        tabs[4].click(); 
-      } else {
-        tabs[tabs.length - 1].click(); // 혹시 탭 개수가 부족하면 맨 마지막 탭 클릭
-      }
+      targetTabName = 'profile';
+    }
+
+    // 타겟팅된 탭이 있다면 화면과 내비바를 동시에 강제로 바꿉니다.
+    if (targetTabName) {
+      const targetScreenId = `screen-${targetTabName}`;
+
+      // [1] 상단바 노출 여부 제어
+      toggleHeaderCenter(targetScreenId);
+
+      // [2] 모든 화면 숨기고 해당 화면만 켜기
+      screens.forEach(screen => {
+        if (screen.id === targetScreenId) {
+          screen.style.display = 'block';
+          screen.classList.add('active-screen');
+        } else {
+          screen.style.display = 'none';
+          screen.classList.remove('active-screen');
+        }
+      });
+
+      // [3] 모든 내비바 불빛 끄고 해당 버튼만 불 켜기
+      tabs.forEach(tab => {
+        if (tab.textContent.trim().toLowerCase() === targetTabName) {
+          tab.classList.add('active');
+        } else {
+          tab.classList.remove('active');
+        }
+      });
     }
   });
