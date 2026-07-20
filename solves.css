@@ -433,22 +433,24 @@ div.bottom-sheet-overlay#detail-bottom-sheet .bottom-sheet-content {
   padding: 4px 8px !important;
 }
 
-/* 🖤 카드 리스트 컨테이너 배경을 완전히 투명하게 해서 뒤쪽 회색 테마가 비치도록 강제 적용 */
-.record-cards-list {
-  background-color: transparent !important;
-  background: transparent !important;
-}
+/* ================================================= */
+/* 🖤 [진짜 해결] 시커먼 하단 구역 색상 통일 시키기 */
+/* ================================================= */
 
-/* 🔲 솔브 화면 전체 바닥의 배경색을 타이머 탭과 똑같은 부드러운 회색으로 강제 고정 */
-#screen-solves {
+/* 1. 솔브 화면 전체 래퍼와 배경 타겟을 완벽하게 다크 그레이로 통일 */
+#screen-solves, 
+.tab-screen#screen-solves {
   background-color: #1a1a1c !important; 
   background: #1a1a1c !important;
 }
 
-/* 카드 리스트는 투명하게 유지해서 바닥 색이 올라오도록 */
+/* 2. 카드들이 담기는 그리드 리스트 자체의 배경색을 투명하게 날려버림 */
 .record-cards-list {
   background: transparent !important;
   background-color: transparent !important;
 }
 
-
+/* 3. 만약 카드가 담긴 영역의 높이가 꽉 차지 않아 부모 레이아웃 바닥이 보이는 문제 차단 */
+.tab-contents {
+  background-color: #1a1a1c !important;
+}
