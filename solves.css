@@ -439,3 +439,16 @@ div.bottom-sheet-overlay#detail-bottom-sheet .bottom-sheet-content {
   background: transparent !important;
 }
 
+/* 🔲 솔브 화면 전체 바닥의 배경색을 타이머 탭과 똑같은 부드러운 회색으로 강제 고정 */
+#screen-solves {
+  background-color: #1a1a1c !important; 
+  background: #1a1a1c !important;
+}
+
+/* 카드 리스트는 투명하게 유지해서 바닥 색이 올라오도록 */
+.record-cards-list {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+
