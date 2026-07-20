@@ -531,52 +531,45 @@ div.bottom-sheet-overlay#detail-bottom-sheet .bottom-sheet-content {
 }
 
 
-/* 💡 삭제 시 카드가 스르륵 사라지는 효과 */
-.record-card.removing {
-  animation: fadeOutCard 0.3s forwards;
-}
-
-@keyframes fadeOutCard {
-  to {
-    opacity: 0;
-    transform: scale(0.95);
-    height: 0;
-    padding-top: 0;
-    padding-bottom: 0;
-    margin-bottom: 0;
-  }
-}
-
-/* 💡 실행 취소(Undo) 토스트 알림바 스타일 */
+/* 💡 실행 취소(Undo) 토스트 알림바 스타일 (강력 보정 버전) */
 .undo-toast {
-  position: fixed;
-  bottom: 90px; /* 내비게이션 바 위에 딱 걸치게 세팅 */
-  left: 50%;
-  transform: translateX(-50%) translateY(100px);
-  background-color: #333;
-  color: #fff;
-  padding: 12px 20px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
-  z-index: 999999;
-  opacity: 0;
-  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
+  position: fixed !important;
+  /* 아이패드 화면 하단 내비바 바로 위 쯤에 띄우기 위해 bottom 값을 살짝 올렸습니다 */
+  bottom: 100px !important; 
+  left: 50% !important;
+  
+  /* 화면 중앙 정렬 및 시작 위치를 아래쪽으로 세팅 */
+  transform: translate(-50%, 150px) !important;
+  
+  background-color: #1c1c1e !important; /* 더 짙은 다크 테마 색상 */
+  color: #fff !important;
+  padding: 14px 24px !important;
+  border-radius: 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 20px !important;
+  
+  /* 지구가 두 쪽 나도 화면 최상단에 뜨도록 서열 강제 지정 */
+  z-index: 9999999 !important; 
+  opacity: 0 !important;
+  
+  /* 부드럽게 슥 올라오는 애니메이션 */
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s !important;
+  border: 1px solid #2c2c2e !important;
 }
 
+/* 💡 활성화되었을 때 원래 위치로 슥 올라오는 효과 */
 .undo-toast.show {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
+  opacity: 1 !important;
+  transform: translate(-50%, 0) !important;
 }
 
 .undo-btn {
-  background: none;
-  border: none;
-  color: #ffb800; /* 포인트 컬러 (노란색/주황색 계열) */
-  font-weight: bold;
-  cursor: pointer;
-  padding: 4px 8px;
-  font-size: 0.95rem;
+  background: none !important;
+  border: none !important;
+  color: #ff9f0a !important; /* 선명한 오렌지색 포인트 */
+  font-weight: bold !important;
+  cursor: pointer !important;
+  padding: 6px 10px !important;
+  font-size: 0.95rem !important;
 }
