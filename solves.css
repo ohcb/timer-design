@@ -38,13 +38,19 @@
   width: 100%;
 }
 
-/* View Selector (Singles, Ao5 등) */
-.view-selector-container {
-  display: flex;
-  background-color: #1e1e1e;
-  border-radius: 10px;
-  padding: 2px;
+.custom-dropdown {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+  outline: none;
 }
+
+/* 다크모드를 쓰신다면 배경색과 글자색을 적절히 조절해 주세요! */
 
 .view-btn {
   background: none;
