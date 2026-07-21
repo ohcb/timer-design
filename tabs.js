@@ -97,3 +97,28 @@ export function initTabs() {
     }
   });
 }
+
+// ⚙️ 상단 설정 버튼(⚙️) 클릭 시 Settings 화면으로 이동
+const quickSettingsBtn = document.getElementById("quick-settings-btn");
+
+if (quickSettingsBtn) {
+  quickSettingsBtn.addEventListener("click", () => {
+    // 1. 모든 탭 화면 숨기기
+    document.querySelectorAll(".tab-screen").forEach((screen) => {
+      screen.style.display = "none";
+      screen.classList.remove("active");
+    });
+
+    // 2. 하단 탭 버튼 활성화 해제
+    document.querySelectorAll(".main-app-navigation .nav-tab").forEach((tab) => {
+      tab.classList.remove("active");
+    });
+
+    // 3. Settings 화면 표시 및 active 클래스 추가
+    const settingsScreen = document.getElementById("screen-settings");
+    if (settingsScreen) {
+      settingsScreen.style.display = "block";
+      settingsScreen.classList.add("active");
+    }
+  });
+}
