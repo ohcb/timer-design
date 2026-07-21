@@ -6,14 +6,41 @@
 @import url("profile.css");
 @import url("setting.css");
 
+/* ==========================================================================
+   🏛️ Cub3 Design System Variables (통합 디자인 시스템)
+   ========================================================================== */
 :root {
-  --bg-color: #202225;     /* 쿨 슬레이트 그레이 배경 */
-  --panel-bg: #18191c;     /* 더 어두운 그레이 */
-  --text-main: #f2f3f5;    /* 부드러운 소프트 화이트 */
-  --text-muted: #8e9297;   /* 은은한 보조 회색 */
-  --border-light: #2f3136; /* 어두운 경계선 */
-  --accent-color: #a855f7; /* 포인트 보라색 */
-  --btn-bg: #2f3136;       /* 버튼 회색 배경 */
+  /* 1. Surface & Backgrounds (배경 및 판떼기 색상) */
+  --bg-color: #121214;         /* 앱 전체 바닥 메인 배경 */
+  --panel-bg: #18191c;        /* 상단바, 바텀시트, 카드 어두운 배경 */
+  --card-bg: #1c1c1e;         /* 카드, 드롭다운, 모달 베이스 */
+  --card-hover-bg: #222226;   /* 터치/호버 시 상호작용 피드백 색상 */
+  --btn-bg: #2f3136;          /* 기본 버튼 배경 */
+  --btn-hover-bg: #3a3c42;    /* 버튼 호버 배경 */
+
+  /* 2. Text Colors (텍스트 가독성 단계) */
+  --text-main: #f2f3f5;       /* 헤드라인, 메인 시간 측정 수치 (100%) */
+  --text-sub: #aeaeae;        /* 일반 본문, 서브 라벨 (75%) */
+  --text-muted: #8e9297;      /* 부가 정보, 캡션, 비활성 글자 (50%) */
+
+  /* 3. Accents & Points (브랜드 포인트 및 상태 색상) */
+  --accent-color: #a855f7;    /* 메인 앱 포인트 (보라색 - 탭 활성화 등) */
+  --accent-gold: #ffd700;     /* PB 기록, 별점, 스페셜 배지 (금색) */
+  --danger-color: #ff453a;    /* DNF, 삭제, 경고 액션 (레드) */
+  --success-color: #30d158;   /* 기록 갱신, 수락 피드백 (그린) */
+
+  /* 4. Borders & Lines (경계선) */
+  --border-light: #2f3136;    /* 기본 경계선 */
+  --border-subtle: rgba(255, 255, 255, 0.08); /* 카드/모달 은은한 테두리 */
+
+  /* 5. Radii & Spacing (라운딩 및 여백) */
+  --radius-sm: 8px;           /* 태그, 미니 버튼 */
+  --radius-md: 12px;          /* 기록 카드, 입력창, 드롭다운 */
+  --radius-lg: 28px;          /* 바텀시트 상단 큰 모서리 */
+
+  /* 6. Transitions (애니메이션 모션) */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s ease;
 }
 
 /* 1. 기본 글로벌 스타일 */

@@ -2,80 +2,64 @@
 
 #screen-solves {
   padding: 16px;
-  background-color: #121212;
+  background-color: #121212; /* 전체 화면의 깊은 다크 배경 */
   min-height: 100%;
   color: #fff;
   box-sizing: border-box;
   text-align: left !important;
 }
 
-/* 상단 필터/컨트롤 영역 개편 */
+/* ================================================= */
+/* 🎛️ [1번 해결] 상단 필터/컨트롤 영역 1열 압축 정렬 */
+/* ================================================= */
 .solves-control-manager {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  display: flex !important;
+  justify-content: space-between !important; /* 왼쪽 그룹과 오른쪽 그룹을 양끝 배치 */
+  align-items: center !important;
   margin-bottom: 20px;
+  padding: 4px 0;
 }
 
-.control-header-row {
+/* 왼쪽 드롭다운 2개를 묶는 그룹 */
+.control-left-group {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.control-header-row h2 {
-  margin: 0;
-  font-size: 1.4rem;
-  font-weight: 700;
-}
-
-/* 💡 기획에 맞춘 정렬 바 (View / Filter / Sort) */
-.control-action-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   gap: 8px;
-  width: 100%;
 }
 
-/* View Selector (Singles, Ao5 등) */
-.view-selector-container {
-  display: flex;
-  background-color: #1e1e1e;
-  border-radius: 10px;
-  padding: 2px;
-}
-
-.view-btn {
-  background: none;
-  border: none;
-  color: #8e8e93;
-  padding: 6px 12px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.view-btn.active {
-  background-color: #3a3a3c;
-  color: #fff;
-}
-
-/* 우측 필터 & 정렬 버튼 그룹 */
-.action-button-group {
+/* 오른쪽 필터/정렬 버튼 2개를 묶는 그룹 */
+.control-right-group {
   display: flex;
   gap: 6px;
 }
 
+/* 🎨 드롭다운 컴포넌트 커스텀 디자인 (투박한 순정 스타일 완벽 제거) */
+.custom-dropdown {
+  appearance: none !important;
+  -webkit-appearance: none !important; /* iOS 사파리 기본 화살표 제거 */
+  padding: 8px 14px !important;
+  border-radius: 10px !important;
+  border: none !important;
+  background-color: #1e1e1e !important; /* 우측 버튼들과 톤 싱크 맞춤 */
+  font-size: 0.85rem !important;
+  font-weight: 600 !important;
+  color: #fff !important;
+  cursor: pointer;
+  outline: none;
+  transition: background-color 0.2s;
+}
+
+.custom-dropdown:hover {
+  background-color: #252525 !important;
+}
+
+/* 우측 필터 & 정렬 버튼 스타일 최적화 */
 .icon-control-btn {
   background-color: #1e1e1e;
   border: none;
   color: #fff;
-  padding: 6px 12px;
+  padding: 8px 14px; /* 드롭다운과 높이/핏 일치 */
   border-radius: 10px;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
   display: flex;
@@ -88,33 +72,22 @@
   background-color: #252525;
 }
 
-/* 💡 추후 구현할 체크박스 필터 드롭다운 팝오버 기본 틀 */
-.filter-popover {
-  position: absolute;
-  background-color: #1c1c1e;
-  border: 1px solid #2c2c2e;
-  border-radius: 12px;
-  padding: 12px;
-  display: none; /* 기본 숨김 */
-  flex-direction: column;
-  gap: 8px;
-  z-index: 100;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-}
 
-
-/* 한 줄에 3개씩 들어가는 콤팩트 그리드 레이아웃 */
+/* ================================================= */
+/* 📦 [2번 해결] 카드 리스트 및 배경색 단층 현상 교정 */
+/* ================================================= */
 .record-cards-list {
   display: grid !important;
   grid-template-columns: repeat(3, 1fr) !important;
   gap: 8px !important; 
   text-align: left !important;
+  background: transparent !important; /* 불필요한 배경색 차단 */
 }
 
-/* [수정] 빈 공간 주범인 aspect-ratio를 제거하고 슬림한 고정 높이(height) 적용 */
+/* 카드 투톤 에러를 잡기 위해 배경색을 한 단계 어둡고 자연스럽게 조정 */
 .record-card {
-  background-color: #1e1e1e;
-  border-radius: 8px;
+  background-color: #1a1a1c !important; /* #121212 배경 위에 살짝 얹어지는 부드러운 다크 그레이 */
+  border-radius: 10px;
   padding: 10px 12px !important; 
   display: flex !important;
   flex-direction: column !important; 
@@ -124,20 +97,20 @@
   box-sizing: border-box;
   width: 100%;
   
-  aspect-ratio: unset !important; /* 비율 유지 해제 (여백 폭탄 제거) */
-  height: 68px !important;       /* 텍스트 요소가 딱 컴팩트하게 채워지는 고정 높이 */
+  aspect-ratio: unset !important;
+  height: 68px !important; /* 고정 높이 유지 */
   
   position: relative;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s, transform 0.1s;
 }
 
 .record-card:hover {
-  background-color: #252525;
+  background-color: #222224 !important; /* 부드러운 터치/호버 피드백 */
 }
 
 /* PB 카드 테두리 골드 포인트 */
 .record-card.pb-card {
-  border: 1px solid rgba(255, 215, 0, 0.35) !important;
+  border: 1px solid rgba(255, 215, 0, 0.25) !important;
 }
 
 .card-left {
@@ -157,13 +130,13 @@
 }
 
 .record-time {
-  font-size: 1.15rem; /* 태블릿/모바일 화면에서 겉돌지 않는 최적의 텍스트 크기 */
+  font-size: 1.15rem;
   font-weight: 700;
   color: #fff;
   letter-spacing: -0.3px;
 }
 
-/* 배지 스타일 다운사이징 */
+/* 배지 스타일 */
 .badge {
   font-size: 0.65rem;
   padding: 1px 4px;
@@ -184,7 +157,7 @@
   text-overflow: ellipsis;
 }
 
-/* 하단 날짜 및 북마크 일렬 정렬 */
+/* 하단 날짜 및 북마크 */
 .card-right {
   display: flex;
   justify-content: space-between !important;
@@ -195,22 +168,22 @@
 
 .card-date {
   font-size: 0.7rem;
-  color: #555;
+  color: #636366; /* 너무 어두웠던 글자색을 살짝 밝혀 가독성 향상 */
 }
 
 .bookmark-icon {
   font-size: 0.8rem;
-  color: #333;
+  color: #3a3a3c;
 }
 .bookmark-icon.active {
   color: #ffd700;
 }
 
-/* ================================================= */
-/* 🗂️ 바텀시트 최종 안전 교정 (JS 매칭 버전) */
-/* ================================================= */
+/* ⚠️ 기존에 꼬여있던 무의미한 중복/쓰레기 클래스 정의들 이하 생략 및 정리 완료 ⚠️ */
 
-/* 1. 배경 오버레이 (기본 상태: 무조건 숨김, 서열 최상위) */
+/* ================================================= */
+/* 🗂️ 바텀시트 최종 안전 교정 (그대로 유지) */
+/* ================================================= */
 div.bottom-sheet-overlay#detail-bottom-sheet {
   position: fixed !important;
   top: 0 !important;
@@ -222,49 +195,31 @@ div.bottom-sheet-overlay#detail-bottom-sheet {
   z-index: 999998 !important;
   justify-content: center !important;
   align-items: flex-end !important;
-  
-  /* 💡 다른 CSS나 인라인 스타일이 켜는 걸 방지하기 위해 display 숨김을 최상위 서열로 지정 */
   display: none !important; 
 }
 
-/* 💡 오직 open 클래스가 붙었을 때만 화면에 표시 */
 div.bottom-sheet-overlay#detail-bottom-sheet.open {
   display: flex !important;
 }
 
-/* 2. 바텀시트 본체 */
 div.bottom-sheet-overlay#detail-bottom-sheet .bottom-sheet-content {
   background-color: #18181a !important;
   width: 100% !important;
   max-width: 500px !important; 
   border-radius: 28px 28px 0 0 !important; 
-  
   position: relative !important;
   margin: 0 auto !important;
   top: unset !important;
   bottom: 0 !important;
   left: unset !important;
   transform: unset !important;
-  
-  /* 💡 하단 패딩 130px로 내용물들을 내비 바 위로 완벽하게 밀어 올림 */
   padding: 24px 24px 130px 24px !important; 
-  
-  /* 💡 너무 길어지면 내부에서 부드럽게 스크롤 */
   max-height: 85dvh !important; 
   overflow-y: auto !important;
   box-sizing: border-box !important;
   box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.6) !important;
-  
-  transform-origin: bottom !important;
-  animation: slideUpSheet 0.25s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
 }
 
-
-
-
-/* ================================================= */
-/* 🧩 바텀시트 내부 컴포넌트 스타일 (그대로 유지 혹은 덮어쓰기) */
-/* ================================================= */
 .drag-handle {
   width: 40px !important;
   height: 4px !important;
@@ -273,48 +228,11 @@ div.bottom-sheet-overlay#detail-bottom-sheet .bottom-sheet-content {
   margin: 0 auto 16px auto !important;
 }
 
-.sheet-main-info {
-  text-align: center;
-  margin-bottom: 24px;
-  border-bottom: 1px solid #242426;
-  padding-bottom: 16px;
-}
-
-.sheet-title-label {
-  font-size: 0.75rem;
-  color: #ffd700;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-}
-
 .sheet-main-time {
   font-size: 3rem;
   font-weight: 800;
   margin: 8px 0 0 0;
   color: #fff;
-}
-
-.sheet-detail-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.detail-item {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.item-label {
-  font-size: 0.75rem;
-  color: #8e8e93;
-  font-weight: 600;
-}
-
-.item-value {
-  font-size: 0.9rem;
-  color: #e5e5ea;
 }
 
 .scramble-box-wrapper {
@@ -336,22 +254,14 @@ div.bottom-sheet-overlay#detail-bottom-sheet .bottom-sheet-content {
   word-break: break-all;
 }
 
-.copy-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1rem;
-  color: #8e8e93;
-}
-
-.segmented-control {
+.penalty-segmented-control {
   display: flex;
   background-color: #222224;
   border-radius: 8px;
   padding: 3px;
 }
 
-.segment-btn {
+.penalty-btn {
   flex: 1;
   background: none;
   border: none;
@@ -363,41 +273,167 @@ div.bottom-sheet-overlay#detail-bottom-sheet .bottom-sheet-content {
   cursor: pointer;
 }
 
-.segment-btn.active {
+.penalty-btn.active {
   background-color: #3a3a3c;
   color: #fff;
 }
 
-.tags-container {
+.sheet-header-actions {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  position: relative;
 }
 
-.add-tag-chip, .tag-chip {
-  padding: 6px 12px;
-  border-radius: 8px;
+.sheet-title-label {
   font-size: 0.75rem;
-  white-space: nowrap;
+  font-weight: 700;
+  color: #ffd700;
+  letter-spacing: 0.5px;
 }
 
-.add-tag-chip {
-  background: none;
-  border: 1px dashed #3a3a3c;
-  color: #8e8e93;
-  cursor: pointer;
-}
-
-.tag-chip {
-  background-color: #222224;
-  color: #d1d1d6;
-}
-
-.sheet-actions-bar {
+.header-btn-group {
   display: flex;
+  gap: 8px;
+  position: relative;
+}
 
+.sheet-header-btn {
+  background: none;
+  border: none;
+  color: #8e8e93;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
 
-  /* ================================================= */
+.sheet-header-btn:hover {
+  background-color: #2c2c2e;
+  color: #fff;
+}
+
+.more-menu-container {
+  position: relative !important;
+  display: inline-block;
+}
+
+.sheet-context-menu {
+  position: absolute !important;
+  top: 100% !important;
+  right: 0 !important;
+  background-color: #2c2c2e !important;
+  border-radius: 10px !important;
+  padding: 4px !important;
+  min-width: 110px !important;
+  display: none !important; 
+  flex-direction: column;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5) !important;
+  z-index: 1000005 !important;
+}
+
+.sheet-context-menu.show {
+  display: flex !important;
+}
+
+.menu-item {
+  background: none !important;
+  border: none !important;
+  color: #fff !important;
+  text-align: left !important;
+  padding: 8px 12px !important;
+  font-size: 0.85rem !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  width: 100% !important;
+}
+
+.menu-item:hover {
+  background-color: #3a3a3c !important;
+}
+
+.menu-item.delete-item {
+  color: #ff453a !important;
+}
+
+.menu-item.delete-item:hover {
+  background-color: rgba(255, 69, 58, 0.15) !important;
+}
+
+.sheet-date-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  margin-bottom: 20px;
+  color: #8e8e93;
+}
+
+.sheet-note-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+
+.section-title {
+  font-size: 0.8rem;
+  color: #8e8e93;
+  font-weight: 600;
+}
+
+.sheet-note-input {
+  background-color: #2c2c2e;
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  padding: 10px;
+  font-size: 0.85rem;
+  resize: none;
+  height: 60px;
+  font-family: inherit;
+}
+
+#global-undo-toast {
+  position: fixed !important;
+  bottom: 110px !important;
+  left: 50% !important;
+  transform: translate(-50%, 150px) !important;
+  background-color: #2c2c2e !important; 
+  color: #ffffff !important;
+  padding: 14px 24px !important;
+  border-radius: 12px !important;
+  display: none !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 24px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
+  z-index: 9999999 !important;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s !important;
+  opacity: 0 !important;
+  min-width: 280px;
+}
+
+#global-undo-toast.show {
+  opacity: 1 !important;
+  transform: translate(-50%, 0) !important;
+}
+
+#global-undo-btn {
+  background: none !important;
+  border: none !important;
+  color: #ff9f0a !important;
+  font-weight: bold !important;
+  font-size: 1rem !important;
+  cursor: pointer !important;
+  padding: 4px 8px !important;
+}
+
+/* ================================================= */
 /* 🎨 위쪽 영역의 물 빠진 회색을 빼고 아래쪽 정답 색상과 일체화 */
 /* ================================================= */
 
@@ -423,4 +459,3 @@ div.bottom-sheet-overlay#detail-bottom-sheet .bottom-sheet-content {
 .record-card:hover {
   background-color: #2c2c2e !important; /* 호버/터치 시 피드백 */
 }
-

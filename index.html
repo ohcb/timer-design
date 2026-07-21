@@ -3,9 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
   <meta name="color-scheme" content="only dark">
-  
   <title>Cub3 Timer</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -25,14 +23,13 @@
           <option>4x4</option>
         </select>
       </div>
-      <button class="ghost-btn">⚙️</button>
+     <button class="ghost-btn" id="quick-settings-btn" onclick="openSettingsScreen()">⚙️</button>
     </header>
 
     <div class="tab-contents">
       
       <div id="screen-home" class="tab-screen">
         <div class="home-container">
-          
           <header class="home-header">
             <div class="profile-pic">👤</div>
             <div class="greeting-text">
@@ -44,25 +41,14 @@
           <section class="home-section">
             <h4 class="section-title">Today's Performance</h4>
             <div class="performance-grid">
-              <div class="perf-card">
-                <span class="card-label">Solves</span>
-                <span class="card-value">25</span>
-              </div>
-              <div class="perf-card">
-                <span class="card-label">Average</span>
-                <span class="card-value">12.34s</span>
-              </div>
-              <div class="perf-card highlight">
-                <span class="card-label">PB</span>
-                <span class="card-value">8.56s</span>
-              </div>
+              <div class="perf-card"><span class="card-label">Solves</span><span class="card-value">25</span></div>
+              <div class="perf-card"><span class="card-label">Average</span><span class="card-value">12.34s</span></div>
+              <div class="perf-card highlight"><span class="card-label">PB</span><span class="card-value">8.56s</span></div>
             </div>
           </section>
 
           <section class="home-section">
-            <button class="start-timer-btn">
-              <span>▶️ Start Solving</span>
-            </button>
+            <button class="start-timer-btn"><span>▶️ Start Solving</span></button>
           </section>
 
           <div class="home-flex-row">
@@ -74,13 +60,9 @@
                 <li>3. 8.93s</li>
               </ul>
             </div>
-            
             <div class="home-card half">
               <h4 class="section-title">Weekly Solves</h4>
-              <div class="weekly-counter-box">
-                <span class="counter-number">72</span>
-                <span class="counter-unit">solves this week</span>
-              </div>
+              <div class="weekly-counter-box"><span class="counter-number">72</span><span class="counter-unit">solves this week</span></div>
               <p class="progress-text">Pace: +5 more than last week!</p>
             </div>
           </div> 
@@ -92,12 +74,8 @@
               <div class="shortcut-badge">Featured Tool: OLL Trainer →</div>
             </div>
           </section>
-
         </div>
-      </div>
-
-      <div id="screen-timer" class="tab-screen active-screen">
-        
+      </div> <div id="screen-timer" class="tab-screen active-screen">
         <section class="scramble-zone">
           <p class="scramble-text">U2 F2 U' R2 D B2 F2 D L2 U' L2 B2 L U' B' L' D' U2 L R' B R'</p>
           <div class="scramble-actions">
@@ -118,7 +96,6 @@
 
         <section class="dashboard-panel">
           <div class="dashboard-columns">
-            
             <div class="col recent-solves">
               <h3>Recent Solves</h3>
               <ul class="solve-list">
@@ -133,30 +110,14 @@
             <div class="col current & best">
               <h3>Current & Best</h3>
               <div class="stats-table">
-                <div class="row header">
-                  <span class="stat-type"></span> <span>Cur</span> <span>Best</span>
-                </div>
-                <div class="row">
-                  <span class="stat-type">time</span> <span>8.56</span> <span>8.56</span>
-                </div>
-                <div class="row">
-                  <span class="stat-type">mo3</span> <span>-</span> <span>-</span>
-                </div>
-                <div class="row">
-                  <span class="stat-type">ao5</span> <span>8.81</span> <span>8.75</span>
-                </div>
-                <div class="row">
-                  <span class="stat-type">ao12</span> <span>8.94</span> <span>8.94</span>
-                </div>
-                <div class="row">
-                  <span class="stat-type">ao25</span> <span>-</span> <span>-</span>
-                </div>
-                <div class="row">
-                  <span class="stat-type">ao50</span> <span>-</span> <span>-</span>
-                </div>
-                <div class="row">
-                  <span class="stat-type">ao100</span> <span>-</span> <span>-</span>
-                </div>
+                <div class="row header"><span class="stat-type"></span> <span>Cur</span> <span>Best</span></div>
+                <div class="row"><span class="stat-type">time</span> <span>8.56</span> <span>8.56</span></div>
+                <div class="row"><span class="stat-type">mo3</span> <span>-</span> <span>-</span></div>
+                <div class="row"><span class="stat-type">ao5</span> <span>8.81</span> <span>8.75</span></div>
+                <div class="row"><span class="stat-type">ao12</span> <span>8.94</span> <span>8.94</span></div>
+                <div class="row"><span class="stat-type">ao25</span> <span>-</span> <span>-</span></div>
+                <div class="row"><span class="stat-type">ao50</span> <span>-</span> <span>-</span></div>
+                <div class="row"><span class="stat-type">ao100</span> <span>-</span> <span>-</span></div>
               </div>
             </div>
 
@@ -165,169 +126,127 @@
               <div class="cube-net">
                 <div class="net-row">
                   <div class="face empty-face"></div>
-                  <div class="face real-face u-face">
-                    <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                  </div>
+                  <div class="face real-face u-face"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
                   <div class="face empty-face"></div>
                   <div class="face empty-face"></div>
                 </div>
                 <div class="net-row">
-                  <div class="face real-face L-face">
-                    <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                  </div>
-                  <div class="face real-face F-face">
-                    <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                  </div>
-                  <div class="face real-face R-face">
-                    <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                  </div>
-                  <div class="face real-face B-face">
-                    <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                  </div>
+                  <div class="face real-face L-face"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                  <div class="face real-face F-face"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                  <div class="face real-face R-face"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                  <div class="face real-face B-face"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
                 </div>
                 <div class="net-row">
                   <div class="face empty-face"></div>
-                  <div class="face real-face d-face">
-                    <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                  </div>
+                  <div class="face real-face d-face"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
                   <div class="face empty-face"></div>
                   <div class="face empty-face"></div>
                 </div>
               </div>
             </div>
-
           </div>
-
           <div class="tools-area">
             <button class="clean-border-btn">Quick Tools</button>
           </div>
         </section>
-      </div>
-
-      <div id="screen-solves" class="tab-screen">
+      </div> <div id="screen-solves" class="tab-screen">
+        
         <div class="solves-control-manager">
-  <div class="control-header-row">
-    <h2>Solves</h2>
-    <select class="event-dropdown">
-      <option value="3x3">3x3</option>
-      <option value="4x4">4x4</option>
-      <option value="5x5">5x5</option>
-    </select>
-  </div>
-
-  <div class="control-action-bar">
-    <div class="view-selector-container">
-      <button class="view-btn active" data-view="singles">Singles</button>
-      <button class="view-btn" data-view="ao5">Ao5</button>
-      <button class="view-btn" data-view="ao12">Ao12</button>
-      <button class="view-btn" data-view="ao100">Ao100</button>
-    </div>
-
-    <div class="action-button-group">
-      <button class="icon-control-btn" id="filter-trigger-btn">
-        <span>⏳</span> Filter
-      </button>
-      <button class="icon-control-btn" id="sort-trigger-btn">
-        <span>↕️</span> Sort
-      </button>
-    </div>
-  </div>
-</div>
-
+          <div class="control-left-group">
+            <select class="custom-dropdown event-dropdown">
+              <option value="3x3">3x3</option>
+              <option value="4x4">4x4</option>
+              <option value="5x5">5x5</option>
+            </select>
+            <select id="stats-format-select" class="custom-dropdown format-dropdown">
+              <option value="single">Single</option>
+              <option value="ao5" selected>Ao5</option>
+              <option value="ao12">Ao12</option>
+              <option value="ao50">Ao50</option>
+              <option value="ao100">Ao100</option>
+            </select>
+          </div>
+          <div class="control-right-group">
+            <button class="icon-control-btn" id="filter-trigger-btn"><span>⏳</span> Filter</button>
+            <button class="icon-control-btn" id="sort-trigger-btn"><span>↕️</span> Sort</button>
+          </div>
+        </div>
 
         <div class="record-cards-list" id="record-cards-container">
           <div class="record-card pb-card" data-id="1">
             <div class="card-left">
-              <div class="time-row">
-                <span class="record-time">11.82</span>
-                <span class="badge pb-badge">PB</span>
-              </div>
+              <div class="time-row"><span class="record-time">11.82</span><span class="badge pb-badge">PB</span></div>
               <span class="badge tag-badge">#F2L</span>
             </div>
-            <div class="card-right">
-              <span class="card-date">07/18</span>
-              <span class="bookmark-icon active">⭐</span>
-            </div>
+            <div class="card-right"><span class="card-date">07/18</span><span class="bookmark-icon active">⭐</span></div>
           </div>
 
           <div class="record-card" data-id="2">
             <div class="card-left">
-              <div class="time-row">
-                <span class="record-time">14.25</span>
-              </div>
+              <div class="time-row"><span class="record-time">14.25</span></div>
               <span class="badge tag-badge">#PLL skip</span>
             </div>
-            <div class="card-right">
-              <span class="card-date">07/18</span>
-              <span class="bookmark-icon">☆</span>
-            </div>
+            <div class="card-right"><span class="card-date">07/18</span><span class="bookmark-icon">☆</span></div>
           </div>
 
           <div class="record-card" data-id="3">
             <div class="card-left">
-              <div class="time-row">
-                <span class="record-time">15.61</span>
-              </div>
+              <div class="time-row"><span class="record-time">15.61</span></div>
               <span class="badge tag-badge">#3x3</span>
             </div>
-            <div class="card-right">
-              <span class="card-date">07/17</span>
-              <span class="bookmark-icon">☆</span>
-            </div>
+            <div class="card-right"><span class="card-date">07/17</span><span class="bookmark-icon">☆</span></div>
           </div>
         </div>
 
         <div class="bottom-sheet-overlay" id="detail-bottom-sheet">
           <div class="bottom-sheet-content">
-            <div class="drag-handle"></div>
-            
-            <div class="sheet-main-info">
+            <div class="bottom-sheet-handle"></div>
+            <div class="sheet-header-actions">
               <span class="sheet-title-label">PERSONAL BEST</span>
-              <h1 class="sheet-main-time">11.82s</h1>
-            </div>
-
-            <div class="sheet-detail-grid">
-              <div class="detail-item full-width">
-                <span class="item-label">Scramble</span>
-                <div class="scramble-box-wrapper">
-                  <p class="scramble-code">D2 B2 L2 F2 U2 R2 D' F2 D L' B' F2 L D F' U' F' L2 R</p>
-                  <button class="copy-btn">📋</button>
-                </div>
-              </div>
-
-              <div class="detail-item">
-                <span class="item-label">Date & Time</span>
-                <span class="item-value">2026.07.18 19:05:22</span>
-              </div>
-
-              <div class="detail-item">
-                <span class="item-label">Penalty</span>
-                <div class="segmented-control">
-                  <button class="segment-btn active">OK</button>
-                  <button class="segment-btn">+2</button>
-                  <button class="segment-btn">DNF</button>
-                </div>
-              </div>
-
-              <div class="detail-item full-width">
-                <span class="item-label">Tags</span>
-                <div class="tags-container">
-                  <button class="add-tag-chip">+ Add Tag</button>
-                  <span class="tag-chip">#3x3</span>
-                  <span class="tag-chip">#F2L_Practice</span>
+              <div class="header-btn-group">
+                <button class="sheet-header-btn" id="sheet-bookmark-btn">🤍</button>
+                <div class="more-menu-container">
+                  <button class="sheet-header-btn" id="sheet-more-btn">⋮</button>
+                  <div class="sheet-context-menu" id="sheet-context-menu" style="display: none;">
+                    <button class="menu-item" id="menu-edit">✏️ Edit</button>
+                    <button class="menu-item delete-item" id="menu-delete">🗑️ Delete</button>
+                  </div> 
                 </div>
               </div>
             </div>
 
-            <div class="sheet-actions-bar">
-              <button class="action-btn">Bookmark</button>
-              <button class="action-btn delete-btn">Delete</button>
+            <div class="sheet-main-time">11.82s</div>
+            <div class="sheet-scramble-box">
+              <p class="scramble-text">D2 B2 L2 F2 U2 R2 D' F2 D L' B' F2 L D F' U' F' L2 R</p>
+              <button class="scramble-copy-btn">📋</button>
+            </div>
+            <div class="sheet-date-row">
+              <span class="date-label">Date & Time</span>
+              <span class="date-value">2026.07.18 19:05:22</span>
+            </div>
+            <div class="penalty-control-container">
+              <span class="section-title">Penalty</span>
+              <div class="penalty-segmented-control">
+                <button class="penalty-btn active" data-penalty="OK">OK</button>
+                <button class="penalty-btn" data-penalty="+2">+2</button>
+                <button class="penalty-btn" data-penalty="DNF">DNF</button>
+              </div>
+            </div>
+            <div class="sheet-note-container">
+              <span class="section-title">Notes</span>
+              <textarea class="sheet-note-input" placeholder="Add notes about this solve..."></textarea>
+            </div>
+            <div class="sheet-tag-container">
+              <span class="section-title">Tags</span>
+              <div class="sheet-tag-list">
+                <span class="sheet-tag-item">#3x3</span>
+                <span class="sheet-tag-item">#F2L</span>
+                <button class="add-tag-trigger">+ Add Tag</button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-
-      <div id="screen-stats" class="tab-screen">
+      </div> <div id="screen-stats" class="tab-screen">
         <div style="padding: 3rem 1.5rem; text-align: center; color: var(--text-muted);">
           <h2>Stats Screen</h2>
           <p style="margin-top: 0.5rem; font-size: 0.9rem;">여기에 최고 기록 갱신 그래프와 디테일 통계가 들어옵니다.</p>
@@ -341,13 +260,69 @@
         </div>
       </div>
 
-      <nav class="main-app-navigation">
-    <a href="#" class="nav-tab">Home</a>
-    <a href="#" class="nav-tab active">Timer</a>
-    <a href="#" class="nav-tab">Solves</a>
-    <a href="#" class="nav-tab">Stats</a>
-    <a href="#" class="nav-tab">Profile</a>
-  </nav>
+      <div id="screen-settings" class="tab-screen">
+  <div class="settings-container" style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.5rem;">
+    
+    <div style="padding: 1rem 0; border-bottom: 1px solid var(--border-light);">
+      <h2 style="margin: 0; color: var(--text-main);">⚙️ Preferences & Settings</h2>
+    </div>
+
+    <div class="settings-group" style="padding: 1.5rem; background-color: var(--panel-bg); border-radius: var(--radius-md); border: 1px solid var(--border-light);">
+      <h3 style="margin-top: 0; color: var(--text-main); font-size: 1.1rem;">⏱️ Timer & Inspection</h3>
+      <p style="font-size: 0.85rem; color: var(--text-muted);">스페이스바/터치 홀드 타임, WCA 15초 Inspection 타이머, 사운드/진동 피드백, 타이머 디스플레이 정밀도 설정 구역</p>
+    </div>
+
+    <div class="settings-group" style="padding: 1.5rem; background-color: var(--panel-bg); border-radius: var(--radius-md); border: 1px solid var(--border-light);">
+      <h3 style="margin-top: 0; color: var(--text-main); font-size: 1.1rem;">🎲 Scramble & Visuals</h3>
+      <p style="font-size: 0.85rem; color: var(--text-muted);">종목별 스크램블 생성기, 폰트 크기, 2D/3D 큐브 전개도 스타일 커스텀 구역</p>
+    </div>
+
+    <div class="settings-group" style="padding: 1.5rem; background-color: var(--panel-bg); border-radius: var(--radius-md); border: 1px solid var(--border-light);">
+      <h3 style="margin-top: 0; color: var(--text-main); font-size: 1.1rem;">🎨 Appearance & Themes</h3>
+      <p style="font-size: 0.85rem; color: var(--text-muted);">다크/라이트 테마, 포인트 컬러 변수 지정, 폰트 스타일링 제어 구역</p>
+    </div>
+
+    <div class="settings-group" style="padding: 1.5rem; background-color: var(--panel-bg); border-radius: var(--radius-md); border: 1px solid var(--border-light);">
+      <h3 style="margin-top: 0; color: var(--text-main); font-size: 1.1rem;">💾 Data Management</h3>
+      <p style="font-size: 0.85rem; color: var(--text-muted);">CSTimer/CubeDesk 규격 CSV 데이터 내보내기/불러오기, 전체 백업 및 기록 초기화 구역</p>
+    </div>
+
+  </div>
+</div>
+
+
+      <div id="screen-session-manager" class="tab-screen">
+  <div class="session-manager-container" style="max-width: 800px; margin: 0 auto;">
+    
+    <div style="padding: 1.5rem; background-color: var(--panel-bg); border-radius: var(--radius-md); border: 1px solid var(--border-light); margin-bottom: 1.5rem;">
+      <h2 style="margin: 0 0 0.5rem 0; color: var(--text-main);">🎛️ Session Manager</h2>
+      <p style="margin: 0; font-size: 0.9rem; color: var(--text-muted);">
+        세션 생성/삭제, 세션별 통계(Mean/Ao5/Ao12) 비교, 데이터 합치기 및 이동을 관리하는 통합 세션 관리자 구역입니다.
+      </p>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 1rem;">
+      <div style="padding: 1rem; background-color: var(--card-bg); border-radius: var(--radius-md); border: 1px solid var(--border-subtle); color: var(--text-sub);">
+        <p style="margin: 0; font-size: 0.85rem;">[Session List & Detailed Actions Placeholder]</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+    </div> <nav class="main-app-navigation">
+      <a href="#" class="nav-tab" data-tab="home">Home</a>
+      <a href="#" class="nav-tab active" data-tab="timer">Timer</a>
+      <a href="#" class="nav-tab" data-tab="solves">Solves</a>
+      <a href="#" class="nav-tab" data-tab="stats">Stats</a>
+      <a href="#" class="nav-tab" data-tab="profile">Profile</a>
+    </nav>
+
+  </div> <div id="global-undo-toast" class="undo-toast" style="display: none !important; position: fixed !important; bottom: 110px !important; left: 50% !important; transform: translate(-50%, 150px) !important; background-color: #2c2c2e !important; color: #ffffff !important; padding: 14px 24px !important; border-radius: 12px !important; align-items: center !important; justify-content: space-between !important; gap: 24px !important; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important; z-index: 9999999 !important; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s !important; opacity: 0 !important; min-width: 280px !important;">
+    <span style="font-size: 0.95rem !important; font-family: -apple-system, BlinkMacSystemFont, sans-serif !important;">기록이 삭제되었습니다.</span>
+    <button id="global-undo-btn" class="undo-btn">Undo</button>
+  </div>
 
   <script type="module" src="app.js"></script>
 </body>

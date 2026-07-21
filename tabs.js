@@ -6,73 +6,77 @@ export function initTabs() {
 
   if (tabs.length === 0 || screens.length === 0) return;
 
-  // 상단바 노출 여부를 체크하는 미니 함수
+  // 상단바 노출 여부 체크 함수 (Timer 화면일 때만 노출)
   function toggleHeaderCenter(screenId) {
     if (!headerCenter) return;
-    if (screenId === 'screen-timer') {
-      headerCenter.style.display = 'flex';
-    } else {
-      headerCenter.style.display = 'none';
-    }
+    headerCenter.style.display = (screenId === 'screen-timer') ? 'flex' : 'none';
   }
 
-  // 💡 [버그 1 완벽 해결] 초기 상태 로드 시, 켜져 있는 화면에 맞춰 내비바 버튼도 강제 하이라이트!
+  // 🎯 화면 ID에 맞춰 내비바 불빛 및 상단바 싱크 맞추는 함수
+  function syncNavWithActiveScreen(targetScreenId) {
+    const currentTabName = targetScreenId.replace('screen-', '');
+
+    tabs.forEach(tab => {
+      if (tab.textContent.trim().toLowerCase() === currentTabName) {
+        tab.classList.add('active');
+      } else {
+        tab.classList.remove('active');
+      }
+    });
+
+    toggleHeaderCenter(targetScreenId);
+  }
+
+  // 🎯 특정 화면을 활성화하는 통합 함수
+  function activateScreen(targetScreenId) {
+    screens.forEach(screen => {
+      if (screen.id === targetScreenId) {
+        screen.style.display = 'block';
+        screen.classList.add('active-screen');
+      } else if (screen.id && screen.id.startsWith('screen-')) {
+        screen.style.display = 'none';
+        screen.classList.remove('active-screen');
+      }
+    });
+
+    syncNavWithActiveScreen(targetScreenId);
+  }
+
+  // 1. 초기 상태 로드
   screens.forEach(screen => {
     if (screen.classList.contains('active-screen')) {
       screen.style.display = 'block';
-      toggleHeaderCenter(screen.id);
-
-      // 현재 켜진 화면 ID (예: screen-timer)에서 'screen-'을 떼고 'timer' 추출
-      const currentTabName = screen.id.replace('screen-', '');
-      
-      // 내비바 버튼 중 글씨가 일치하는 녀석에게 active 강제 부여하여 첫 진입 싱크 맞춤
-      tabs.forEach(tab => {
-        if (tab.textContent.trim().toLowerCase() === currentTabName) {
-          tab.classList.add('active');
-        } else {
-          tab.classList.remove('active');
-        }
-      });
+      syncNavWithActiveScreen(screen.id);
     } else {
-      screen.style.display = 'none';
+      if (screen.id && screen.id.startsWith('screen-')) {
+        screen.style.display = 'none';
+      }
     }
   });
 
-  // 하단 탭 클릭 제어 (기본 내비게이션 기능)
+  // 2. 하단 탭 클릭 제어
   tabs.forEach(tab => {
     tab.addEventListener('click', (event) => {
       event.preventDefault();
-
-      tabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-
       const tabName = tab.textContent.trim().toLowerCase();
-      const targetScreenId = `screen-${tabName}`;
-
-      toggleHeaderCenter(targetScreenId);
-
-      screens.forEach(screen => {
-        if (screen.id === targetScreenId) {
-          screen.style.display = 'block';
-          screen.classList.add('active-screen');
-        } else {
-          screen.style.display = 'none';
-          screen.classList.remove('active-screen');
-        }
-      });
+      activateScreen(`screen-${tabName}`);
     });
   });
 
-  // 💡 [버그 2 완벽 해결] 홈 화면 내 버튼 클릭 시 순서(인덱스) 기반 직통 제어
-  // HTML 내의 글씨 오타나 이미지 태그 유무에 상관없이 무조건 지정된 순서의 탭을 정교하게 제어합니다.
+  // 3. 특수 버튼들 클릭 제어 (홈 버튼, 프로필 클릭, 상단 ⚙️ 설정 버튼)
   document.addEventListener('click', (event) => {
-    let targetIndex = -1;
-    let targetTabName = '';
+    let targetScreenId = '';
 
-    // 1. 스타트 버튼(.start-timer-btn) 클릭 시 -> 2번째 탭 (인덱스 1, timer)
     if (event.target.closest('.start-timer-btn')) {
-      targetIndex = 1;
-      targetTabName = 'timer';
+      targetScreenId = 'screen-timer';
+    } else if (event.target.closest('.profile-pic')) {
+      targetScreenId = 'screen-profile';
+    } else if (event.target.closest('#quick-settings-btn')) {
+      targetScreenId = 'screen-settings';
+    }
+
+    if (targetScreenId) {
+      activateScreen(targetScreenId);
     }
     // 2. 프로필 사진(.profile-pic) 클릭 시 -> 5번째 탭 (인덱스 4, profile)
     else if (event.target.closest('.profile-pic'))
