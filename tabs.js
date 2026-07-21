@@ -78,5 +78,5 @@ export function initTabs() {
     if (targetScreenId) {
       activateScreen(targetScreenId);
     }
-  });
-}
+    // 2. 프로필 사진(.profile-pic) 클릭 시 -> 5번째 탭 (인덱스 4, profile)
+    else if (event.target.closest('.profile-pic'))
