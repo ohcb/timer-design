@@ -98,27 +98,32 @@ export function initTabs() {
   });
 }
 
-// ⚙️ 상단 설정 버튼(⚙️) 클릭 시 Settings 화면으로 이동
-const quickSettingsBtn = document.getElementById("quick-settings-btn");
+  // 3. 특수 버튼들 클릭 제어 (홈 화면 버튼, 프로필 클릭, 상단 ⚙️ 설정 버튼)
+  document.addEventListener('click', (event) => {
+    let targetScreenId = '';
 
-if (quickSettingsBtn) {
-  quickSettingsBtn.addEventListener("click", () => {
-    // 1. 모든 탭 화면 숨기기
-    document.querySelectorAll(".tab-screen").forEach((screen) => {
-      screen.style.display = "none";
-      screen.classList.remove("active");
-    });
+    if (event.target.closest('.start-timer-btn')) {
+      targetScreenId = 'screen-timer';
+    } else if (event.target.closest('.profile-pic')) {
+      targetScreenId = 'screen-profile';
+    } else if (event.target.closest('#quick-settings-btn')) { // ⚙️ 설정 버튼 추가!
+      targetScreenId = 'screen-settings';
+    }
 
-    // 2. 하단 탭 버튼 활성화 해제
-    document.querySelectorAll(".main-app-navigation .nav-tab").forEach((tab) => {
-      tab.classList.remove("active");
-    });
+    // 버튼이 눌리면 오직 화면만 교체하고, 내비바는 동기화 함수에 위임합니다.
+    if (targetScreenId) {
+      screens.forEach(screen => {
+        if (screen.id === targetScreenId) {
+          screen.style.display = 'block';
+          screen.classList.add('active-screen'); // 🎯 active -> active-screen 으로 기존 규칙 통일!
+        } else if (screen.id && screen.id.startsWith('screen-')) {
+          screen.style.display = 'none';
+          screen.classList.remove('active-screen');
+        }
+      });
 
-    // 3. Settings 화면 표시 및 active 클래스 추가
-    const settingsScreen = document.getElementById("screen-settings");
-    if (settingsScreen) {
-      settingsScreen.style.display = "block";
-      settingsScreen.classList.add("active");
+      // "화면 열렸으니 내비바 및 상단바도 알아서 맞추어라"
+      syncNavWithActiveScreen(targetScreenId);
     }
   });
 }
