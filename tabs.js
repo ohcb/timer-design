@@ -127,3 +127,28 @@ export function initTabs() {
     }
   });
 }
+
+// 설정 화면으로 직접 전환해 주는 함수
+window.openSettingsScreen = function() {
+  const screens = document.querySelectorAll('.tab-screen');
+  const tabs = document.querySelectorAll('.nav-tab');
+  const headerCenter = document.querySelector('.header-center');
+
+  // 모든 메인 화면 숨기기
+  screens.forEach(screen => {
+    if (screen.id === 'screen-settings') {
+      screen.style.display = 'block';
+      screen.classList.add('active-screen');
+    } else if (screen.id && screen.id.startsWith('screen-')) {
+      screen.style.display = 'none';
+      screen.classList.remove('active-screen');
+    }
+  });
+
+  // 하단 탭 불빛 끄기 (설정 화면은 하단 탭에 없으므로)
+  tabs.forEach(tab => tab.classList.remove('active'));
+
+  // 상단 세션/종목 선택바 숨기기
+  if (headerCenter) headerCenter.style.display = 'none';
+};
+
