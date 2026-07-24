@@ -6,13 +6,11 @@ let selectedMobileEvent = null;
 export function initStats() {
   const eventBtn = document.getElementById('stats-event-btn');
   const eventMenu = document.getElementById('stats-event-menu');
-  const viewOverview = document.getElementById('stats-view-overview');
-  const viewEvent = document.getElementById('stats-view-event');
   const options = document.querySelectorAll('.stats-option');
 
   if (!eventBtn || !eventMenu) return;
 
-  // 1. Overview 버튼 클릭 토글 (▼ 제거된 디자인)
+  // 1. Overview 버튼 클릭 토글
   eventBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     const isHidden = eventMenu.style.display === 'none' || eventMenu.style.display === '';
@@ -35,7 +33,7 @@ export function initStats() {
   renderDistributionChart();
 }
 
-// 화면 전환 공통 함수
+// 화면 전환 공통 함수 (세로 1열 고정 로직 강화)
 function switchEventView(eventName) {
   const eventBtn = document.getElementById('stats-event-btn');
   const viewOverview = document.getElementById('stats-view-overview');
@@ -50,11 +48,20 @@ function switchEventView(eventName) {
   eventBtn.textContent = activeOption ? activeOption.textContent : 'Overview';
 
   if (eventName === 'overview') {
-    if (viewOverview) viewOverview.style.display = 'flex';
+    if (viewOverview) {
+      // 💡 강제로 세로 1열(column) 배치 스타일을 주입하여 2열 분할 방지
+      viewOverview.style.setProperty('display', 'flex', 'important');
+      viewOverview.style.setProperty('flex-direction', 'column', 'important');
+      viewOverview.style.setProperty('width', '100%', 'important');
+    }
     if (viewEvent) viewEvent.style.display = 'none';
   } else {
     if (viewOverview) viewOverview.style.display = 'none';
-    if (viewEvent) viewEvent.style.display = 'flex';
+    if (viewEvent) {
+      viewEvent.style.setProperty('display', 'flex', 'important');
+      viewEvent.style.setProperty('flex-direction', 'column', 'important');
+      viewEvent.style.setProperty('width', '100%', 'important');
+    }
   }
 }
 
