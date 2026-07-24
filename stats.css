@@ -1,5 +1,5 @@
 /* ==========================================================================
-   📊 Stats Screen Styling (수정 버전)
+   📊 Stats Screen Styling (세로 1열 레이아웃 고정 및 UI 보완)
    ========================================================================== */
 
 .stats-container {
@@ -21,7 +21,7 @@
 }
 
 .stats-page-title {
-  font-size: 1.35rem !important; /* ⭐ 제목 크기 대폭 축소 */
+  font-size: 1.35rem !important; /* ⭐ 제목 크기 축소 고정 */
   font-weight: 700;
   color: var(--text-main, #f2f3f5);
   margin: 0;
@@ -94,12 +94,23 @@
   margin: 4px 0;
 }
 
-/* 3. Overall Activity (수치 크게, 라벨 작게 유지) */
+/* 3. Layout Control - Overview & Event 화면 모두 세로 1열 고정 */
+.stats-main-content,
+#stats-view-overview,
+#stats-view-event {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 1.25rem !important;
+  width: 100%;
+}
+
 .stats-card {
   background-color: #18191c;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 14px;
   padding: 1.25rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .card-title {
@@ -112,6 +123,7 @@
   text-align: center;
 }
 
+/* 4. Overall Activity (수치 크게, 라벨 작게 유지) */
 .activity-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -132,56 +144,9 @@
   color: #f2f3f5;
 }
 
-/* 4. Event Distribution (원그래프 & 모바일 카드) */
+/* 5. Event Distribution (원그래프 & 모바일 카드) */
 .distribution-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
-}
-
-.chart-wrapper {
-  position: relative;
-  width: 100%;
-  max-width: 260px;
-  height: 260px;
-}
-
-.mobile-event-card {
-  width: 100%;
-  background-color: #1c1c1e;
-  border: 1px solid rgba(168, 85, 247, 0.4);
-  border-radius: 10px;
-  padding: 10px 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 0.5rem;
-}
-
-.mobile-card-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.mobile-event-name {
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: #f2f3f5;
-}
-
-.mobile-event-stats {
-  font-size: 0.75rem;
-  color: #8e9297;
-}
-
-.mobile-view-btn {
-  background-color: #a855f7;
-  color: #ffffff;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  cursor: pointer;
-}
+  gap:
