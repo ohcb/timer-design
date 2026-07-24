@@ -6,6 +6,7 @@
   <meta name="color-scheme" content="only dark">
   <title>Cub3 Timer</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="stats.css">
 </head>
 <body>
   <div class="app-container">
@@ -23,7 +24,7 @@
           <option>4x4</option>
         </select>
       </div>
-     <button class="ghost-btn" id="quick-settings-btn" onclick="openSettingsScreen()">⚙️</button>
+      <button class="ghost-btn" id="quick-settings-btn" onclick="openSettingsScreen()">⚙️</button>
     </header>
 
     <div class="tab-contents">
@@ -75,7 +76,9 @@
             </div>
           </section>
         </div>
-      </div> <div id="screen-timer" class="tab-screen active-screen">
+      </div>
+
+      <div id="screen-timer" class="tab-screen active-screen">
         <section class="scramble-zone">
           <p class="scramble-text">U2 F2 U' R2 D B2 F2 D L2 U' L2 B2 L U' B' L' D' U2 L R' B R'</p>
           <div class="scramble-actions">
@@ -149,8 +152,9 @@
             <button class="clean-border-btn">Quick Tools</button>
           </div>
         </section>
-      </div> <div id="screen-solves" class="tab-screen">
-        
+      </div>
+
+      <div id="screen-solves" class="tab-screen">
         <div class="solves-control-manager">
           <div class="control-left-group">
             <select class="custom-dropdown event-dropdown">
@@ -249,377 +253,163 @@
       </div> 
 
       <div id="screen-stats" class="tab-screen">
-  <style>
-    .stats-container {
-      width: 100%;
-      max-width: 800px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      gap: 1.25rem;
-      padding: 0 1rem;
-      box-sizing: border-box;
-    }
-    .stats-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0.5rem 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    .stats-page-title {
-      font-size: 1.35rem !important; /* ⭐ 제목 크기 고정 */
-      font-weight: 700;
-      color: #f2f3f5;
-      margin: 0;
-      line-height: 1;
-    }
-    .stats-selector-wrapper { position: relative; }
-    .stats-event-button {
-      background-color: #1c1c1e;
-      color: #f2f3f5;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .stats-dropdown {
-      position: absolute;
-      top: 120%;
-      right: 0;
-      width: 140px;
-      background-color: #1c1c1e;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 10px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-      z-index: 100;
-      display: flex;
-      flex-direction: column;
-      padding: 4px 0;
-    }
-    .stats-option {
-      background: none;
-      border: none;
-      color: #aeaeae;
-      padding: 10px 16px;
-      text-align: left;
-      font-size: 0.85rem;
-      width: 100%;
-      cursor: pointer;
-    }
-    .stats-option:hover, .stats-option.active {
-      background-color: #2c2c2e;
-      color: #a855f7;
-      font-weight: 600;
-    }
-    .dropdown-divider {
-      height: 1px;
-      background-color: rgba(255, 255, 255, 0.1);
-      margin: 4px 0;
-    }
-    .stats-main-content {
-      display: flex;
-      flex-direction: column;
-      gap: 1.25rem;
-      width: 100%;
-    }
-    .stats-card {
-      background-color: #18191c;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 14px;
-      padding: 1.25rem;
-      box-sizing: border-box;
-      width: 100%;
-    }
-    .card-title {
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: #8e9297;
-      letter-spacing: 0.8px;
-      text-transform: uppercase;
-      margin: 0 0 1rem 0;
-      text-align: center;
-    }
-    .activity-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1rem;
-      text-align: center;
-    }
-    .activity-label {
-      font-size: 0.75rem;
-      color: #8e9297;
-      display: block;
-      margin-bottom: 4px;
-    }
-    .activity-value {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: #f2f3f5;
-    }
-    .distribution-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1rem;
-    }
-    .chart-wrapper {
-      position: relative;
-      width: 100%;
-      max-width: 260px;
-      height: 260px;
-    }
-    /* ⭐ 수치 박스 뭉침 현상 완벽 해결 CSS */
-    .stats-grid {
-      display: grid !important;
-      gap: 8px !important;
-      width: 100% !important;
-    }
-    .stats-grid.grid-5 { grid-template-columns: repeat(5, 1fr) !important; }
-    .stats-grid.grid-4 { grid-template-columns: repeat(4, 1fr) !important; }
-    .stat-box {
-      background-color: #1c1c1e !important;
-      border: 1px solid rgba(255, 255, 255, 0.04) !important;
-      border-radius: 8px !important;
-      padding: 0.75rem 0.25rem !important;
-      text-align: center !important;
-      display: flex !important;
-      flex-direction: column !important;
-      justify-content: center !important;
-      align-items: center !important;
-    }
-    .stat-label {
-      font-size: 0.7rem !important;
-      color: #8e9297 !important;
-      margin-bottom: 4px !important;
-      display: block !important;
-    }
-    .stat-value {
-      font-size: 1rem !important;
-      font-weight: 700 !important;
-      color: #f2f3f5 !important;
-    }
-    .stat-value.highlight { color: #ffd700 !important; }
-    .stat-value.highlight-purple { color: #a855f7 !important; }
-    .analysis-grid { display: flex; justify-content: center; text-align: center; }
-    .analysis-box { display: flex; flex-direction: column; gap: 4px; }
-    @media (max-width: 500px) {
-      .stats-grid.grid-5 { grid-template-columns: repeat(3, 1fr) !important; }
-      .stats-grid.grid-4 { grid-template-columns: repeat(2, 1fr) !important; }
-    }
-  </style>
-
-  <div class="stats-container">
-    <header class="stats-header">
-      <h1 class="stats-page-title">Stats</h1>
-      <div class="stats-selector-wrapper">
-        <button id="stats-event-btn" class="stats-event-button" type="button">Overview</button>
-        <div id="stats-event-menu" class="stats-dropdown" style="display: none;">
-          <button type="button" class="stats-option active" data-event="overview">Overview</button>
-          <div class="dropdown-divider"></div>
-          <button type="button" class="stats-option" data-event="2x2">2x2</button>
-          <button type="button" class="stats-option" data-event="3x3">3x3</button>
-          <button type="button" class="stats-option" data-event="4x4">4x4</button>
-          <button type="button" class="stats-option" data-event="5x5">5x5</button>
-          <button type="button" class="stats-option" data-event="oh">OH</button>
-        </div>
-      </div>
-    </header>
-
-    <main id="stats-view-overview" class="stats-main-content">
-      <section class="stats-card">
-        <h2 class="card-title">OVERALL ACTIVITY</h2>
-        <div class="activity-grid">
-          <div class="activity-item">
-            <span class="activity-label">Total Solves</span>
-            <span class="activity-value">15,482</span>
-          </div>
-          <div class="activity-item">
-            <span class="activity-label">Total Time</span>
-            <span class="activity-value">72h 35m</span>
-          </div>
-        </div>
-      </section>
-
-      <section class="stats-card">
-        <h2 class="card-title">EVENT DISTRIBUTION</h2>
-        <div class="distribution-container">
-          <div class="chart-wrapper">
-            <canvas id="distribution-chart"></canvas>
-          </div>
-          <div id="mobile-event-card" class="mobile-event-card" style="display: none;">
-            <div class="mobile-card-info">
-              <span id="mobile-event-name" class="mobile-event-name">3x3</span>
-              <span id="mobile-event-stats" class="mobile-event-stats">68% · 10,532 solves</span>
+        <div class="stats-container">
+          <header class="stats-header">
+            <h1 class="stats-page-title">Stats</h1>
+            <div class="stats-selector-wrapper">
+              <button id="stats-event-btn" class="stats-event-button" type="button">Overview</button>
+              <div id="stats-event-menu" class="stats-dropdown" style="display: none;">
+                <button type="button" class="stats-option active" data-event="overview">Overview</button>
+                <div class="dropdown-divider"></div>
+                <button type="button" class="stats-option" data-event="2x2">2x2</button>
+                <button type="button" class="stats-option" data-event="3x3">3x3</button>
+                <button type="button" class="stats-option" data-event="4x4">4x4</button>
+                <button type="button" class="stats-option" data-event="5x5">5x5</option>
+                <button type="button" class="stats-option" data-event="oh">OH</button>
+              </div>
             </div>
-            <button id="mobile-view-stats-btn" class="mobile-view-btn" type="button">View Stats →</button>
-          </div>
+          </header>
+
+          <main id="stats-view-overview" class="stats-main-content">
+            <section class="stats-card">
+              <h2 class="card-title">OVERALL ACTIVITY</h2>
+              <div class="activity-grid">
+                <div class="activity-item">
+                  <span class="activity-label">Total Solves</span>
+                  <span class="activity-value">15,482</span>
+                </div>
+                <div class="activity-item">
+                  <span class="activity-label">Total Time</span>
+                  <span class="activity-value">72h 35m</span>
+                </div>
+              </div>
+            </section>
+
+            <section class="stats-card">
+              <h2 class="card-title">EVENT DISTRIBUTION</h2>
+              <div class="distribution-container">
+                <div class="chart-wrapper">
+                  <canvas id="distribution-chart"></canvas>
+                </div>
+                <div id="mobile-event-card" class="mobile-event-card" style="display: none;">
+                  <div class="mobile-card-info">
+                    <span id="mobile-event-name" class="mobile-event-name">3x3</span>
+                    <span id="mobile-event-stats" class="mobile-event-stats">68% · 10,532 solves</span>
+                  </div>
+                  <button id="mobile-view-stats-btn" class="mobile-view-btn" type="button">View Stats →</button>
+                </div>
+              </div>
+            </section>
+          </main>
+
+          <main id="stats-view-event" class="stats-main-content" style="display: none;">
+            <section class="stats-card scope-card">
+              <div class="scope-selector-wrapper">
+                <span class="scope-label">Range</span>
+                <select id="stats-scope-select" class="scope-select">
+                  <option value="all">전체 (All Solves)</option>
+                  <option value="recent50">최근 50솔브</option>
+                  <option value="recent100">최근 100솔브</option>
+                  <option value="recent500">최근 500솔브</option>
+                  <option value="recent1000">최근 1000솔브</option>
+                  <option value="today">오늘</option>
+                  <option value="7days">최근 7일</option>
+                  <option value="30days">최근 30일</option>
+                  <option value="custom">사용자 지정...</option>
+                </select>
+              </div>
+            </section>
+
+            <section class="stats-card">
+              <h2 class="card-title">PERSONAL BEST</h2>
+              <div class="stats-grid grid-5">
+                <div class="stat-box"><span class="stat-label">Single</span><span class="stat-value highlight">8.56s</span></div>
+                <div class="stat-box"><span class="stat-label">Mo3</span><span class="stat-value">9.80s</span></div>
+                <div class="stat-box"><span class="stat-label">Ao5</span><span class="stat-value">10.42s</span></div>
+                <div class="stat-box"><span class="stat-label">Ao12</span><span class="stat-value">11.10s</span></div>
+                <div class="stat-box"><span class="stat-label">Ao100</span><span class="stat-value">12.05s</span></div>
+              </div>
+            </section>
+
+            <section class="stats-card">
+              <h2 class="card-title">TIME PROGRESS</h2>
+              <div class="chart-container-box">
+                <canvas id="time-progress-chart"></canvas>
+              </div>
+            </section>
+
+            <section class="stats-card">
+              <h2 class="card-title">RECORD DISTRIBUTION</h2>
+              <div class="chart-container-box">
+                <canvas id="record-distribution-chart"></canvas>
+              </div>
+            </section>
+
+            <section class="stats-card">
+              <h2 class="card-title">STATISTICS</h2>
+              <div class="stats-grid grid-3">
+                <div class="stat-box"><span class="stat-label">Mean</span><span id="stat-mean" class="stat-value">11.45s</span></div>
+                <div class="stat-box"><span class="stat-label">Median</span><span id="stat-median" class="stat-value">11.20s</span></div>
+                <div class="stat-box"><span class="stat-label">Std Dev</span><span id="stat-sd" class="stat-value">1.12s</span></div>
+              </div>
+              <div class="stats-grid grid-2" style="margin-top: 8px;">
+                <div class="stat-box"><span class="stat-label">Total Solves</span><span id="stat-total-solves" class="stat-value">10,532</span></div>
+                <div class="stat-box"><span class="stat-label">Total Time</span><span id="stat-total-time" class="stat-value">32h 10m</span></div>
+              </div>
+            </section>
+
+            <section class="stats-card">
+              <h2 class="card-title">PENALTIES</h2>
+              <div class="penalty-bar-container">
+                <div class="penalty-progress">
+                  <div id="bar-ok" class="penalty-segment ok" style="width: 95%;"></div>
+                  <div id="bar-p2" class="penalty-segment p2" style="width: 3%;"></div>
+                  <div id="bar-dnf" class="penalty-segment dnf" style="width: 2%;"></div>
+                </div>
+                <div class="penalty-legend">
+                  <span class="p-item ok">OK: <strong id="val-ok">9,800</strong></span>
+                  <span class="p-item p2">+2: <strong id="val-p2">310</strong></span>
+                  <span class="p-item dnf">DNF: <strong id="val-dnf">206</strong></span>
+                </div>
+              </div>
+            </section>
+
+            <section class="stats-card">
+              <h2 class="card-title">WORST RECORD</h2>
+              <div class="single-stat-center">
+                <span class="stat-label">Worst Solve</span>
+                <span id="stat-worst" class="stat-value highlight-red">18.42s</span>
+              </div>
+            </section>
+          </main>
         </div>
-      </section>
-    </main>
-
-    <main id="stats-view-event" class="stats-main-content" style="display: none;">
-
-  <section class="stats-card scope-card">
-    <div class="scope-selector-wrapper">
-      <span class="scope-label">Range</span>
-      <select id="stats-scope-select" class="scope-select">
-        <option value="all">전체 (All Solves)</option>
-        <option value="recent50">최근 50솔브</option>
-        <option value="recent100">최근 100솔브</option>
-        <option value="recent500">최근 500솔브</option>
-        <option value="recent1000">최근 1000솔브</option>
-        <option value="today">오늘</option>
-        <option value="7days">최근 7일</option>
-        <option value="30days">최근 30일</option>
-        <option value="custom">사용자 지정...</option>
-      </select>
-    </div>
-  </section>
-
-  <section class="stats-card">
-    <h2 class="card-title">PERSONAL BEST</h2>
-    <div class="stats-grid grid-5">
-      <div class="stat-box"><span class="stat-label">Single</span><span class="stat-value highlight">8.56s</span></div>
-      <div class="stat-box"><span class="stat-label">Mo3</span><span class="stat-value">9.80s</span></div>
-      <div class="stat-box"><span class="stat-label">Ao5</span><span class="stat-value">10.42s</span></div>
-      <div class="stat-box"><span class="stat-label">Ao12</span><span class="stat-value">11.10s</span></div>
-      <div class="stat-box"><span class="stat-label">Ao100</span><span class="stat-value">12.05s</span></div>
-    </div>
-  </section>
-
-  <section class="stats-card">
-    <h2 class="card-title">TIME PROGRESS</h2>
-    <div class="chart-container-box">
-      <canvas id="time-progress-chart"></canvas>
-    </div>
-  </section>
-
-  <section class="stats-card">
-    <h2 class="card-title">RECORD DISTRIBUTION</h2>
-    <div class="chart-container-box">
-      <canvas id="record-distribution-chart"></canvas>
-    </div>
-  </section>
-
-  <section class="stats-card">
-    <h2 class="card-title">STATISTICS</h2>
-    <div class="stats-grid grid-3">
-      <div class="stat-box"><span class="stat-label">Mean</span><span id="stat-mean" class="stat-value">11.45s</span></div>
-      <div class="stat-box"><span class="stat-label">Median</span><span id="stat-median" class="stat-value">11.20s</span></div>
-      <div class="stat-box"><span class="stat-label">Std Dev</span><span id="stat-sd" class="stat-value">1.12s</span></div>
-    </div>
-    <div class="stats-grid grid-2" style="margin-top: 8px;">
-      <div class="stat-box"><span class="stat-label">Total Solves</span><span id="stat-total-solves" class="stat-value">10,532</span></div>
-      <div class="stat-box"><span class="stat-label">Total Time</span><span id="stat-total-time" class="stat-value">32h 10m</span></div>
-    </div>
-  </section>
-
-  <section class="stats-card">
-    <h2 class="card-title">PENALTIES</h2>
-    <div class="penalty-bar-container">
-      <div class="penalty-progress">
-        <div id="bar-ok" class="penalty-segment ok" style="width: 95%;"></div>
-        <div id="bar-p2" class="penalty-segment p2" style="width: 3%;"></div>
-        <div id="bar-dnf" class="penalty-segment dnf" style="width: 2%;"></div>
       </div>
-      <div class="penalty-legend">
-        <span class="p-item ok">OK: <strong id="val-ok">9,800</strong></span>
-        <span class="p-item p2">+2: <strong id="val-p2">310</strong></span>
-        <span class="p-item dnf">DNF: <strong id="val-dnf">206</strong></span>
-      </div>
-    </div>
-  </section>
 
-  <section class="stats-card">
-    <h2 class="card-title">WORST RECORD</h2>
-    <div class="single-stat-center">
-      <span class="stat-label">Worst Solve</span>
-      <span id="stat-worst" class="stat-value highlight-red">18.42s</span>
-    </div>
-  </section>
-
-</main>
-
-
-      
       <div id="screen-profile" class="tab-screen">
-        <div style="padding: 3rem 1.5rem; text-align: center; color: var(--text-muted);">
+        <div style="padding: 3rem 1.5rem; text-align: center; color: var(--text-muted, #8e9297);">
           <h2>Profile Screen</h2>
           <p style="margin-top: 0.5rem; font-size: 0.9rem;">여기에 다크모드 선택, 계정 및 유저 설정이 들어옵니다.</p>
         </div>
       </div>
 
-      <div id="screen-settings" class="tab-screen">
-  <div class="settings-container" style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.5rem;">
-    
-    <div style="padding: 1rem 0; border-bottom: 1px solid var(--border-light);">
-      <h2 style="margin: 0; color: var(--text-main);">⚙️ Preferences & Settings</h2>
     </div>
 
-    <div class="settings-group" style="padding: 1.5rem; background-color: var(--panel-bg); border-radius: var(--radius-md); border: 1px solid var(--border-light);">
-      <h3 style="margin-top: 0; color: var(--text-main); font-size: 1.1rem;">⏱️ Timer & Inspection</h3>
-      <p style="font-size: 0.85rem; color: var(--text-muted);">스페이스바/터치 홀드 타임, WCA 15초 Inspection 타이머, 사운드/진동 피드백, 타이머 디스플레이 정밀도 설정 구역</p>
-    </div>
-
-    <div class="settings-group" style="padding: 1.5rem; background-color: var(--panel-bg); border-radius: var(--radius-md); border: 1px solid var(--border-light);">
-      <h3 style="margin-top: 0; color: var(--text-main); font-size: 1.1rem;">🎲 Scramble & Visuals</h3>
-      <p style="font-size: 0.85rem; color: var(--text-muted);">종목별 스크램블 생성기, 폰트 크기, 2D/3D 큐브 전개도 스타일 커스텀 구역</p>
-    </div>
-
-    <div class="settings-group" style="padding: 1.5rem; background-color: var(--panel-bg); border-radius: var(--radius-md); border: 1px solid var(--border-light);">
-      <h3 style="margin-top: 0; color: var(--text-main); font-size: 1.1rem;">🎨 Appearance & Themes</h3>
-      <p style="font-size: 0.85rem; color: var(--text-muted);">다크/라이트 테마, 포인트 컬러 변수 지정, 폰트 스타일링 제어 구역</p>
-    </div>
-
-    <div class="settings-group" style="padding: 1.5rem; background-color: var(--panel-bg); border-radius: var(--radius-md); border: 1px solid var(--border-light);">
-      <h3 style="margin-top: 0; color: var(--text-main); font-size: 1.1rem;">💾 Data Management</h3>
-      <p style="font-size: 0.85rem; color: var(--text-muted);">CSTimer/CubeDesk 규격 CSV 데이터 내보내기/불러오기, 전체 백업 및 기록 초기화 구역</p>
-    </div>
-
-  </div>
-</div>
-
-
-      <div id="screen-session-manager" class="tab-screen">
-  <div class="session-manager-container" style="max-width: 800px; margin: 0 auto;">
-    
-    <div style="padding: 1.5rem; background-color: var(--panel-bg); border-radius: var(--radius-md); border: 1px solid var(--border-light); margin-bottom: 1.5rem;">
-      <h2 style="margin: 0 0 0.5rem 0; color: var(--text-main);">🎛️ Session Manager</h2>
-      <p style="margin: 0; font-size: 0.9rem; color: var(--text-muted);">
-        세션 생성/삭제, 세션별 통계(Mean/Ao5/Ao12) 비교, 데이터 합치기 및 이동을 관리하는 통합 세션 관리자 구역입니다.
-      </p>
-    </div>
-
-    <div style="display: flex; flex-direction: column; gap: 1rem;">
-      <div style="padding: 1rem; background-color: var(--card-bg); border-radius: var(--radius-md); border: 1px solid var(--border-subtle); color: var(--text-sub);">
-        <p style="margin: 0; font-size: 0.85rem;">[Session List & Detailed Actions Placeholder]</p>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-
-       <nav class="main-app-navigation bottom-nav">
+    <nav class="main-app-navigation bottom-nav">
       <a href="#" class="nav-tab" data-tab="home">Home</a>
-      <a href="#" class="nav-tab" data-tab="timer">Timer</a>
+      <a href="#" class="nav-tab active" data-tab="timer">Timer</a>
       <a href="#" class="nav-tab" data-tab="solves">Solves</a>
-      <a href="#" class="nav-tab active" data-tab="stats">Stats</a>
+      <a href="#" class="nav-tab" data-tab="stats">Stats</a>
       <a href="#" class="nav-tab" data-tab="profile">Profile</a>
     </nav>
 
-  </div> <div id="global-undo-toast" class="undo-toast" style="display: none !important; position: fixed !important; bottom: 110px !important; left: 50% !important; transform: translate(-50%, 150px) !important; background-color: #2c2c2e !important; color: #ffffff !important; padding: 14px 24px !important; border-radius: 12px !important; align-items: center !important; justify-content: space-between !important; gap: 24px !important; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important; z-index: 9999999 !important; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s !important; opacity: 0 !important; min-width: 280px !important;">
-    <span style="font-size: 0.95rem !important; font-family: -apple-system, BlinkMacSystemFont, sans-serif !important;">기록이 삭제되었습니다.</span>
+  </div>
+
+  <div id="global-undo-toast" class="undo-toast" style="display: none !important;">
+    <span>기록이 삭제되었습니다.</span>
     <button id="global-undo-btn" class="undo-btn">Undo</button>
   </div>
 
-  
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script type="module" src="./app.js"></script>
 </body>
 </html>
-
