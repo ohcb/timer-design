@@ -7,10 +7,11 @@ export function initStats() {
   const eventBtn = document.getElementById('stats-event-btn');
   const eventMenu = document.getElementById('stats-event-menu');
   const options = document.querySelectorAll('.stats-option');
+  const scopeSelect = document.getElementById('stats-scope-select');
 
   if (!eventBtn || !eventMenu) return;
 
-  // 1. Overview 버튼 클릭 토글
+  // 1. Overview 드롭다운 토글
   eventBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     const isHidden = eventMenu.style.display === 'none' || eventMenu.style.display === '';
@@ -29,11 +30,26 @@ export function initStats() {
     });
   });
 
-  // 3. Event Distribution 원그래프 생성
+  // 3. 통계 범위 선택 드롭다운 이벤트 (Range Filter)
+  if (scopeSelect) {
+    scopeSelect.addEventListener('change', (e) => {
+      const selectedScope = e.target.value;
+      
+      if (selectedScope === 'custom') {
+        alert('사용자 지정 범위 모달 연결 예정');
+        return;
+      }
+
+      // 선택된 범위에 따라 데이터 재계산 및 갱신
+      updateEventStatsByScope(selectedScope);
+    });
+  }
+
+  // 4. Event Distribution 원그래프 생성
   renderDistributionChart();
 }
 
-// 화면 전환 공통 함수 (세로 1열 고정 로직 강화)
+// 화면 전환 공통 함수 (세로 1열 고정 로직)
 function switchEventView(eventName) {
   const eventBtn = document.getElementById('stats-event-btn');
   const viewOverview = document.getElementById('stats-view-overview');
@@ -49,7 +65,6 @@ function switchEventView(eventName) {
 
   if (eventName === 'overview') {
     if (viewOverview) {
-      // 💡 강제로 세로 1열(column) 배치 스타일을 주입하여 2열 분할 방지
       viewOverview.style.setProperty('display', 'flex', 'important');
       viewOverview.style.setProperty('flex-direction', 'column', 'important');
       viewOverview.style.setProperty('width', '100%', 'important');
@@ -65,18 +80,17 @@ function switchEventView(eventName) {
   }
 }
 
-// 4. Event Distribution 원그래프 (Chart.js)
+// 5. Event Distribution 원그래프 (Chart.js)
 function renderDistributionChart() {
   const ctx = document.getElementById('distribution-chart');
   if (!ctx) return;
 
   const isMobile = window.innerWidth <= 600;
 
-  // 샘플 데이터 (상위 종목 + Others)
   const chartData = {
     labels: ['3x3', '2x2', '4x4', 'OH', 'Others'],
     datasets: [{
-      data: [10532, 2300, 1400, 850, 400], // Solves 횟수
+      data: [10532, 2300, 1400, 850, 400],
       backgroundColor: ['#a855f7', '#3b82f6', '#10b981', '#f59e0b', '#6b7280'],
       borderWidth: 0,
       hoverOffset: 6
@@ -95,7 +109,7 @@ function renderDistributionChart() {
           labels: { color: '#aeaeae', font: { size: 11 }, padding: 12 }
         },
         tooltip: {
-          enabled: !isMobile // 모바일에선 기본 툴팁 끄고 전용 카드 활성화
+          enabled: !isMobile
         }
       },
       onClick: (e, activeElements) => {
@@ -110,7 +124,6 @@ function renderDistributionChart() {
         if (clickedEvent === 'Others') return;
 
         if (isMobile) {
-          // 모바일: 터치 시 하단에 'View Stats' 카드 표시
           selectedMobileEvent = clickedEvent;
           const mobileCard = document.getElementById('mobile-event-card');
           const mobileName = document.getElementById('mobile-event-name');
@@ -125,7 +138,6 @@ function renderDistributionChart() {
             viewBtn.onclick = () => switchEventView(clickedEvent);
           }
         } else {
-          // PC: 클릭 시 해당 종목 Stats 화면으로 바로 이동
           switchEventView(clickedEvent);
         }
       }
@@ -133,29 +145,8 @@ function renderDistributionChart() {
   });
 }
 
-
-// stats.js 내 초기화 함수에 추가
-const scopeSelect = document.getElementById('stats-scope-select');
-
-if (scopeSelect) {
-  scopeSelect.addEventListener('change', (e) => {
-    const selectedScope = e.target.value;
-    
-    if (selectedScope === 'custom') {
-      // 추후 사용자 지정 날짜/개수 모달 띄우기
-      alert('사용자 지정 범위 모달 연결 예정');
-      return;
-    }
-
-    // 선택된 범위에 따라 데이터 재계산 및 차트/수치 갱신 함수 호출
-    updateEventStatsByScope(selectedScope);
-  });
-}
-
+// 6. 범위(Range) 변경 시 통계 데이터 갱신 함수
 function updateEventStatsByScope(scope) {
-  // TODO: 데이터베이스/솔브 기록 Array에서 scope 조건(50개, 7일 등)으로 필터링
-  // 1. Time Progress 차트 데이터 update()
-  // 2. Histogram 차트 데이터 update()
-  // 3. Mean, Median, Std Dev, Total Solves, Total Time 계산 후 textContent 변경
-  // 4. Penalty 바 너비 및 수치 update()
+  // TODO: 실제 솔브 데이터 연결 시 여기서 필터링 후 차트 및 지표 갱신
+  console.log(`[Stats Scope Changed]: ${scope}`);
 }
