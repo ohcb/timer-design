@@ -132,3 +132,30 @@ function renderDistributionChart() {
     }
   });
 }
+
+
+// stats.js 내 초기화 함수에 추가
+const scopeSelect = document.getElementById('stats-scope-select');
+
+if (scopeSelect) {
+  scopeSelect.addEventListener('change', (e) => {
+    const selectedScope = e.target.value;
+    
+    if (selectedScope === 'custom') {
+      // 추후 사용자 지정 날짜/개수 모달 띄우기
+      alert('사용자 지정 범위 모달 연결 예정');
+      return;
+    }
+
+    // 선택된 범위에 따라 데이터 재계산 및 차트/수치 갱신 함수 호출
+    updateEventStatsByScope(selectedScope);
+  });
+}
+
+function updateEventStatsByScope(scope) {
+  // TODO: 데이터베이스/솔브 기록 Array에서 scope 조건(50개, 7일 등)으로 필터링
+  // 1. Time Progress 차트 데이터 update()
+  // 2. Histogram 차트 데이터 update()
+  // 3. Mean, Median, Std Dev, Total Solves, Total Time 계산 후 textContent 변경
+  // 4. Penalty 바 너비 및 수치 update()
+}
