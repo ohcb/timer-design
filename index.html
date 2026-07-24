@@ -247,21 +247,20 @@
           </div>
         </div>
       </div> 
-      
       <div id="screen-stats" class="tab-screen">
   <div class="stats-container">
     
     <header class="stats-header">
       <h1 class="stats-page-title">Stats</h1>
       <div class="stats-selector-wrapper">
-        <button id="stats-event-btn" class="stats-event-button" type="button">Overview ▾</button>
+        <button id="stats-event-btn" class="stats-event-button" type="button">Overview</button>
         <div id="stats-event-menu" class="stats-dropdown" style="display: none;">
           <button type="button" class="stats-option active" data-event="overview">Overview</button>
           <div class="dropdown-divider"></div>
           <button type="button" class="stats-option" data-event="2x2">2x2</button>
           <button type="button" class="stats-option" data-event="3x3">3x3</button>
           <button type="button" class="stats-option" data-event="4x4">4x4</button>
-          <button type="button" class="stats-option" data-event="5x5">5x5</option>
+          <button type="button" class="stats-option" data-event="5x5">5x5</button>
           <button type="button" class="stats-option" data-event="oh">OH</button>
         </div>
       </div>
@@ -287,6 +286,13 @@
         <div class="distribution-container">
           <div class="chart-wrapper">
             <canvas id="distribution-chart"></canvas>
+          </div>
+          <div id="mobile-event-card" class="mobile-event-card" style="display: none;">
+            <div class="mobile-card-info">
+              <span id="mobile-event-name" class="mobile-event-name">3x3</span>
+              <span id="mobile-event-stats" class="mobile-event-stats">68% · 10,532 solves</span>
+            </div>
+            <button id="mobile-view-stats-btn" class="mobile-view-btn" type="button">View Stats →</button>
           </div>
         </div>
       </section>
@@ -339,6 +345,7 @@
 
   </div>
 </div>
+
       <div id="screen-profile" class="tab-screen">
         <div style="padding: 3rem 1.5rem; text-align: center; color: var(--text-muted);">
           <h2>Profile Screen</h2>
