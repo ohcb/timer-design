@@ -1,5 +1,5 @@
 /* ==========================================================================
-   📊 Stats Screen Styling (세로 1열 레이아웃 고정 및 UI 보완)
+   📊 Stats Screen Styling (완벽 레이아웃 복구 패치)
    ========================================================================== */
 
 .stats-container {
@@ -9,43 +9,42 @@
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
+  padding: 0 1rem;
+  box-sizing: border-box;
 }
 
-/* 1. Header & Title 크기 조정 및 세로 정렬 */
+/* 1. Header & Title */
 .stats-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0.5rem 0;
-  border-bottom: 1px solid var(--border-light, rgba(255, 255, 255, 0.1));
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .stats-page-title {
-  font-size: 1.35rem !important; /* ⭐ 제목 크기 축소 고정 */
+  font-size: 1.35rem !important;
   font-weight: 700;
-  color: var(--text-main, #f2f3f5);
+  color: #f2f3f5;
   margin: 0;
   line-height: 1;
 }
 
-/* 2. Overview 버튼 (드롭다운 느낌 제거 & 단독 버튼 스타일) */
+/* 2. Selector & Dropdown */
 .stats-selector-wrapper {
   position: relative;
 }
 
 .stats-event-button {
-  background-color: var(--card-bg, #1c1c1e);
-  color: var(--text-main, #f2f3f5);
-  border: 1px solid var(--border-light, rgba(255, 255, 255, 0.15));
+  background-color: #1c1c1e;
+  color: #f2f3f5;
+  border: 1px solid rgba(255, 255, 255, 0.15);
   padding: 8px 16px;
   border-radius: 8px;
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .stats-event-button:hover {
@@ -53,7 +52,6 @@
   border-color: rgba(255, 255, 255, 0.3);
 }
 
-/* 드롭다운 메뉴 스타일 */
 .stats-dropdown {
   position: absolute;
   top: 120%;
@@ -64,7 +62,6 @@
   border-radius: 10px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
   z-index: 100;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
   padding: 4px 0;
@@ -76,77 +73,3 @@
   color: #aeaeae;
   padding: 10px 16px;
   text-align: left;
-  font-size: 0.85rem;
-  width: 100%;
-  cursor: pointer;
-}
-
-.stats-option:hover,
-.stats-option.active {
-  background-color: #2c2c2e;
-  color: #a855f7;
-  font-weight: 600;
-}
-
-.dropdown-divider {
-  height: 1px;
-  background-color: rgba(255, 255, 255, 0.1);
-  margin: 4px 0;
-}
-
-/* 3. Layout Control - Overview & Event 화면 모두 세로 1열 고정 */
-.stats-main-content,
-#stats-view-overview,
-#stats-view-event {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 1.25rem !important;
-  width: 100%;
-}
-
-.stats-card {
-  background-color: #18191c;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 14px;
-  padding: 1.25rem;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.card-title {
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #8e9297;
-  letter-spacing: 0.8px;
-  text-transform: uppercase;
-  margin: 0 0 1rem 0;
-  text-align: center;
-}
-
-/* 4. Overall Activity (수치 크게, 라벨 작게 유지) */
-.activity-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-  text-align: center;
-}
-
-.activity-label {
-  font-size: 0.75rem;
-  color: #8e9297;
-  display: block;
-  margin-bottom: 4px;
-}
-
-.activity-value {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #f2f3f5;
-}
-
-/* 5. Event Distribution (원그래프 & 모바일 카드) */
-.distribution-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap:
