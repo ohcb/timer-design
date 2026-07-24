@@ -201,3 +201,101 @@
     grid-template-columns: repeat(4, 1fr);
   }
 }
+
+/* ==========================================================================
+   ✨ Stats 화면 디자인 퀄리티 교정 (디테일 튜닝)
+   ========================================================================== */
+
+/* 1. 타이틀 크기 및 헤더 정렬 교정 */
+.stats-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0 0.8rem 0;
+  border-bottom: 1px solid var(--border-light, #2f3136);
+}
+
+.stats-page-title {
+  font-size: 1.6rem !important; /* 너무 컸던 글자 크기를 알맞게 조정 */
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--text-main, #f2f3f5);
+  margin: 0;
+}
+
+/* 2. 카드 내부 스탯 박스 균등 분할 & 가독성 향상 */
+.stats-card {
+  background-color: #18191c;
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
+  border-radius: 16px;
+  padding: 1.25rem;
+}
+
+.card-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted, #8e9297);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+  text-align: center; /* 카드 중앙 타이틀 정리 */
+}
+
+/* 5개 박스(PB) 균등 분할 */
+.stats-grid.grid-5 {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+
+/* 4개 박스(Current) 균등 분할 */
+.stats-grid.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.stat-box {
+  background-color: #1c1c1e;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  border-radius: 10px;
+  padding: 0.6rem 0.4rem;
+  text-align: center;
+}
+
+.stat-label {
+  font-size: 0.7rem;
+  color: #8e9297;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.stat-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #f2f3f5;
+}
+
+/* 3. 빈 차트 상자 안내 표시 (차트 들어오기 전 빈 공간 보완) */
+.chart-placeholder {
+  min-height: 180px;
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+  background-color: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted, #8e9297);
+  font-size: 0.85rem;
+}
+
+/* 4. 모바일/태블릿 화면이 좁을 때 Responsive 대응 */
+@media (max-width: 600px) {
+  .stats-grid.grid-5 {
+    grid-template-columns: repeat(3, 1fr); /* 3개/2개로 자연스럽게 줄바꿈 */
+  }
+  
+  .stats-grid.grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
