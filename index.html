@@ -461,51 +461,87 @@
     </main>
 
     <main id="stats-view-event" class="stats-main-content" style="display: none;">
-      <section class="stats-card">
-        <h2 class="card-title">PERSONAL BEST</h2>
-        <div class="stats-grid grid-5">
-          <div class="stat-box"><span class="stat-label">Single</span><span class="stat-value highlight">8.56s</span></div>
-          <div class="stat-box"><span class="stat-label">Mo3</span><span class="stat-value">9.80s</span></div>
-          <div class="stat-box"><span class="stat-label">Ao5</span><span class="stat-value">10.42s</span></div>
-          <div class="stat-box"><span class="stat-label">Ao12</span><span class="stat-value">11.10s</span></div>
-          <div class="stat-box"><span class="stat-label">Ao100</span><span class="stat-value">12.05s</span></div>
-        </div>
-      </section>
 
-      <section class="stats-card">
-        <h2 class="card-title">CURRENT STATUS</h2>
-        <div class="stats-grid grid-4">
-          <div class="stat-box"><span class="stat-label">Current Avg</span><span class="stat-value">11.85s</span></div>
-          <div class="stat-box"><span class="stat-label">Recent Avg</span><span class="stat-value">11.20s</span></div>
-          <div class="stat-box"><span class="stat-label">Best</span><span class="stat-value">8.56s</span></div>
-          <div class="stat-box"><span class="stat-label">Worst</span><span class="stat-value">15.40s</span></div>
-        </div>
-      </section>
+  <section class="stats-card scope-card">
+    <div class="scope-selector-wrapper">
+      <span class="scope-label">Range</span>
+      <select id="stats-scope-select" class="scope-select">
+        <option value="all">전체 (All Solves)</option>
+        <option value="recent50">최근 50솔브</option>
+        <option value="recent100">최근 100솔브</option>
+        <option value="recent500">최근 500솔브</option>
+        <option value="recent1000">최근 1000솔브</option>
+        <option value="today">오늘</option>
+        <option value="7days">최근 7일</option>
+        <option value="30days">최근 30일</option>
+        <option value="custom">사용자 지정...</option>
+      </select>
+    </div>
+  </section>
 
-      <section class="stats-card">
-        <h2 class="card-title">PROGRESS CHARTS</h2>
-        <div class="charts-wrapper">
-          <div class="chart-box">
-            <span class="chart-sub-title">Time Progress</span>
-            <div class="chart-placeholder">
-              <canvas id="time-progress-chart"></canvas>
-            </div>
-          </div>
-        </div>
-      </section>
+  <section class="stats-card">
+    <h2 class="card-title">PERSONAL BEST</h2>
+    <div class="stats-grid grid-5">
+      <div class="stat-box"><span class="stat-label">Single</span><span class="stat-value highlight">8.56s</span></div>
+      <div class="stat-box"><span class="stat-label">Mo3</span><span class="stat-value">9.80s</span></div>
+      <div class="stat-box"><span class="stat-label">Ao5</span><span class="stat-value">10.42s</span></div>
+      <div class="stat-box"><span class="stat-label">Ao12</span><span class="stat-value">11.10s</span></div>
+      <div class="stat-box"><span class="stat-label">Ao100</span><span class="stat-value">12.05s</span></div>
+    </div>
+  </section>
 
-      <section class="stats-card">
-        <h2 class="card-title">ANALYSIS</h2>
-        <div class="analysis-grid">
-          <div class="analysis-box">
-            <span class="stat-label">Consistency Score</span>
-            <span class="stat-value highlight-purple">92.4%</span>
-          </div>
-        </div>
-      </section>
-    </main>
-  </div>
-</div>
+  <section class="stats-card">
+    <h2 class="card-title">TIME PROGRESS</h2>
+    <div class="chart-container-box">
+      <canvas id="time-progress-chart"></canvas>
+    </div>
+  </section>
+
+  <section class="stats-card">
+    <h2 class="card-title">RECORD DISTRIBUTION</h2>
+    <div class="chart-container-box">
+      <canvas id="record-distribution-chart"></canvas>
+    </div>
+  </section>
+
+  <section class="stats-card">
+    <h2 class="card-title">STATISTICS</h2>
+    <div class="stats-grid grid-3">
+      <div class="stat-box"><span class="stat-label">Mean</span><span id="stat-mean" class="stat-value">11.45s</span></div>
+      <div class="stat-box"><span class="stat-label">Median</span><span id="stat-median" class="stat-value">11.20s</span></div>
+      <div class="stat-box"><span class="stat-label">Std Dev</span><span id="stat-sd" class="stat-value">1.12s</span></div>
+    </div>
+    <div class="stats-grid grid-2" style="margin-top: 8px;">
+      <div class="stat-box"><span class="stat-label">Total Solves</span><span id="stat-total-solves" class="stat-value">10,532</span></div>
+      <div class="stat-box"><span class="stat-label">Total Time</span><span id="stat-total-time" class="stat-value">32h 10m</span></div>
+    </div>
+  </section>
+
+  <section class="stats-card">
+    <h2 class="card-title">PENALTIES</h2>
+    <div class="penalty-bar-container">
+      <div class="penalty-progress">
+        <div id="bar-ok" class="penalty-segment ok" style="width: 95%;"></div>
+        <div id="bar-p2" class="penalty-segment p2" style="width: 3%;"></div>
+        <div id="bar-dnf" class="penalty-segment dnf" style="width: 2%;"></div>
+      </div>
+      <div class="penalty-legend">
+        <span class="p-item ok">OK: <strong id="val-ok">9,800</strong></span>
+        <span class="p-item p2">+2: <strong id="val-p2">310</strong></span>
+        <span class="p-item dnf">DNF: <strong id="val-dnf">206</strong></span>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats-card">
+    <h2 class="card-title">WORST RECORD</h2>
+    <div class="single-stat-center">
+      <span class="stat-label">Worst Solve</span>
+      <span id="stat-worst" class="stat-value highlight-red">18.42s</span>
+    </div>
+  </section>
+
+</main>
 
 
       
