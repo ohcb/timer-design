@@ -249,8 +249,169 @@
       </div> 
 
       <div id="screen-stats" class="tab-screen">
+  <style>
+    .stats-container {
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      padding: 0 1rem;
+      box-sizing: border-box;
+    }
+    .stats-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .stats-page-title {
+      font-size: 1.35rem !important; /* ⭐ 제목 크기 고정 */
+      font-weight: 700;
+      color: #f2f3f5;
+      margin: 0;
+      line-height: 1;
+    }
+    .stats-selector-wrapper { position: relative; }
+    .stats-event-button {
+      background-color: #1c1c1e;
+      color: #f2f3f5;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .stats-dropdown {
+      position: absolute;
+      top: 120%;
+      right: 0;
+      width: 140px;
+      background-color: #1c1c1e;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      padding: 4px 0;
+    }
+    .stats-option {
+      background: none;
+      border: none;
+      color: #aeaeae;
+      padding: 10px 16px;
+      text-align: left;
+      font-size: 0.85rem;
+      width: 100%;
+      cursor: pointer;
+    }
+    .stats-option:hover, .stats-option.active {
+      background-color: #2c2c2e;
+      color: #a855f7;
+      font-weight: 600;
+    }
+    .dropdown-divider {
+      height: 1px;
+      background-color: rgba(255, 255, 255, 0.1);
+      margin: 4px 0;
+    }
+    .stats-main-content {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      width: 100%;
+    }
+    .stats-card {
+      background-color: #18191c;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 1.25rem;
+      box-sizing: border-box;
+      width: 100%;
+    }
+    .card-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #8e9297;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin: 0 0 1rem 0;
+      text-align: center;
+    }
+    .activity-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      text-align: center;
+    }
+    .activity-label {
+      font-size: 0.75rem;
+      color: #8e9297;
+      display: block;
+      margin-bottom: 4px;
+    }
+    .activity-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #f2f3f5;
+    }
+    .distribution-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+    .chart-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 260px;
+      height: 260px;
+    }
+    /* ⭐ 수치 박스 뭉침 현상 완벽 해결 CSS */
+    .stats-grid {
+      display: grid !important;
+      gap: 8px !important;
+      width: 100% !important;
+    }
+    .stats-grid.grid-5 { grid-template-columns: repeat(5, 1fr) !important; }
+    .stats-grid.grid-4 { grid-template-columns: repeat(4, 1fr) !important; }
+    .stat-box {
+      background-color: #1c1c1e !important;
+      border: 1px solid rgba(255, 255, 255, 0.04) !important;
+      border-radius: 8px !important;
+      padding: 0.75rem 0.25rem !important;
+      text-align: center !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: center !important;
+      align-items: center !important;
+    }
+    .stat-label {
+      font-size: 0.7rem !important;
+      color: #8e9297 !important;
+      margin-bottom: 4px !important;
+      display: block !important;
+    }
+    .stat-value {
+      font-size: 1rem !important;
+      font-weight: 700 !important;
+      color: #f2f3f5 !important;
+    }
+    .stat-value.highlight { color: #ffd700 !important; }
+    .stat-value.highlight-purple { color: #a855f7 !important; }
+    .analysis-grid { display: flex; justify-content: center; text-align: center; }
+    .analysis-box { display: flex; flex-direction: column; gap: 4px; }
+    @media (max-width: 500px) {
+      .stats-grid.grid-5 { grid-template-columns: repeat(3, 1fr) !important; }
+      .stats-grid.grid-4 { grid-template-columns: repeat(2, 1fr) !important; }
+    }
+  </style>
+
   <div class="stats-container">
-    
     <header class="stats-header">
       <h1 class="stats-page-title">Stats</h1>
       <div class="stats-selector-wrapper">
@@ -343,9 +504,9 @@
         </div>
       </section>
     </main>
-
   </div>
 </div>
+
 
       
       <div id="screen-profile" class="tab-screen">
