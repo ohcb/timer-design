@@ -431,31 +431,25 @@
 </main>
 
 
-      <div id="screen-profile" class="tab-screen">
-        <div style="padding: 3rem 1.5rem; text-align: center; color: var(--text-muted, #8e9297);">
-          <h2>Profile Screen</h2>
-          <p style="margin-top: 0.5rem; font-size: 0.9rem;">여기에 다크모드 선택, 계정 및 유저 설정이 들어옵니다.</p>
-        </div>
+                </div> </div> <div id="screen-profile" class="tab-screen">
+      <div style="padding: 3rem 1.5rem; text-align: center; color: var(--text-muted, #8e9297);">
+        <h2>Profile Screen</h2>
+        <p style="margin-top: 0.5rem; font-size: 0.9rem;">여기에 다크모드 선택, 계정 및 유저 설정이 들어옵니다.</p>
       </div>
+    </div> </div> <nav class="main-app-navigation bottom-nav">
+    <a href="#" class="nav-tab" data-tab="home">Home</a>
+    <a href="#" class="nav-tab active" data-tab="timer">Timer</a>
+    <a href="#" class="nav-tab" data-tab="solves">Solves</a>
+    <a href="#" class="nav-tab" data-tab="stats">Stats</a>
+    <a href="#" class="nav-tab" data-tab="profile">Profile</a>
+  </nav>
 
-    </div>
+</div> <div id="global-undo-toast" class="undo-toast" style="display: none !important;">
+  <span>기록이 삭제되었습니다.</span>
+  <button id="global-undo-btn" class="undo-btn">Undo</button>
+</div>
 
-    <nav class="main-app-navigation bottom-nav">
-      <a href="#" class="nav-tab" data-tab="home">Home</a>
-      <a href="#" class="nav-tab active" data-tab="timer">Timer</a>
-      <a href="#" class="nav-tab" data-tab="solves">Solves</a>
-      <a href="#" class="nav-tab" data-tab="stats">Stats</a>
-      <a href="#" class="nav-tab" data-tab="profile">Profile</a>
-    </nav>
-
-  </div>
-
-  <div id="global-undo-toast" class="undo-toast" style="display: none !important;">
-    <span>기록이 삭제되었습니다.</span>
-    <button id="global-undo-btn" class="undo-btn">Undo</button>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script type="module" src="./app.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script type="module" src="./app.js"></script>
 </body>
 </html>
