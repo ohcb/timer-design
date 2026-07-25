@@ -67,31 +67,36 @@ export function initStats() {
   renderDistributionChart();
 }
 
-// 📌 [핵심 수정] 내비바를 지켜주는 화면 전환 함수
+// stats.js 내 switchEventView 함수 교체
+
 function switchEventView(eventName) {
   const eventBtn = document.getElementById('stats-event-btn');
   const viewOverview = document.getElementById('stats-view-overview');
   const viewEvent = document.getElementById('stats-view-event');
   const options = document.querySelectorAll('.stats-option');
 
+  // 1. 드롭다운 옵션 active 클래스 토글
   options.forEach(opt => {
     opt.classList.toggle('active', opt.getAttribute('data-event') === eventName);
   });
 
+  // 2. 드롭다운 버튼 텍스트 변경
   const activeOption = Array.from(options).find(opt => opt.getAttribute('data-event') === eventName);
   eventBtn.textContent = activeOption ? activeOption.textContent : 'Overview';
 
-  // display: flex !important 를 제거하고 block / none 으로 단순화
+  // 3. [핵심] Overview와 Event View 전환 제어
   if (eventName === 'overview') {
     if (viewOverview) viewOverview.style.display = 'block';
-    if (viewEvent) viewEvent.style.display = 'none';
+    if (viewEvent) viewEvent.style.display = 'none'; // 👈 종목 세션 전체를 깔끔하게 숨김!
   } else {
-    if (viewOverview) viewOverview.style.display = 'none';
+    if (viewOverview) viewOverview.style.display = 'none'; // 👈 오버뷰 전체를 숨김!
     if (viewEvent) viewEvent.style.display = 'block';
     
+    // 이벤트 데이터 갱신 및 차트 그리기
     updateEventStatsData();
   }
 }
+
 
 // ==========================================
 // 📊 차트 렌더링 함수들
