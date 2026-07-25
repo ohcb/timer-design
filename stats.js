@@ -63,12 +63,12 @@ export function initStats() {
     });
   });
 
-  // 5. 초기 차트 및 화면 렌더링
+  // 5. 초기 화면 설정 (기본 overview 활성화)
+  switchEventView('overview');
   renderDistributionChart();
 }
 
-// stats.js 내 switchEventView 함수 교체
-
+// 🎯 화면 전환 통합 제어 함수 (CSS 충돌 방지 패치)
 function switchEventView(eventName) {
   const eventBtn = document.getElementById('stats-event-btn');
   const viewOverview = document.getElementById('stats-view-overview');
@@ -82,15 +82,17 @@ function switchEventView(eventName) {
 
   // 2. 드롭다운 버튼 텍스트 변경
   const activeOption = Array.from(options).find(opt => opt.getAttribute('data-event') === eventName);
-  eventBtn.textContent = activeOption ? activeOption.textContent : 'Overview';
+  if (eventBtn) {
+    eventBtn.textContent = activeOption ? activeOption.textContent : 'Overview';
+  }
 
-  // 3. [핵심] Overview와 Event View 전환 제어
+  // 3. [핵심] setProperty 'important'로 CSS 충돌 무력화
   if (eventName === 'overview') {
-    if (viewOverview) viewOverview.style.display = 'block';
-    if (viewEvent) viewEvent.style.display = 'none'; // 👈 종목 세션 전체를 깔끔하게 숨김!
+    if (viewOverview) viewOverview.style.setProperty('display', 'flex', 'important');
+    if (viewEvent) viewEvent.style.setProperty('display', 'none', 'important'); // 👈 오버뷰 시 종목 영역 완전 차단
   } else {
-    if (viewOverview) viewOverview.style.display = 'none'; // 👈 오버뷰 전체를 숨김!
-    if (viewEvent) viewEvent.style.display = 'block';
+    if (viewOverview) viewOverview.style.setProperty('display', 'none', 'important'); // 👈 종목 뷰 시 오버뷰 완전 차단
+    if (viewEvent) viewEvent.style.setProperty('display', 'flex', 'important');
     
     // 이벤트 데이터 갱신 및 차트 그리기
     updateEventStatsData();
