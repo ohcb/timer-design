@@ -1,4 +1,5 @@
 // tabs.js
+
 export function initTabs() {
   const tabs = document.querySelectorAll('.nav-tab');
   const screens = document.querySelectorAll('.tab-screen');
@@ -17,7 +18,10 @@ export function initTabs() {
     const currentTabName = targetScreenId.replace('screen-', '');
 
     tabs.forEach(tab => {
-      if (tab.textContent.trim().toLowerCase() === currentTabName) {
+      // data-tab 속성을 우선 확인하고, 없으면 textContent 참조
+      const tabData = tab.getAttribute('data-tab') || tab.textContent.trim().toLowerCase();
+      
+      if (tabData === currentTabName) {
         tab.classList.add('active');
       } else {
         tab.classList.remove('active');
@@ -43,10 +47,12 @@ export function initTabs() {
   }
 
   // 1. 초기 상태 로드
+  let hasActive = false;
   screens.forEach(screen => {
     if (screen.classList.contains('active-screen')) {
       screen.style.display = 'block';
       syncNavWithActiveScreen(screen.id);
+      hasActive = true;
     } else {
       if (screen.id && screen.id.startsWith('screen-')) {
         screen.style.display = 'none';
@@ -54,16 +60,21 @@ export function initTabs() {
     }
   });
 
+  // 만약 active-screen 지정된 게 없으면 기본으로 screen-timer 활성화
+  if (!hasActive) {
+    activateScreen('screen-timer');
+  }
+
   // 2. 하단 탭 클릭 제어
   tabs.forEach(tab => {
     tab.addEventListener('click', (event) => {
       event.preventDefault();
-      const tabName = tab.textContent.trim().toLowerCase();
+      const tabName = tab.getAttribute('data-tab') || tab.textContent.trim().toLowerCase();
       activateScreen(`screen-${tabName}`);
     });
   });
 
-  // 3. 특수 버튼들 클릭 제어 (홈 버튼, 프로필 클릭, 상단 ⚙️ 설정 버튼)
+  // 3. 특수 버튼들 클릭 제어
   document.addEventListener('click', (event) => {
     let targetScreenId = '';
 
