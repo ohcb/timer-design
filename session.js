@@ -49,3 +49,22 @@ export function initSessionManager() {
     closeModal();
   });
 }
+
+// session.js 내부
+
+export function updateEmptyState() {
+  const activeList = document.getElementById('active-session-list');
+  const emptyState = document.getElementById('active-empty-state');
+  
+  if (!activeList || !emptyState) return;
+
+  // Active 카드 개수 확인
+  const cardCount = activeList.querySelectorAll('.session-manage-card').length;
+
+  if (cardCount === 0) {
+    emptyState.style.setProperty('display', 'flex', 'important');
+  } else {
+    emptyState.style.setProperty('display', 'none', 'important');
+  }
+}
+
