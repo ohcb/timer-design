@@ -2,7 +2,7 @@
 
 const STORAGE_KEY = 'cub3_state_v1';
 
-// 기본 상태 구조
+// 기본 상태 구조 (초기 데이터)
 const initialState = {
   activeSessionId: 'default',
   activeEventId: '333',
@@ -58,7 +58,7 @@ export function addSolve(timeMs, scramble = '') {
     createdAt: Date.now()
   };
 
-  activeSession.solves.unshift(newSolve); // 최근 기록이 맨 앞으로 오도록 추가
+  activeSession.solves.unshift(newSolve); // 최근 기록을 배열 맨 앞에 추가
   saveState(appState);
 
   console.log('💾 기록 저장 완료:', newSolve);
