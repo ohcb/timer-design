@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -31,8 +32,6 @@
     </header>
 
     <div class="tab-contents">
-
-    
 
       <div id="screen-timer" class="tab-screen active-screen">
         <section class="scramble-zone">
@@ -259,136 +258,131 @@
           </main>
 
           <main id="stats-view-event" class="stats-main-content">
+            <section class="stats-card filter-card">
+              <div class="filter-wrapper">
+                <div class="filter-group">
+                  <label class="filter-label">Session</label>
+                  <select id="stats-session-select" class="clean-select">
+                    <option value="main">Main Session</option>
+                    <option value="practice">Practice</option>
+                  </select>
+                </div>
+                <div class="filter-group">
+                  <label class="filter-label">Range</label>
+                  <select id="stats-scope-select" class="scope-select">
+                    <option value="all">전체 (All Solves)</option>
+                    <option value="recent50">최근 50</option>
+                    <option value="recent100">최근 100</option>
+                    <option value="recent500" selected>최근 500</option>
+                    <option value="recent1000">최근 1000</option>
+                    <option value="today">오늘</option>
+                    <option value="7days">최근 7일</option>
+                  </select>
+                </div>
+              </div>
+            </section>
 
-  <section class="stats-card filter-card">
-    <div class="filter-wrapper">
-      <div class="filter-group">
-        <label class="filter-label">Session</label>
-        <select id="stats-session-select" class="clean-select">
-          <option value="main">Main Session</option>
-          <option value="practice">Practice</option>
-        </select>
-      </div>
-      <div class="filter-group">
-        <label class="filter-label">Range</label>
-        <select id="stats-scope-select" class="scope-select">
-          <option value="all">전체 (All Solves)</option>
-          <option value="recent50">최근 50</option>
-          <option value="recent100">최근 100</option>
-          <option value="recent500" selected>최근 500</option>
-          <option value="recent1000">최근 1000</option>
-          <option value="today">오늘</option>
-          <option value="7days">최근 7일</option>
-        </select>
-      </div>
-    </div>
-  </section>
+            <section class="stats-card">
+              <div class="card-header-flex">
+                <h2 class="card-title">TIME PROGRESS</h2>
+                <div class="chart-options-group">
+                  <button class="chip-btn active" data-type="single">Single</button>
+                  <button class="chip-btn" data-type="mo3">Mo3</button>
+                  <button class="chip-btn" data-type="ao5">Ao5</button>
+                  <button class="chip-btn" data-type="ao12">Ao12</button>
+                  <button class="chip-btn" data-type="ao100">Ao100</button>
+                </div>
+              </div>
+              <div class="chart-container-box">
+                <canvas id="time-progress-chart"></canvas>
+              </div>
+            </section>
 
-  <section class="stats-card">
-    <div class="card-header-flex">
-      <h2 class="card-title">TIME PROGRESS</h2>
-      <div class="chart-options-group">
-        <button class="chip-btn active" data-type="single">Single</button>
-        <button class="chip-btn" data-type="mo3">Mo3</button>
-        <button class="chip-btn" data-type="ao5">Ao5</button>
-        <button class="chip-btn" data-type="ao12">Ao12</button>
-        <button class="chip-btn" data-type="ao100">Ao100</button>
-      </div>
-    </div>
-    <div class="chart-container-box">
-      <canvas id="time-progress-chart"></canvas>
-    </div>
-  </section>
+            <section class="stats-card">
+              <h2 class="card-title">RECORD DISTRIBUTION</h2>
+              <div class="chart-container-box">
+                <canvas id="record-distribution-chart"></canvas>
+              </div>
+            </section>
 
-  <section class="stats-card">
-    <h2 class="card-title">RECORD DISTRIBUTION</h2>
-    <div class="chart-container-box">
-      <canvas id="record-distribution-chart"></canvas>
-    </div>
-  </section>
+            <section class="stats-card">
+              <h2 class="card-title">STATISTICS</h2>
+              <div class="stats-auto-grid">
+                <div class="stat-box">
+                  <span class="stat-label">Mean</span>
+                  <span id="stat-mean" class="stat-value">-</span>
+                </div>
+                <div class="stat-box">
+                  <span class="stat-label">Median</span>
+                  <span id="stat-median" class="stat-value">-</span>
+                </div>
+                <div class="stat-box">
+                  <span class="stat-label">Std Dev</span>
+                  <span id="stat-sd" class="stat-value">-</span>
+                </div>
+                <div class="stat-box">
+                  <span class="stat-label">Sub-12 Streak</span>
+                  <span id="stat-sub-streak" class="stat-value highlight">-</span>
+                </div>
+                <div class="stat-box">
+                  <span class="stat-label">Percent Under 12s</span>
+                  <span id="stat-sub-rate" class="stat-value highlight-purple">-</span>
+                </div>
+                <div class="stat-box">
+                  <span class="stat-label">P10</span>
+                  <span id="stat-p10" class="stat-value">-</span>
+                </div>
+                <div class="stat-box">
+                  <span class="stat-label">P25</span>
+                  <span id="stat-p25" class="stat-value">-</span>
+                </div>
+                <div class="stat-box">
+                  <span class="stat-label">P75</span>
+                  <span id="stat-p75" class="stat-value">-</span>
+                </div>
+                <div class="stat-box">
+                  <span class="stat-label">P90</span>
+                  <span id="stat-p90" class="stat-value">-</span>
+                </div>
+                <div class="stat-box">
+                  <span class="stat-label">Total Solves</span>
+                  <span id="stat-total-solves" class="stat-value">-</span>
+                </div>
+                <div class="stat-box full-width">
+                  <span class="stat-label">Total Time</span>
+                  <span id="stat-total-time" class="stat-value">-</span>
+                </div>
+              </div>
+            </section>
 
-  <section class="stats-card">
-    <h2 class="card-title">STATISTICS</h2>
-    <div class="stats-auto-grid">
-      <div class="stat-box">
-        <span class="stat-label">Mean</span>
-        <span id="stat-mean" class="stat-value">-</span>
-      </div>
-      <div class="stat-box">
-        <span class="stat-label">Median</span>
-        <span id="stat-median" class="stat-value">-</span>
-      </div>
-      <div class="stat-box">
-        <span class="stat-label">Std Dev</span>
-        <span id="stat-sd" class="stat-value">-</span>
-      </div>
-      <div class="stat-box">
-        <span class="stat-label">Sub-12 Streak</span>
-        <span id="stat-sub-streak" class="stat-value highlight">-</span>
-      </div>
-      <div class="stat-box">
-        <span class="stat-label">Percent Under 12s</span>
-        <span id="stat-sub-rate" class="stat-value highlight-purple">-</span>
-      </div>
-      <div class="stat-box">
-        <span class="stat-label">P10</span>
-        <span id="stat-p10" class="stat-value">-</span>
-      </div>
-      <div class="stat-box">
-        <span class="stat-label">P25</span>
-        <span id="stat-p25" class="stat-value">-</span>
-      </div>
-      <div class="stat-box">
-        <span class="stat-label">P75</span>
-        <span id="stat-p75" class="stat-value">-</span>
-      </div>
-      <div class="stat-box">
-        <span class="stat-label">P90</span>
-        <span id="stat-p90" class="stat-value">-</span>
-      </div>
-      <div class="stat-box">
-        <span class="stat-label">Total Solves</span>
-        <span id="stat-total-solves" class="stat-value">-</span>
-      </div>
-      <div class="stat-box full-width">
-        <span class="stat-label">Total Time</span>
-        <span id="stat-total-time" class="stat-value">-</span>
-      </div>
-    </div>
-  </section>
+            <section class="stats-card">
+              <h2 class="card-title">PERSONAL BEST</h2>
+              <div class="stats-grid grid-5">
+                <div class="stat-box"><span class="stat-label">Single</span><span id="pb-single" class="stat-value highlight">-</span></div>
+                <div class="stat-box"><span class="stat-label">Mo3</span><span id="pb-mo3" class="stat-value">-</span></div>
+                <div class="stat-box"><span class="stat-label">Ao5</span><span id="pb-ao5" class="stat-value">-</span></div>
+                <div class="stat-box"><span class="stat-label">Ao12</span><span id="pb-ao12" class="stat-value">-</span></div>
+                <div class="stat-box"><span class="stat-label">Ao100</span><span id="pb-ao100" class="stat-value">-</span></div>
+              </div>
+            </section>
 
-  <section class="stats-card">
-    <h2 class="card-title">PERSONAL BEST</h2>
-    <div class="stats-grid grid-5">
-      <div class="stat-box"><span class="stat-label">Single</span><span id="pb-single" class="stat-value highlight">-</span></div>
-      <div class="stat-box"><span class="stat-label">Mo3</span><span id="pb-mo3" class="stat-value">-</span></div>
-      <div class="stat-box"><span class="stat-label">Ao5</span><span id="pb-ao5" class="stat-value">-</span></div>
-      <div class="stat-box"><span class="stat-label">Ao12</span><span id="pb-ao12" class="stat-value">-</span></div>
-      <div class="stat-box"><span class="stat-label">Ao100</span><span id="pb-ao100" class="stat-value">-</span></div>
-    </div>
-  </section>
-
-  <section class="stats-card">
-    <h2 class="card-title">PENALTIES</h2>
-    <div class="penalty-bar-container">
-      <div class="penalty-progress">
-        <div id="bar-ok" class="penalty-segment ok" style="width: 0%;"></div>
-        <div id="bar-p2" class="penalty-segment p2" style="width: 0%;"></div>
-        <div id="bar-dnf" class="penalty-segment dnf" style="width: 0%;"></div>
-      </div>
-      <div class="penalty-legend">
-        <span class="p-item ok">OK: <strong id="val-ok">0 (0%)</strong></span>
-        <span class="p-item p2">+2: <strong id="val-p2">0 (0%)</strong></span>
-        <span class="p-item dnf">DNF: <strong id="val-dnf">0 (0%)</strong></span>
-      </div>
-    </div>
-  </section>
-
-</main>
-
-
-        
-      <div id="screen-session" class="tab-screen">
+            <section class="stats-card">
+              <h2 class="card-title">PENALTIES</h2>
+              <div class="penalty-bar-container">
+                <div class="penalty-progress">
+                  <div id="bar-ok" class="penalty-segment ok" style="width: 0%;"></div>
+                  <div id="bar-p2" class="penalty-segment p2" style="width: 0%;"></div>
+                  <div id="bar-dnf" class="penalty-segment dnf" style="width: 0%;"></div>
+                </div>
+                <div class="penalty-legend">
+                  <span class="p-item ok">OK: <strong id="val-ok">0 (0%)</strong></span>
+                  <span class="p-item p2">+2: <strong id="val-p2">0 (0%)</strong></span>
+                  <span class="p-item dnf">DNF: <strong id="val-dnf">0 (0%)</strong></span>
+                </div>
+              </div>
+            </section>
+          </main>
+        </div> </div> <div id="screen-session" class="tab-screen">
         <div class="session-container">
           <header class="session-header">
             <h2>Sessions</h2>
