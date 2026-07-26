@@ -1,5 +1,8 @@
 // timer.js
 
+
+import { addSolve } from './storage.js';
+
 export function formatTime(ms) {
   if (ms == null || Number.isNaN(ms)) return '0.00';
   const total = ms / 1000;
@@ -80,11 +83,18 @@ export function initTimer() {
     }
   }
 
-  function stopTimer() {
-    cancelAnimationFrame(rafId);
-    const timeMs = Math.round(performance.now() - startAt);
-    setMode('idle');
-    timerDisplay.textContent = formatTime(timeMs);
+function stopTimer() {
+  cancelAnimationFrame(rafId);
+  const timeMs = Math.round(performance.now() - startAt);
+  setMode('idle');
+  timerDisplay.textContent = formatTime(timeMs);
+
+  // 💡 측정 종료 즉시 Storage에 저장!
+  const savedSolve = addSolve(timeMs);
+
+  // 💡 TODO: 저장된 기록으로 UI (Recent Solves, Stats) 갱신 함수 호출
+  updateUI(); 
+}
 
     console.log('⏱️ 측정 시간:', timeMs, 'ms');
   }
