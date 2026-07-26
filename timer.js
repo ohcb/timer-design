@@ -52,7 +52,7 @@ export function initTimer() {
     clearTimeout(holdTimer);
     holdTimer = setTimeout(() => {
       setMode('ready');
-      timerDisplay.textContent = (READY_DELAY_MS / 1000).toFixed(2); // 👈 이 줄만 들어갑니다!
+ 
     }, READY_DELAY_MS);
   }
 
