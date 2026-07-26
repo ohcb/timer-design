@@ -1,25 +1,28 @@
 /* ==========================================================================
-   More Screen (Hub Style - Layout Fix)
+   More Screen & Sub Screens
    ========================================================================== */
 
-#screen-more {
+/* 전체 화면 영역 기본 패딩 */
+#screen-more,
+.sub-screen {
   width: 100% !important;
   padding-bottom: 120px !important;
   box-sizing: border-box !important;
 }
 
+/* 카드들을 감싸는 메인 컨테이너 */
 .more-hub-container {
   max-width: 500px !important;
   margin: 0 auto !important;
   padding: 20px 16px !important;
   display: flex !important;
   flex-direction: column !important;
-  gap: 18px !important;
+  gap: 16px !important;
   text-align: left !important;
   box-sizing: border-box !important;
 }
 
-/* 카드 상자 규격 강제 지정 */
+/* 공통 카드 스타일 */
 .more-hub-container .hub-card {
   background-color: #18191c !important;
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
@@ -31,17 +34,43 @@
   text-align: left !important;
 }
 
-/* 섹션 타이틀 */
-.more-hub-container .card-header {
-  font-size: 0.75rem !important;
-  font-weight: 800 !important;
-  color: #8e9297 !important;
-  letter-spacing: 0.08em !important;
-  margin-bottom: 12px !important;
-  text-align: left !important;
+/* --------------------------------------------------------------------------
+   1. 메인 More 허브용 클릭 가능 카드 (.clickable-card)
+   -------------------------------------------------------------------------- */
+.more-hub-container .clickable-card {
+  cursor: pointer !important;
+  transition: transform 0.15s ease, background-color 0.15s ease !important;
 }
 
-/* 프로필 카드 내부 */
+.more-hub-container .clickable-card:active {
+  transform: scale(0.98) !important;
+  background-color: #202125 !important;
+}
+
+.more-hub-container .card-header-flex {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  width: 100% !important;
+}
+
+.more-hub-container .card-title {
+  font-size: 0.95rem !important;
+  font-weight: 700 !important;
+  color: #a855f7 !important; /* 네온 퍼플 */
+  letter-spacing: 0.05em !important;
+}
+
+.more-hub-container .card-desc {
+  font-size: 0.8rem !important;
+  color: #8e9297 !important;
+  margin: 6px 0 0 0 !important;
+  line-height: 1.3 !important;
+}
+
+/* --------------------------------------------------------------------------
+   2. 프로필 카드 내부
+   -------------------------------------------------------------------------- */
 .more-hub-container .profile-main {
   display: flex !important;
   align-items: center !important;
@@ -88,9 +117,12 @@
   padding: 6px 12px !important;
   border-radius: 8px !important;
   font-size: 0.8rem !important;
+  cursor: pointer !important;
 }
 
-/* 아이템 목록 */
+/* --------------------------------------------------------------------------
+   3. 서브 페이지 내부 목록 아이템 (Tools, Settings, Data 내부)
+   -------------------------------------------------------------------------- */
 .more-hub-container .hub-menu-list {
   display: flex !important;
   flex-direction: column !important;
@@ -107,6 +139,11 @@
   background-color: rgba(255, 255, 255, 0.02) !important;
   width: 100% !important;
   box-sizing: border-box !important;
+  cursor: pointer !important;
+}
+
+.more-hub-container .hub-item:active {
+  background-color: rgba(255, 255, 255, 0.06) !important;
 }
 
 .more-hub-container .item-icon {
@@ -143,7 +180,9 @@
   margin-left: 8px !important;
 }
 
-/* About 행 정렬 */
+/* --------------------------------------------------------------------------
+   4. About 행 정렬
+   -------------------------------------------------------------------------- */
 .more-hub-container .info-row {
   display: flex !important;
   justify-content: space-between !important;
@@ -163,63 +202,37 @@
   font-size: 0.85rem !important;
 }
 
-
-/* 클릭 가능한 메뉴 카드 스타일 */
-.clickable-card {
-  cursor: pointer;
-  transition: transform 0.15s ease, background-color 0.15s ease;
-}
-
-.clickable-card:active {
-  transform: scale(0.98);
-  background-color: rgba(255, 255, 255, 0.08);
-}
-
-.card-header-flex {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.card-title {
-  font-weight: 600;
-  color: #a78bfa;
-}
-
-.card-desc {
-  font-size: 0.85rem;
-  color: #888;
-  margin-top: 6px;
-}
-
-/* 서브 페이지 전용 상단 헤더 */
+/* --------------------------------------------------------------------------
+   5. 서브 페이지 상단 헤더 (Back 버튼)
+   -------------------------------------------------------------------------- */
 .sub-screen-header {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 16px 20px;
-  max-width: 600px;
-  margin: 0 auto;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  max-width: 500px !important;
+  margin: 0 auto !important;
+  padding: 16px 16px 0 16px !important;
+  box-sizing: border-box !important;
 }
 
 .sub-screen-header h2 {
-  font-size: 1.25rem;
-  font-weight: bold;
-  color: #fff;
-  margin: 0;
+  font-size: 1.2rem !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  margin: 0 !important;
 }
 
 .back-btn {
-  background: none;
-  border: none;
-  color: #a78bfa;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 6px;
+  background: none !important;
+  border: none !important;
+  color: #a855f7 !important;
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  padding: 6px 10px !important;
+  border-radius: 8px !important;
 }
 
 .back-btn:active {
-  background-color: rgba(167, 139, 250, 0.15);
+  background-color: rgba(168, 85, 247, 0.15) !important;
 }
