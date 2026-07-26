@@ -162,3 +162,64 @@
   font-weight: 600 !important;
   font-size: 0.85rem !important;
 }
+
+
+/* 클릭 가능한 메뉴 카드 스타일 */
+.clickable-card {
+  cursor: pointer;
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+.clickable-card:active {
+  transform: scale(0.98);
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.card-header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-title {
+  font-weight: 600;
+  color: #a78bfa;
+}
+
+.card-desc {
+  font-size: 0.85rem;
+  color: #888;
+  margin-top: 6px;
+}
+
+/* 서브 페이지 전용 상단 헤더 */
+.sub-screen-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.sub-screen-header h2 {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #fff;
+  margin: 0;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  color: #a78bfa;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.back-btn:active {
+  background-color: rgba(167, 139, 250, 0.15);
+}
