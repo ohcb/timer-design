@@ -78,3 +78,21 @@ export function initTabs() {
     }
   });
 }
+
+  // 서브 페이지 이동 클릭 이벤트
+  document.querySelectorAll('.clickable-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const targetSubscreen = card.getAttribute('data-subscreen');
+      if (targetSubscreen) {
+        activateScreen(targetSubscreen);
+      }
+    });
+  });
+
+  // 서브 페이지 상단 'Back' 버튼 클릭 시 More 화면으로 복귀
+  document.querySelectorAll('.back-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activateScreen('screen-more');
+    });
+  });
+
