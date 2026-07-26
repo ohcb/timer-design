@@ -24,7 +24,7 @@ export function initTimer() {
   let startAt = 0;
   let rafId = 0;
   let holdTimer = null;
-  const READY_DELAY_MS = 700; // 0.7초 홀드
+  const READY_DELAY_MS = 300; // 0.3초 홀드
 
   function setMode(nextMode) {
     mode = nextMode;
