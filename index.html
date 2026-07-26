@@ -424,61 +424,47 @@
         </div>
       </div>
 
-      <div id="screen-more" class="tab-screen">
+            <div id="screen-more" class="tab-screen">
         <div class="more-container">
           
-          <div class="more-profile-card">
+          <section class="more-card profile-card">
             <div class="profile-avatar">👤</div>
             <div class="profile-info">
-              <h3>Cuber #1548</h3>
-              <p>cuber@example.com</p>
+              <h3 class="profile-name">Cuber #1548</h3>
+              <p class="profile-email">cuber@example.com</p>
             </div>
             <button class="ghost-btn-sm">Edit</button>
-          </div>
+          </section>
 
-          <div class="more-group">
-            <h4 class="group-title">TIMER SETTINGS</h4>
-            <div class="more-item">
-              <span>Inspection Time (15s)</span>
-              <input type="checkbox" class="toggle-switch" checked>
+          <section class="more-card menu-card clickable-card" id="open-settings-card">
+            <div class="menu-card-left">
+              <div class="menu-icon-box">⚙️</div>
+              <div class="menu-text-group">
+                <h4 class="menu-title">Settings</h4>
+                <p class="menu-desc">Timer, Inspection, Theme, Data Import/Export</p>
+              </div>
             </div>
-            <div class="more-item">
-              <span>Timer Hold Time</span>
-              <span class="item-value">0.35s</span>
-            </div>
-            <div class="more-item">
-              <span>Hide Time While Running</span>
-              <input type="checkbox" class="toggle-switch">
-            </div>
-          </div>
+            <div class="menu-card-arrow">›</div>
+          </section>
 
-          <div class="more-group">
-            <h4 class="group-title">DATA & PREFERENCES</h4>
-            <div class="more-item clickable">
-              <span>Appearance / Theme</span>
-              <span class="item-value">Dark Purple ›</span>
+          <section class="more-card about-card">
+            <div class="more-card-header">
+              <span class="card-subtitle">ABOUT</span>
             </div>
-            <div class="more-item clickable">
-              <span>Export / Backup Data</span>
-              <span class="item-value">CSV/JSON ›</span>
+            <div class="info-row">
+              <span class="info-label">Version</span>
+              <span class="info-value">v1.0.0</span>
             </div>
-            <div class="more-item clickable">
-              <span>Import Data</span>
-              <span class="item-value">›</span>
+            <div class="info-row">
+              <span class="info-label">Developer</span>
+              <span class="info-value">Cub3 Team</span>
             </div>
-          </div>
-
-          <div class="more-group">
-            <h4 class="group-title">ABOUT</h4>
-            <div class="more-item">
-              <span>Version</span>
-              <span class="item-value">v1.0.0</span>
-            </div>
-          </div>
+          </section>
 
         </div>
       </div>
 
+      
     </div> <nav class="main-app-navigation bottom-nav">
       <a href="#" class="nav-tab active" data-tab="timer">Timer</a>
       <a href="#" class="nav-tab" data-tab="solves">Solves</a>
