@@ -20,4 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 💡 새로 추가한 스탯 기능 초기화
   initStats();
+
+  initSessinManager();
 });
