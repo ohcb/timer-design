@@ -1,4 +1,4 @@
-// session.js
+// session-manager.js
 
 // 💡 세션 개수에 따라 Empty State를 자동으로 숨기고 보여주는 함수
 export function updateEmptyState() {
