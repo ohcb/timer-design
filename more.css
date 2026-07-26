@@ -1,169 +1,152 @@
-/* ==========================================================================
-   More Screen (Extension Hub Style)
-   ========================================================================== */
-
-.more-container {
+/* More 화면 허브 컨테이너 */
+.more-hub-container {
   max-width: 600px;
   margin: 0 auto;
-  padding: 16px 16px 100px 16px; /* 하단 바 여백 포함 */
+  padding: 20px 16px 120px; /* 하단 바 여백 */
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  box-sizing: border-box;
+  gap: 24px; /* 카드 사이의 넉넉한 간격 */
 }
 
-/* 공통 카드 스타일 */
-.more-card {
+/* 허브 카드 공통 스타일 */
+.hub-card {
   background-color: #18191c;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
   padding: 20px;
-  box-sizing: border-box;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
-/* 1. 프로필 카드 */
-.profile-card {
+/* 카드 헤더 (섹션 제목) */
+.card-header {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #8e9297;
+  letter-spacing: 0.1em;
+  margin-bottom: 16px;
+  padding-left: 4px;
+}
+
+/* 프로필 카드 특화 스타일 */
+.profile-main {
   display: flex;
   align-items: center;
   gap: 16px;
-  background: linear-gradient(135deg, #18191c 0%, #1f1b2e 100%); /* 보라빛 은은한 그라데이션 */
-  border: 1px solid rgba(168, 85, 247, 0.2);
 }
 
 .profile-avatar {
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  background-color: rgba(168, 85, 247, 0.15);
+  width: 56px;
+  height: 56px;
+  background-color: rgba(168, 85, 247, 0.1);
   border: 1px solid #a855f7;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.5rem;
-  flex-shrink: 0;
 }
 
-.profile-info {
+.profile-details {
   flex: 1;
 }
 
 .profile-name {
   margin: 0;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
+  color: #fff;
   font-weight: 700;
-  color: #ffffff;
 }
 
 .profile-email {
-  margin: 4px 0 0 0;
+  margin: 2px 0 0;
   font-size: 0.85rem;
   color: #8e9297;
 }
 
-/* 2. 클릭 가능한 메뉴 카드 (Settings 등) */
-.clickable-card {
+.edit-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 10px;
+  font-size: 0.8rem;
   cursor: pointer;
+}
+
+/* 허브 아이템 리스트 스타일 */
+.hub-menu-list {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  transition: all 0.2s ease;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.clickable-card:hover, 
-.clickable-card:active {
-  background-color: #202226;
-  border-color: rgba(168, 85, 247, 0.4);
-  transform: translateY(-2px);
-}
-
-.menu-card-left {
+.hub-item {
   display: flex;
   align-items: center;
   gap: 16px;
+  padding: 12px;
+  border-radius: 14px;
+  transition: all 0.2s ease;
+  cursor: pointer;
 }
 
-.menu-icon-box {
-  width: 44px;
-  height: 44px;
+.hub-item:hover {
+  background-color: rgba(168, 85, 247, 0.08);
+}
+
+.hub-item:active {
+  transform: scale(0.98);
+}
+
+.item-icon {
+  width: 40px;
+  height: 40px;
+  background-color: rgba(255, 255, 255, 0.03);
   border-radius: 12px;
-  background-color: rgba(255, 255, 255, 0.05);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.3rem;
+  font-size: 1.2rem;
 }
 
-.menu-text-group {
+.item-text {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 4px;
 }
 
-.menu-title {
-  margin: 0;
-  font-size: 1.05rem;
+.item-title {
+  color: #fff;
+  font-size: 0.95rem;
   font-weight: 600;
-  color: #ffffff;
 }
 
-.menu-desc {
-  margin: 0;
-  font-size: 0.8rem;
+.item-desc {
   color: #8e9297;
+  font-size: 0.75rem;
+  margin-top: 2px;
 }
 
-.menu-card-arrow {
-  font-size: 1.4rem;
+.item-arrow {
   color: #a855f7;
+  font-size: 1.2rem;
   font-weight: bold;
 }
 
-/* 3. About 카드 및 정보 행 */
-.more-card-header {
-  margin-bottom: 12px;
-}
-
-.card-subtitle {
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #8e9297;
-  letter-spacing: 0.05em;
-}
-
+/* 정보 표시용 행 (About 카드) */
 .info-row {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 8px 0;
-  font-size: 0.9rem;
-}
-
-.info-row:not(:last-child) {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 8px 4px;
 }
 
 .info-label {
-  color: #b9bbbe;
+  color: #8e9297;
+  font-size: 0.9rem;
 }
 
 .info-value {
   color: #a855f7;
+  font-size: 0.9rem;
   font-weight: 600;
-}
-
-/* 버튼 소형 전용 공통 스타일 */
-.ghost-btn-sm {
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #dcddde;
-  padding: 6px 12px;
-  border-radius: 8px;
-  font-size: 0.8rem;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.ghost-btn-sm:hover {
-  border-color: #a855f7;
-  color: #a855f7;
 }
