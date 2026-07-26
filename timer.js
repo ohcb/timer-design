@@ -40,7 +40,7 @@ export function initTimer() {
     }
   }
 
-  function handlePressStart() {
+    function handlePressStart() {
     if (mode === 'running') {
       stopTimer();
       return;
@@ -48,15 +48,11 @@ export function initTimer() {
     if (mode !== 'idle') return;
 
     setMode('holding');
-    // 1. 누른 시각 기록 (setMode('holding'); 밑에 추가)
-const pressTime = performance.now();
 
-    
     clearTimeout(holdTimer);
     holdTimer = setTimeout(() => {
       setMode('ready');
-      // 2. 화면에 초로 표시 (setMode('ready'); 밑에 추가)
-timerDisplay.textContent = ((performance.now() - pressTime) / 1000).toFixed(2);
+      timerDisplay.textContent = (READY_DELAY_MS / 1000).toFixed(2); // 👈 이 줄만 들어갑니다!
     }, READY_DELAY_MS);
   }
 
