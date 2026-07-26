@@ -290,3 +290,16 @@ nav.bottom-nav {
   font-weight: bold !important;
   border-top: 2px solid #a855f7 !important;
 }
+
+
+/* 기본적으로 모든 탭 화면은 숨깁니다 */
+.tab-screen {
+  display: none !important;
+}
+
+/* active 또는 active-screen 클래스가 붙은 탭만 표시합니다 */
+.tab-screen.active,
+.tab-screen.active-screen {
+  display: block !important;
+}
+
