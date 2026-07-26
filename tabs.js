@@ -33,10 +33,12 @@ export function initTabs() {
   function activateScreen(targetScreenId) {
     screens.forEach(screen => {
       if (screen.id === targetScreenId) {
-        screen.style.display = 'block';
+        // 인라인 !important를 부여해서 CSS의 !important를 강제로 누릅니다.
+        screen.style.setProperty('display', 'block', 'important');
         screen.classList.add('active-screen');
       } else {
-        screen.style.display = 'none';
+        // 비활성화 탭도 !important로 감춰버립니다.
+        screen.style.setProperty('display', 'none', 'important');
         screen.classList.remove('active-screen');
       }
     });
