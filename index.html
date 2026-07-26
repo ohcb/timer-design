@@ -1,12 +1,16 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="only dark">
   <title>Cub3 Timer</title>
+  
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="stats.css">
+  <link rel="stylesheet" href="session.css">
+  <link rel="stylesheet" href="more.css">
 </head>
 <body>
   <div class="app-container">
@@ -24,59 +28,10 @@
           <option>4x4</option>
         </select>
       </div>
-      <button class="ghost-btn" id="quick-settings-btn" onclick="openSettingsScreen()">⚙️</button>
+      <button class="ghost-btn" id="quick-settings-btn">⚙️</button>
     </header>
 
     <div class="tab-contents">
-      
-      <div id="screen-home" class="tab-screen">
-        <div class="home-container">
-          <header class="home-header">
-            <div class="profile-pic">👤</div>
-            <div class="greeting-text">
-              <h3>Welcome back, Cuber!</h3>
-              <p>Let's beat your PB today.</p>
-            </div>
-          </header>
-
-          <section class="home-section">
-            <h4 class="section-title">Today's Performance</h4>
-            <div class="performance-grid">
-              <div class="perf-card"><span class="card-label">Solves</span><span class="card-value">25</span></div>
-              <div class="perf-card"><span class="card-label">Average</span><span class="card-value">12.34s</span></div>
-              <div class="perf-card highlight"><span class="card-label">PB</span><span class="card-value">8.56s</span></div>
-            </div>
-          </section>
-
-          <section class="home-section">
-            <button class="start-timer-btn"><span>▶️ Start Solving</span></button>
-          </section>
-
-          <div class="home-flex-row">
-            <div class="home-card half">
-              <h4 class="section-title">Recent Solves</h4>
-              <ul class="mini-solve-list">
-                <li>1. 8.95s</li>
-                <li>2. 9.52s</li>
-                <li>3. 8.93s</li>
-              </ul>
-            </div>
-            <div class="home-card half">
-              <h4 class="section-title">Weekly Solves</h4>
-              <div class="weekly-counter-box"><span class="counter-number">72</span><span class="counter-unit">solves this week</span></div>
-              <p class="progress-text">Pace: +5 more than last week!</p>
-            </div>
-          </div> 
-          
-          <section class="home-section">
-            <div class="home-card full">
-              <h4 class="section-title">Weekly Summary & Tools</h4>
-              <p class="summary-text">Average improved by 0.5s this week! 🔥</p>
-              <div class="shortcut-badge">Featured Tool: OLL Trainer →</div>
-            </div>
-          </section>
-        </div>
-      </div>
 
       <div id="screen-timer" class="tab-screen active-screen">
         <section class="scramble-zone">
@@ -303,153 +258,241 @@
           </main>
 
           <main id="stats-view-event" class="stats-main-content">
+            <section class="stats-card filter-card">
+              <div class="filter-wrapper">
+                <div class="filter-group">
+                  <label class="filter-label">Session</label>
+                  <select id="stats-session-select" class="clean-select">
+                    <option value="main">Main Session</option>
+                    <option value="practice">Practice</option>
+                  </select>
+                </div>
+                <div class="filter-group">
+                  <label class="filter-label">Range</label>
+                  <select id="stats-scope-select" class="scope-select">
+                    <option value="all">전체 (All Solves)</option>
+                    <option value="recent50">최근 50</option>
+                    <option value="recent100">최근 100</option>
+                    <option value="recent500" selected>최근 500</option>
+                    <option value="recent1000">최근 1000</option>
+                    <option value="today">오늘</option>
+                    <option value="7days">최근 7일</option>
+                  </select>
+                </div>
+              </div>
+            </section>
 
-  <section class="stats-card filter-card">
-    <div class="filter-wrapper">
-      <div class="filter-group">
-        <label class="filter-label">Session</label>
-        <select id="stats-session-select" class="clean-select">
-          <option value="main">Main Session</option>
-          <option value="practice">Practice</option>
-        </select>
-      </div>
-      <div class="filter-group">
-        <label class="filter-label">Range</label>
-        <select id="stats-scope-select" class="scope-select">
-          <option value="all">전체 (All Solves)</option>
-          <option value="recent50">최근 50</option>
-          <option value="recent100">최근 100</option>
-          <option value="recent500" selected>최근 500</option>
-          <option value="recent1000">최근 1000</option>
-          <option value="today">오늘</option>
-          <option value="7days">최근 7일</option>
-        </select>
-      </div>
-    </div>
-  </section>
+            <section class="stats-card">
+              <div class="card-header-flex">
+                <h2 class="card-title">TIME PROGRESS</h2>
+                <div class="chart-options-group">
+                  <button class="chip-btn active" data-type="single">Single</button>
+                  <button class="chip-btn" data-type="mo3">Mo3</button>
+                  <button class="chip-btn" data-type="ao5">Ao5</button>
+                  <button class="chip-btn" data-type="ao12">Ao12</button>
+                  <button class="chip-btn" data-type="ao100">Ao100</button>
+                </div>
+              </div>
+              <div class="chart-container-box">
+                <canvas id="time-progress-chart"></canvas>
+              </div>
+            </section>
 
-  <section class="stats-card">
-    <div class="card-header-flex">
-      <h2 class="card-title">TIME PROGRESS</h2>
-      <div class="chart-options-group">
-        <button class="chip-btn active" data-type="single">Single</button>
-        <button class="chip-btn" data-type="mo3">Mo3</button>
-        <button class="chip-btn" data-type="ao5">Ao5</button>
-        <button class="chip-btn" data-type="ao12">Ao12</button>
-        <button class="chip-btn" data-type="ao100">Ao100</button>
-      </div>
-    </div>
-    <div class="chart-container-box">
-      <canvas id="time-progress-chart"></canvas>
-    </div>
-  </section>
+            <section class="stats-card">
+              <h2 class="card-title">RECORD DISTRIBUTION</h2>
+              <div class="chart-container-box">
+                <canvas id="record-distribution-chart"></canvas>
+              </div>
+            </section>
 
-  <section class="stats-card">
-    <h2 class="card-title">RECORD DISTRIBUTION</h2>
-    <div class="chart-container-box">
-      <canvas id="record-distribution-chart"></canvas>
-    </div>
-  </section>
+            <section class="stats-card">
+              <h2 class="card-title">STATISTICS</h2>
+              <div class="stats-auto-grid">
+                <div class="stat-box">
+                  <span class="stat-label">Mean</span>
+                  <span id="stat-mean" class="stat-value">-</span>
+                </div>
+                <div class="stat-box">
+                  <span class="stat-label">Median</span>
+                  <span id="stat-median" class="stat-value">-</span>
+                </div>
+                <div class="stat-box">
+                  <span class="stat-label">Std Dev</span>
+                  <span id="stat-sd" class="stat-value">-</span>
+                </div>
+                <div class="stat-box">
+                  <span class="stat-label">Sub-12 Streak</span>
+                  <span id="stat-sub-streak" class="stat-value highlight">-</span>
+                </div>
+                <div class="stat-box">
+                  <span class="stat-label">Percent Under 12s</span>
+                  <span id="stat-sub-rate" class="stat-value highlight-purple">-</span>
+                </div>
+                <div class="stat-box">
+                  <span class="stat-label">P10</span>
+                  <span id="stat-p10" class="stat-value">-</span>
+                </div>
+                <div class="stat-box">
+                  <span class="stat-label">P25</span>
+                  <span id="stat-p25" class="stat-value">-</span>
+                </div>
+                <div class="stat-box">
+                  <span class="stat-label">P75</span>
+                  <span id="stat-p75" class="stat-value">-</span>
+                </div>
+                <div class="stat-box">
+                  <span class="stat-label">P90</span>
+                  <span id="stat-p90" class="stat-value">-</span>
+                </div>
+                <div class="stat-box">
+                  <span class="stat-label">Total Solves</span>
+                  <span id="stat-total-solves" class="stat-value">-</span>
+                </div>
+                <div class="stat-box full-width">
+                  <span class="stat-label">Total Time</span>
+                  <span id="stat-total-time" class="stat-value">-</span>
+                </div>
+              </div>
+            </section>
 
-  <section class="stats-card">
-    <h2 class="card-title">STATISTICS</h2>
-    <div class="stats-auto-grid">
-      <div class="stat-box">
-        <span class="stat-label">Mean</span>
-        <span id="stat-mean" class="stat-value">-</span>
-      </div>
-      <div class="stat-box">
-        <span class="stat-label">Median</span>
-        <span id="stat-median" class="stat-value">-</span>
-      </div>
-      <div class="stat-box">
-        <span class="stat-label">Std Dev</span>
-        <span id="stat-sd" class="stat-value">-</span>
-      </div>
-      <div class="stat-box">
-        <span class="stat-label">Sub-12 Streak</span>
-        <span id="stat-sub-streak" class="stat-value highlight">-</span>
-      </div>
-      <div class="stat-box">
-        <span class="stat-label">Percent Under 12s</span>
-        <span id="stat-sub-rate" class="stat-value highlight-purple">-</span>
-      </div>
-      <div class="stat-box">
-        <span class="stat-label">P10</span>
-        <span id="stat-p10" class="stat-value">-</span>
-      </div>
-      <div class="stat-box">
-        <span class="stat-label">P25</span>
-        <span id="stat-p25" class="stat-value">-</span>
-      </div>
-      <div class="stat-box">
-        <span class="stat-label">P75</span>
-        <span id="stat-p75" class="stat-value">-</span>
-      </div>
-      <div class="stat-box">
-        <span class="stat-label">P90</span>
-        <span id="stat-p90" class="stat-value">-</span>
-      </div>
-      <div class="stat-box">
-        <span class="stat-label">Total Solves</span>
-        <span id="stat-total-solves" class="stat-value">-</span>
-      </div>
-      <div class="stat-box full-width">
-        <span class="stat-label">Total Time</span>
-        <span id="stat-total-time" class="stat-value">-</span>
-      </div>
-    </div>
-  </section>
+            <section class="stats-card">
+              <h2 class="card-title">PERSONAL BEST</h2>
+              <div class="stats-grid grid-5">
+                <div class="stat-box"><span class="stat-label">Single</span><span id="pb-single" class="stat-value highlight">-</span></div>
+                <div class="stat-box"><span class="stat-label">Mo3</span><span id="pb-mo3" class="stat-value">-</span></div>
+                <div class="stat-box"><span class="stat-label">Ao5</span><span id="pb-ao5" class="stat-value">-</span></div>
+                <div class="stat-box"><span class="stat-label">Ao12</span><span id="pb-ao12" class="stat-value">-</span></div>
+                <div class="stat-box"><span class="stat-label">Ao100</span><span id="pb-ao100" class="stat-value">-</span></div>
+              </div>
+            </section>
 
-  <section class="stats-card">
-    <h2 class="card-title">PERSONAL BEST</h2>
-    <div class="stats-grid grid-5">
-      <div class="stat-box"><span class="stat-label">Single</span><span id="pb-single" class="stat-value highlight">-</span></div>
-      <div class="stat-box"><span class="stat-label">Mo3</span><span id="pb-mo3" class="stat-value">-</span></div>
-      <div class="stat-box"><span class="stat-label">Ao5</span><span id="pb-ao5" class="stat-value">-</span></div>
-      <div class="stat-box"><span class="stat-label">Ao12</span><span id="pb-ao12" class="stat-value">-</span></div>
-      <div class="stat-box"><span class="stat-label">Ao100</span><span id="pb-ao100" class="stat-value">-</span></div>
-    </div>
-  </section>
+            <section class="stats-card">
+              <h2 class="card-title">PENALTIES</h2>
+              <div class="penalty-bar-container">
+                <div class="penalty-progress">
+                  <div id="bar-ok" class="penalty-segment ok" style="width: 0%;"></div>
+                  <div id="bar-p2" class="penalty-segment p2" style="width: 0%;"></div>
+                  <div id="bar-dnf" class="penalty-segment dnf" style="width: 0%;"></div>
+                </div>
+                <div class="penalty-legend">
+                  <span class="p-item ok">OK: <strong id="val-ok">0 (0%)</strong></span>
+                  <span class="p-item p2">+2: <strong id="val-p2">0 (0%)</strong></span>
+                  <span class="p-item dnf">DNF: <strong id="val-dnf">0 (0%)</strong></span>
+                </div>
+              </div>
+            </section>
+          </main>
+        </div> </div> <div id="screen-session" class="tab-screen">
+        <div class="session-container">
+          <header class="session-header">
+            <h2>Sessions</h2>
+            <button class="primary-btn" id="create-session-btn">+ New Session</button>
+          </header>
 
-  <section class="stats-card">
-    <h2 class="card-title">PENALTIES</h2>
-    <div class="penalty-bar-container">
-      <div class="penalty-progress">
-        <div id="bar-ok" class="penalty-segment ok" style="width: 0%;"></div>
-        <div id="bar-p2" class="penalty-segment p2" style="width: 0%;"></div>
-        <div id="bar-dnf" class="penalty-segment dnf" style="width: 0%;"></div>
+          <section class="session-section">
+            <h4 class="section-title">ACTIVE SESSIONS</h4>
+            <div class="session-list">
+              <div class="session-card active">
+                <div class="session-info">
+                  <span class="session-name">Main 3x3</span>
+                  <span class="session-meta">124 solves · Ao5: 11.82s</span>
+                </div>
+                <span class="badge active-badge">Active</span>
+              </div>
+              <div class="session-card">
+                <div class="session-info">
+                  <span class="session-name">Practice / OH</span>
+                  <span class="session-meta">45 solves · Ao5: 18.45s</span>
+                </div>
+                <button class="ghost-btn-sm">Switch</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="session-section">
+            <h4 class="section-title">ARCHIVED / COMPLETED</h4>
+            <div class="session-list">
+              <div class="session-card archived">
+                <div class="session-info">
+                  <span class="session-name">2026-07-20 Competition Prep</span>
+                  <span class="session-meta">50 solves · Mean: 12.10s</span>
+                </div>
+                <button class="ghost-btn-sm">Restore</button>
+              </div>
+            </div>
+          </section>
+        </div>
       </div>
-      <div class="penalty-legend">
-        <span class="p-item ok">OK: <strong id="val-ok">0 (0%)</strong></span>
-        <span class="p-item p2">+2: <strong id="val-p2">0 (0%)</strong></span>
-        <span class="p-item dnf">DNF: <strong id="val-dnf">0 (0%)</strong></span>
+
+      <div id="screen-more" class="tab-screen">
+        <div class="more-container">
+          
+          <div class="more-profile-card">
+            <div class="profile-avatar">👤</div>
+            <div class="profile-info">
+              <h3>Cuber #1548</h3>
+              <p>cuber@example.com</p>
+            </div>
+            <button class="ghost-btn-sm">Edit</button>
+          </div>
+
+          <div class="more-group">
+            <h4 class="group-title">TIMER SETTINGS</h4>
+            <div class="more-item">
+              <span>Inspection Time (15s)</span>
+              <input type="checkbox" class="toggle-switch" checked>
+            </div>
+            <div class="more-item">
+              <span>Timer Hold Time</span>
+              <span class="item-value">0.35s</span>
+            </div>
+            <div class="more-item">
+              <span>Hide Time While Running</span>
+              <input type="checkbox" class="toggle-switch">
+            </div>
+          </div>
+
+          <div class="more-group">
+            <h4 class="group-title">DATA & PREFERENCES</h4>
+            <div class="more-item clickable">
+              <span>Appearance / Theme</span>
+              <span class="item-value">Dark Purple ›</span>
+            </div>
+            <div class="more-item clickable">
+              <span>Export / Backup Data</span>
+              <span class="item-value">CSV/JSON ›</span>
+            </div>
+            <div class="more-item clickable">
+              <span>Import Data</span>
+              <span class="item-value">›</span>
+            </div>
+          </div>
+
+          <div class="more-group">
+            <h4 class="group-title">ABOUT</h4>
+            <div class="more-item">
+              <span>Version</span>
+              <span class="item-value">v1.0.0</span>
+            </div>
+          </div>
+
+        </div>
       </div>
-    </div>
-  </section>
 
-</main>
+    </div> <nav class="main-app-navigation bottom-nav">
+      <a href="#" class="nav-tab active" data-tab="timer">Timer</a>
+      <a href="#" class="nav-tab" data-tab="solves">Solves</a>
+      <a href="#" class="nav-tab" data-tab="stats">Stats</a>
+      <a href="#" class="nav-tab" data-tab="session">Session</a>
+      <a href="#" class="nav-tab" data-tab="more">More</a>
+    </nav>
 
+  </div> <div id="global-undo-toast" class="undo-toast" style="display: none !important;">
+    <span>기록이 삭제되었습니다.</span>
+    <button id="global-undo-btn" class="undo-btn">Undo</button>
+  </div>
 
-                </div> </div> <div id="screen-profile" class="tab-screen">
-      <div style="padding: 3rem 1.5rem; text-align: center; color: var(--text-muted, #8e9297);">
-        <h2>Profile Screen</h2>
-        <p style="margin-top: 0.5rem; font-size: 0.9rem;">여기에 다크모드 선택, 계정 및 유저 설정이 들어옵니다.</p>
-      </div>
-    </div> </div> <nav class="main-app-navigation bottom-nav">
-    <a href="#" class="nav-tab" data-tab="home">Home</a>
-    <a href="#" class="nav-tab active" data-tab="timer">Timer</a>
-    <a href="#" class="nav-tab" data-tab="solves">Solves</a>
-    <a href="#" class="nav-tab" data-tab="stats">Stats</a>
-    <a href="#" class="nav-tab" data-tab="profile">Profile</a>
-  </nav>
-
-</div> <div id="global-undo-toast" class="undo-toast" style="display: none !important;">
-  <span>기록이 삭제되었습니다.</span>
-  <button id="global-undo-btn" class="undo-btn">Undo</button>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script type="module" src="./app.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script type="module" src="./app.js"></script>
 </body>
 </html>

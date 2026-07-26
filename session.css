@@ -1,0 +1,118 @@
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="stats.css">
+<link rel="stylesheet" href="session.css"> <link rel="stylesheet" href="more.css">    ```
+
+---
+
+### 📄 각 파일별 코드 내용
+
+#### 1. `session.css` (세션 화면 전용)
+```css
+/* ==========================================================================
+   🗂️ Session Screen Styles
+   ========================================================================== */
+
+.session-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 1rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.session-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.session-header h2 {
+  font-size: 1.4rem;
+  margin: 0;
+  color: #f2f3f5;
+}
+
+.primary-btn {
+  background-color: #a855f7;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.session-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.section-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #8e9297;
+  letter-spacing: 0.8px;
+  margin: 0;
+}
+
+.session-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.session-card {
+  background-color: #18191c;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.session-card.active {
+  border-color: #a855f7;
+  background-color: rgba(168, 85, 247, 0.05);
+}
+
+.session-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.session-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #f2f3f5;
+}
+
+.session-meta {
+  font-size: 0.75rem;
+  color: #8e9297;
+}
+
+.badge.active-badge {
+  background-color: rgba(168, 85, 247, 0.2);
+  color: #a855f7;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.ghost-btn-sm {
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #aeaeae;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
