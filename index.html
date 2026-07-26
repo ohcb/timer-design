@@ -420,10 +420,66 @@
               </div>
             </div>
           </section>
-        </div> </div> <div id="screen-more" class="tab-screen">
+
+                <div id="screen-more" class="tab-screen">
         <div class="more-hub-container">
 
-          <div class="hub-card profile-card">
+          <div class="hub-card profile-card clickable-card" data-subscreen="screen-profile">
+            <div class="profile-main">
+              <div class="profile-avatar">👤</div>
+              <div class="profile-details">
+                <h3 class="profile-name">Cuber #1548</h3>
+                <p class="profile-email">cuber@example.com</p>
+              </div>
+              <span class="item-arrow">›</span>
+            </div>
+          </div>
+
+          <div class="hub-card clickable-card" data-subscreen="screen-tools">
+            <div class="card-header-flex">
+              <span class="card-title">TOOLS</span>
+              <span class="item-arrow">›</span>
+            </div>
+            <p class="card-desc">Scramble Generator, Algorithm Trainer 등</p>
+          </div>
+
+          <div class="hub-card clickable-card" data-subscreen="screen-settings">
+            <div class="card-header-flex">
+              <span class="card-title">SETTINGS</span>
+              <span class="item-arrow">›</span>
+            </div>
+            <p class="card-desc">Timer Settings, Appearance, Preferences</p>
+          </div>
+
+          <div class="hub-card clickable-card" data-subscreen="screen-data">
+            <div class="card-header-flex">
+              <span class="card-title">DATA MANAGEMENT</span>
+              <span class="item-arrow">›</span>
+            </div>
+            <p class="card-desc">Export, Import, Backup & Restore</p>
+          </div>
+
+          <div class="hub-card about-hub">
+            <div class="info-row">
+              <span class="info-label">Version</span>
+              <span class="info-value">v1.0.0</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">App Info</span>
+              <span class="info-value">CUB3 Timer</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div id="screen-profile" class="tab-screen sub-screen">
+        <div class="sub-screen-header">
+          <button class="back-btn">‹ Back</button>
+          <h2>Profile</h2>
+        </div>
+        <div class="more-hub-container">
+          <div class="hub-card">
             <div class="profile-main">
               <div class="profile-avatar">👤</div>
               <div class="profile-details">
@@ -433,9 +489,16 @@
               <button class="edit-btn">Edit</button>
             </div>
           </div>
+        </div>
+      </div>
 
+      <div id="screen-tools" class="tab-screen sub-screen">
+        <div class="sub-screen-header">
+          <button class="back-btn">‹ Back</button>
+          <h2>Tools</h2>
+        </div>
+        <div class="more-hub-container">
           <div class="hub-card">
-            <div class="card-header">TOOLS</div>
             <div class="hub-menu-list">
               <div class="hub-item">
                 <span class="item-icon">🎲</span>
@@ -455,9 +518,16 @@
               </div>
             </div>
           </div>
+        </div>
+      </div>
 
+      <div id="screen-settings" class="tab-screen sub-screen">
+        <div class="sub-screen-header">
+          <button class="back-btn">‹ Back</button>
+          <h2>Settings</h2>
+        </div>
+        <div class="more-hub-container">
           <div class="hub-card">
-            <div class="card-header">SETTINGS</div>
             <div class="hub-menu-list">
               <div class="hub-item">
                 <span class="item-icon">⏱️</span>
@@ -485,9 +555,16 @@
               </div>
             </div>
           </div>
+        </div>
+      </div>
 
+      <div id="screen-data" class="tab-screen sub-screen">
+        <div class="sub-screen-header">
+          <button class="back-btn">‹ Back</button>
+          <h2>Data Management</h2>
+        </div>
+        <div class="more-hub-container">
           <div class="hub-card">
-            <div class="card-header">DATA MANAGEMENT</div>
             <div class="hub-menu-list">
               <div class="hub-item">
                 <span class="item-icon">📤</span>
@@ -506,17 +583,8 @@
               </div>
             </div>
           </div>
-
-          <div class="hub-card about-hub">
-            <div class="info-row">
-              <span class="info-label">Version</span>
-              <span class="info-value">v1.0.0</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">App Info</span>
-              <span class="info-value">CUB3 Timer</span>
-            </div>
-          </div>
+        </div>
+      </div>
 
         </div> </div> </div> <nav class="main-app-navigation bottom-nav">
       <a href="#" class="nav-tab active" data-tab="timer">Timer</a>
