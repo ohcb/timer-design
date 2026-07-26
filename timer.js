@@ -1,6 +1,5 @@
 // timer.js
 
-
 import { addSolve } from './storage.js';
 
 export function formatTime(ms) {
@@ -43,7 +42,7 @@ export function initTimer() {
     }
   }
 
-    function handlePressStart() {
+  function handlePressStart() {
     if (mode === 'running') {
       stopTimer();
       return;
@@ -55,7 +54,6 @@ export function initTimer() {
     clearTimeout(holdTimer);
     holdTimer = setTimeout(() => {
       setMode('ready');
- 
     }, READY_DELAY_MS);
   }
 
@@ -83,20 +81,17 @@ export function initTimer() {
     }
   }
 
-function stopTimer() {
-  cancelAnimationFrame(rafId);
-  const timeMs = Math.round(performance.now() - startAt);
-  setMode('idle');
-  timerDisplay.textContent = formatTime(timeMs);
+  function stopTimer() {
+    cancelAnimationFrame(rafId);
+    const timeMs = Math.round(performance.now() - startAt);
+    setMode('idle');
+    timerDisplay.textContent = formatTime(timeMs);
 
-  // 💡 측정 종료 즉시 Storage에 저장!
-  const savedSolve = addSolve(timeMs);
+    // 💡 측정 종료 즉시 Storage에 저장!
+    const savedSolve = addSolve(timeMs);
+    console.log('⏱️ 측정 및 저장 완료:', timeMs, 'ms', savedSolve);
 
-  // 💡 TODO: 저장된 기록으로 UI (Recent Solves, Stats) 갱신 함수 호출
-  updateUI(); 
-}
-
-    console.log('⏱️ 측정 시간:', timeMs, 'ms');
+    // 💡 TODO: Recent Solves 리스트 갱신 함수 연결 지점
   }
 
   // --- 1. PC 스페이스바 (화면 전체 어디서나 사용 가능) ---
