@@ -384,18 +384,111 @@
 </main>
 
 
-                </div> </div> <div id="screen-profile" class="tab-screen">
-      <div style="padding: 3rem 1.5rem; text-align: center; color: var(--text-muted, #8e9297);">
-        <h2>Profile Screen</h2>
-        <p style="margin-top: 0.5rem; font-size: 0.9rem;">여기에 다크모드 선택, 계정 및 유저 설정이 들어옵니다.</p>
+                      <div id="screen-session" class="tab-screen">
+        <div class="session-container">
+          <header class="session-header">
+            <h2>Sessions</h2>
+            <button class="primary-btn" id="create-session-btn">+ New Session</button>
+          </header>
+
+          <section class="session-section">
+            <h4 class="section-title">ACTIVE SESSIONS</h4>
+            <div class="session-list">
+              <div class="session-card active">
+                <div class="session-info">
+                  <span class="session-name">Main 3x3</span>
+                  <span class="session-meta">124 solves · Ao5: 11.82s</span>
+                </div>
+                <span class="badge active-badge">Active</span>
+              </div>
+              <div class="session-card">
+                <div class="session-info">
+                  <span class="session-name">Practice / OH</span>
+                  <span class="session-meta">45 solves · Ao5: 18.45s</span>
+                </div>
+                <button class="ghost-btn-sm">Switch</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="session-section">
+            <h4 class="section-title">ARCHIVED / COMPLETED</h4>
+            <div class="session-list">
+              <div class="session-card archived">
+                <div class="session-info">
+                  <span class="session-name">2026-07-20 Competition Prep</span>
+                  <span class="session-meta">50 solves · Mean: 12.10s</span>
+                </div>
+                <button class="ghost-btn-sm">Restore</button>
+              </div>
+            </div>
+          </section>
+        </div>
       </div>
-    </div> </div> <nav class="main-app-navigation bottom-nav">
-    <a href="#" class="nav-tab" data-tab="home">Home</a>
-    <a href="#" class="nav-tab active" data-tab="timer">Timer</a>
-    <a href="#" class="nav-tab" data-tab="solves">Solves</a>
-    <a href="#" class="nav-tab" data-tab="stats">Stats</a>
-    <a href="#" class="nav-tab" data-tab="profile">Profile</a>
-  </nav>
+
+      <div id="screen-more" class="tab-screen">
+        <div class="more-container">
+          
+          <div class="more-profile-card">
+            <div class="profile-avatar">👤</div>
+            <div class="profile-info">
+              <h3>Cuber #1548</h3>
+              <p>cuber@example.com</p>
+            </div>
+            <button class="ghost-btn-sm">Edit</button>
+          </div>
+
+          <div class="more-group">
+            <h4 class="group-title">TIMER SETTINGS</h4>
+            <div class="more-item">
+              <span>Inspection Time (15s)</span>
+              <input type="checkbox" class="toggle-switch" checked>
+            </div>
+            <div class="more-item">
+              <span>Timer Hold Time</span>
+              <span class="item-value">0.35s</span>
+            </div>
+            <div class="more-item">
+              <span>Hide Time While Running</span>
+              <input type="checkbox" class="toggle-switch">
+            </div>
+          </div>
+
+          <div class="more-group">
+            <h4 class="group-title">DATA & PREFERENCES</h4>
+            <div class="more-item clickable">
+              <span>Appearance / Theme</span>
+              <span class="item-value">Dark Purple ›</span>
+            </div>
+            <div class="more-item clickable">
+              <span>Export / Backup Data</span>
+              <span class="item-value">CSV/JSON ›</span>
+            </div>
+            <div class="more-item clickable">
+              <span>Import Data</span>
+              <span class="item-value">›</span>
+            </div>
+          </div>
+
+          <div class="more-group">
+            <h4 class="group-title">ABOUT</h4>
+            <div class="more-item">
+              <span>Version</span>
+              <span class="item-value">v1.0.0</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div> <nav class="main-app-navigation bottom-nav">
+      <a href="#" class="nav-tab active" data-tab="timer">Timer</a>
+      <a href="#" class="nav-tab" data-tab="solves">Solves</a>
+      <a href="#" class="nav-tab" data-tab="stats">Stats</a>
+      <a href="#" class="nav-tab" data-tab="session">Session</a>
+      <a href="#" class="nav-tab" data-tab="more">More</a>
+    </nav>
+
 
 </div> <div id="global-undo-toast" class="undo-toast" style="display: none !important;">
   <span>기록이 삭제되었습니다.</span>
