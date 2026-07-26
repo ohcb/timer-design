@@ -181,17 +181,19 @@ body {
 /* ==========================================================================
    🧩 5. 하단 고정 5선 내비게이션 바 (Bottom Navigation)
    ========================================================================== */
-.main-app-navigation {
+.main-app-navigation,
+nav.bottom-nav {
   position: fixed !important;
   bottom: 0 !important;
   left: 0 !important;
   right: 0 !important;
   
-  width: 100% !important;
+  width: 100vw !important;
   height: 60px !important;
   
-  background-color: var(--panel-bg) !important; 
-  border-top: 1px solid var(--border-light) !important;
+  /* 💡 변수 대신 직접 색상을 지정하여 안 보이는 현상 방지 */
+  background-color: #18191c !important; 
+  border-top: 1px solid #2f3136 !important;
   
   display: flex !important;
   flex-direction: row !important;
@@ -201,8 +203,12 @@ body {
   margin: 0 !important;
   padding: 0 !important;
   
-  z-index: 999999 !important;
+  /* 💡 화면 맨 위로 끌어올리기 및 강제 노출 */
+  z-index: 9999999 !important;
   box-sizing: border-box !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
 }
 
 .main-app-navigation .nav-tab {
@@ -212,21 +218,21 @@ body {
   align-items: center !important;
   justify-content: center !important;
   
-  color: var(--text-muted) !important;
+  color: #8e9297 !important;
   text-decoration: none !important;
   font-size: 0.85rem !important;
   font-weight: 600 !important;
-  transition: color var(--transition-fast);
+  background: transparent !important;
 }
 
 .main-app-navigation .nav-tab:hover {
-  color: var(--text-main) !important;
+  color: #f2f3f5 !important;
 }
 
 .main-app-navigation .nav-tab.active {
-  color: var(--accent-color) !important;
+  color: #a855f7 !important;
   font-weight: 700 !important;
-  border-top: 2px solid var(--accent-color) !important;
+  border-top: 2px solid #a855f7 !important;
 }
 
 /* ==========================================================================
