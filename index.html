@@ -384,46 +384,88 @@
         </div>
       </div>
 
-      <div id="screen-session" class="tab-screen">
-        <div class="session-container">
-          <header class="session-header">
+           <div id="screen-session" class="tab-screen">
+        <div class="session-hub-container">
+          
+          <header class="session-page-header">
             <h2>Sessions</h2>
-            <button class="primary-btn" id="create-session-btn">+ New Session</button>
+            <button class="primary-btn-purple" id="create-session-btn">+ New Session</button>
           </header>
 
-          <section class="session-section">
-            <h4 class="section-title">ACTIVE SESSIONS</h4>
-            <div class="session-list">
-              <div class="session-card active">
-                <div class="session-info">
-                  <span class="session-name">Main 3x3</span>
-                  <span class="session-meta">124 solves · Ao5: 11.82s</span>
+          <section class="session-group">
+            <h3 class="group-title">ACTIVE</h3>
+            <div class="session-card-list" id="active-session-list">
+              
+              <div class="session-manage-card is-current" data-session-id="1" data-session-name="Main 3x3">
+                <div class="card-left-info">
+                  <div class="session-title-row">
+                    <span class="current-dot">🟣</span>
+                    <h4 class="session-name">Main 3x3</h4>
+                  </div>
+                  <p class="session-stats">124 solves · Ao5 11.82 · Best 7.95</p>
                 </div>
-                <span class="badge active-badge">Active</span>
+                <button class="card-more-btn" aria-label="Session Menu">⋮</button>
               </div>
-              <div class="session-card">
-                <div class="session-info">
-                  <span class="session-name">Practice / OH</span>
-                  <span class="session-meta">45 solves · Ao5: 18.45s</span>
+
+              <div class="session-manage-card" data-session-id="2" data-session-name="OH Practice">
+                <div class="card-left-info">
+                  <h4 class="session-name">OH Practice</h4>
+                  <p class="session-stats">45 solves · Ao5 18.45 · Best 14.10</p>
                 </div>
-                <button class="ghost-btn-sm">Switch</button>
+                <button class="card-more-btn" aria-label="Session Menu">⋮</button>
               </div>
+
+              <div class="session-manage-card" data-session-id="3" data-session-name="FMC Training">
+                <div class="card-left-info">
+                  <h4 class="session-name">FMC Training</h4>
+                  <p class="session-stats">12 solves · Best 28 moves</p>
+                </div>
+                <button class="card-more-btn" aria-label="Session Menu">⋮</button>
+              </div>
+
+            </div>
+
+            <div class="session-empty-card" id="active-empty-state" style="display: none;">
+              <span class="empty-icon">📂</span>
+              <h4>No Active Sessions</h4>
+              <p>Create a new session to start solving.</p>
+              <button class="primary-btn-purple" id="empty-create-btn">+ New Session</button>
             </div>
           </section>
 
-          <section class="session-section">
-            <h4 class="section-title">ARCHIVED / COMPLETED</h4>
-            <div class="session-list">
-              <div class="session-card archived">
-                <div class="session-info">
-                  <span class="session-name">2026-07-20 Competition Prep</span>
-                  <span class="session-meta">50 solves · Mean: 12.10s</span>
+          <section class="session-group" id="completed-section">
+            <h3 class="group-title">COMPLETED</h3>
+            <div class="session-card-list" id="completed-session-list">
+              
+              <div class="session-manage-card completed-card" data-session-id="101" data-session-name="2026-07 Competition Prep">
+                <div class="card-left-info">
+                  <h4 class="session-name">2026-07 Competition Prep</h4>
+                  <p class="session-stats">50 solves · Mean 12.10</p>
                 </div>
-                <button class="ghost-btn-sm">Restore</button>
+                <div class="card-action-btns">
+                  <button class="btn-text-purple restore-btn">Restore</button>
+                  <button class="btn-text-red delete-btn">Delete</button>
+                </div>
               </div>
+
             </div>
           </section>
+
         </div>
+
+        <div class="session-bottom-sheet-overlay" id="session-modal-overlay">
+          <div class="session-modal-sheet">
+            <div class="modal-handle"></div>
+            <h3 class="modal-session-title" id="modal-target-title">Main 3x3</h3>
+            <div class="modal-menu-list">
+              <button class="modal-menu-item" id="modal-opt-rename">✏️ Rename</button>
+              <button class="modal-menu-item" id="modal-opt-archive">📦 Archive Session</button>
+              <button class="modal-menu-item text-red" id="modal-opt-delete">🗑️ Delete</button>
+            </div>
+            <button class="modal-cancel-btn" id="modal-opt-cancel">Cancel</button>
+          </div>
+        </div>
+
       </div>
 
       <div id="screen-more" class="tab-screen">
