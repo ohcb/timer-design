@@ -1,10 +1,10 @@
 /* style.css */
-@import url("home.css");
+/* @import url("home.css"); */
 @import url("timer.css");
 @import url("solves.css");
 @import url("stats.css");
-@import url("profile.css");
-@import url("setting.css");
+@import url("session.css");
+@import url("more.css");
 
 /* ==========================================================================
    🏛️ Cub3 Design System Variables (통합 디자인 시스템)
