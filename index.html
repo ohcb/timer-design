@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -33,7 +32,7 @@
 
     <div class="tab-contents">
 
-      <div id="screen-timer" class="tab-screen active-screen">
+      <div id="screen-timer" class="tab-screen active">
         <section class="scramble-zone">
           <p class="scramble-text">U2 F2 U' R2 D B2 F2 D L2 U' L2 B2 L U' B' L' D' U2 L R' B R'</p>
           <div class="scramble-actions">
@@ -382,100 +381,255 @@
               </div>
             </section>
           </main>
-        </div> </div> <div id="screen-session" class="tab-screen">
-        <div class="session-container">
-          <header class="session-header">
-            <h2>Sessions</h2>
-            <button class="primary-btn" id="create-session-btn">+ New Session</button>
-          </header>
-
-          <section class="session-section">
-            <h4 class="section-title">ACTIVE SESSIONS</h4>
-            <div class="session-list">
-              <div class="session-card active">
-                <div class="session-info">
-                  <span class="session-name">Main 3x3</span>
-                  <span class="session-meta">124 solves · Ao5: 11.82s</span>
-                </div>
-                <span class="badge active-badge">Active</span>
-              </div>
-              <div class="session-card">
-                <div class="session-info">
-                  <span class="session-name">Practice / OH</span>
-                  <span class="session-meta">45 solves · Ao5: 18.45s</span>
-                </div>
-                <button class="ghost-btn-sm">Switch</button>
-              </div>
-            </div>
-          </section>
-
-          <section class="session-section">
-            <h4 class="section-title">ARCHIVED / COMPLETED</h4>
-            <div class="session-list">
-              <div class="session-card archived">
-                <div class="session-info">
-                  <span class="session-name">2026-07-20 Competition Prep</span>
-                  <span class="session-meta">50 solves · Mean: 12.10s</span>
-                </div>
-                <button class="ghost-btn-sm">Restore</button>
-              </div>
-            </div>
-          </section>
         </div>
       </div>
 
-      <div id="screen-more" class="tab-screen">
-        <div class="more-container">
+           <div id="screen-session" class="tab-screen">
+        <div class="session-hub-container">
           
-          <div class="more-profile-card">
-            <div class="profile-avatar">👤</div>
-            <div class="profile-info">
-              <h3>Cuber #1548</h3>
-              <p>cuber@example.com</p>
+          <header class="session-page-header">
+            <h2>Sessions</h2>
+            <button class="primary-btn-purple" id="create-session-btn">+ New Session</button>
+          </header>
+
+          <section class="session-group">
+            <h3 class="group-title">ACTIVE</h3>
+            <div class="session-card-list" id="active-session-list">
+              
+              <div class="session-manage-card is-current" data-session-id="1" data-session-name="Main 3x3">
+                <div class="card-left-info">
+                  <div class="session-title-row">
+                    <span class="current-dot">🟣</span>
+                    <h4 class="session-name">Main 3x3</h4>
+                  </div>
+                  <p class="session-stats">124 solves · Ao5 11.82 · Best 7.95</p>
+                </div>
+                <button class="card-more-btn" aria-label="Session Menu">⋮</button>
+              </div>
+
+              <div class="session-manage-card" data-session-id="2" data-session-name="OH Practice">
+                <div class="card-left-info">
+                  <h4 class="session-name">OH Practice</h4>
+                  <p class="session-stats">45 solves · Ao5 18.45 · Best 14.10</p>
+                </div>
+                <button class="card-more-btn" aria-label="Session Menu">⋮</button>
+              </div>
+
+              <div class="session-manage-card" data-session-id="3" data-session-name="FMC Training">
+                <div class="card-left-info">
+                  <h4 class="session-name">FMC Training</h4>
+                  <p class="session-stats">12 solves · Best 28 moves</p>
+                </div>
+                <button class="card-more-btn" aria-label="Session Menu">⋮</button>
+              </div>
+
             </div>
-            <button class="ghost-btn-sm">Edit</button>
+
+            <div class="session-empty-card" id="active-empty-state" style="display: none;">
+              <span class="empty-icon">📂</span>
+              <h4>No Active Sessions</h4>
+              <p>Create a new session to start solving.</p>
+              <button class="primary-btn-purple" id="empty-create-btn">+ New Session</button>
+            </div>
+          </section>
+
+          <section class="session-group" id="completed-section">
+            <h3 class="group-title">COMPLETED</h3>
+            <div class="session-card-list" id="completed-session-list">
+              
+              <div class="session-manage-card completed-card" data-session-id="101" data-session-name="2026-07 Competition Prep">
+                <div class="card-left-info">
+                  <h4 class="session-name">2026-07 Competition Prep</h4>
+                  <p class="session-stats">50 solves · Mean 12.10</p>
+                </div>
+                <div class="card-action-btns">
+                  <button class="btn-text-purple restore-btn">Restore</button>
+                  <button class="btn-text-red delete-btn">Delete</button>
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+        </div>
+
+        <div class="session-bottom-sheet-overlay" id="session-modal-overlay">
+          <div class="session-modal-sheet">
+            <div class="modal-handle"></div>
+            <h3 class="modal-session-title" id="modal-target-title">Main 3x3</h3>
+            <div class="modal-menu-list">
+              <button class="modal-menu-item" id="modal-opt-rename">✏️ Rename</button>
+              <button class="modal-menu-item" id="modal-opt-archive">📦 Archive Session</button>
+              <button class="modal-menu-item text-red" id="modal-opt-delete">🗑️ Delete</button>
+            </div>
+            <button class="modal-cancel-btn" id="modal-opt-cancel">Cancel</button>
+          </div>
+        </div>
+
+      </div>
+
+      <div id="screen-more" class="tab-screen">
+        <div class="more-hub-container">
+
+          <div class="hub-card profile-card clickable-card" data-subscreen="screen-profile">
+            <div class="profile-main">
+              <div class="profile-avatar">👤</div>
+              <div class="profile-details">
+                <h3 class="profile-name">Cuber #1548</h3>
+                <p class="profile-email">cuber@example.com</p>
+              </div>
+              <span class="item-arrow">›</span>
+            </div>
           </div>
 
-          <div class="more-group">
-            <h4 class="group-title">TIMER SETTINGS</h4>
-            <div class="more-item">
-              <span>Inspection Time (15s)</span>
-              <input type="checkbox" class="toggle-switch" checked>
+          <div class="hub-card clickable-card" data-subscreen="screen-tools">
+            <div class="card-header-flex">
+              <span class="card-title">TOOLS</span>
+              <span class="item-arrow">›</span>
             </div>
-            <div class="more-item">
-              <span>Timer Hold Time</span>
-              <span class="item-value">0.35s</span>
+            <p class="card-desc">Scramble Generator, Algorithm Trainer</p>
+          </div>
+
+          <div class="hub-card clickable-card" data-subscreen="screen-settings">
+            <div class="card-header-flex">
+              <span class="card-title">SETTINGS</span>
+              <span class="item-arrow">›</span>
             </div>
-            <div class="more-item">
-              <span>Hide Time While Running</span>
-              <input type="checkbox" class="toggle-switch">
+            <p class="card-desc">Timer Settings, Appearance, Preferences</p>
+          </div>
+
+          <div class="hub-card clickable-card" data-subscreen="screen-data">
+            <div class="card-header-flex">
+              <span class="card-title">DATA MANAGEMENT</span>
+              <span class="item-arrow">›</span>
+            </div>
+            <p class="card-desc">Export Data, Import Data, Backup / Restore</p>
+          </div>
+
+          <div class="hub-card about-hub">
+            <div class="info-row">
+              <span class="info-label">Version</span>
+              <span class="info-value">v1.0.0</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">App Info</span>
+              <span class="info-value">CUB3 Timer</span>
             </div>
           </div>
 
-          <div class="more-group">
-            <h4 class="group-title">DATA & PREFERENCES</h4>
-            <div class="more-item clickable">
-              <span>Appearance / Theme</span>
-              <span class="item-value">Dark Purple ›</span>
-            </div>
-            <div class="more-item clickable">
-              <span>Export / Backup Data</span>
-              <span class="item-value">CSV/JSON ›</span>
-            </div>
-            <div class="more-item clickable">
-              <span>Import Data</span>
-              <span class="item-value">›</span>
+        </div>
+      </div>
+
+      <div id="screen-profile" class="tab-screen sub-screen">
+        <div class="sub-screen-header">
+          <button class="back-btn">‹ Back</button>
+          <h2>Profile</h2>
+        </div>
+        <div class="more-hub-container">
+          <div class="hub-card profile-card">
+            <div class="profile-main">
+              <div class="profile-avatar">👤</div>
+              <div class="profile-details">
+                <h3 class="profile-name">Cuber #1548</h3>
+                <p class="profile-email">cuber@example.com</p>
+              </div>
+              <button class="edit-btn">Edit</button>
             </div>
           </div>
+        </div>
+      </div>
 
-          <div class="more-group">
-            <h4 class="group-title">ABOUT</h4>
-            <div class="more-item">
-              <span>Version</span>
-              <span class="item-value">v1.0.0</span>
+      <div id="screen-tools" class="tab-screen sub-screen">
+        <div class="sub-screen-header">
+          <button class="back-btn">‹ Back</button>
+          <h2>Tools</h2>
+        </div>
+        <div class="more-hub-container">
+          <div class="hub-card">
+            <div class="hub-menu-list">
+              <div class="hub-item">
+                <span class="item-icon">🎲</span>
+                <div class="item-text">
+                  <span class="item-title">Scramble Generator</span>
+                  <span class="item-desc">Custom scramble for various puzzles</span>
+                </div>
+                <span class="item-arrow">›</span>
+              </div>
+              <div class="hub-item">
+                <span class="item-icon">📖</span>
+                <div class="item-text">
+                  <span class="item-title">Algorithm Trainer</span>
+                  <span class="item-desc">Practice OLL/PLL and more</span>
+                </div>
+                <span class="item-arrow">›</span>
+              </div>
             </div>
           </div>
+        </div>
+      </div>
 
+      <div id="screen-settings" class="tab-screen sub-screen">
+        <div class="sub-screen-header">
+          <button class="back-btn">‹ Back</button>
+          <h2>Settings</h2>
+        </div>
+        <div class="more-hub-container">
+          <div class="hub-card">
+            <div class="hub-menu-list">
+              <div class="hub-item">
+                <span class="item-icon">⏱️</span>
+                <div class="item-text">
+                  <span class="item-title">Timer Settings</span>
+                  <span class="item-desc">Inspection, Hold Time, Hide Time</span>
+                </div>
+                <span class="item-arrow">›</span>
+              </div>
+              <div class="hub-item">
+                <span class="item-icon">🎨</span>
+                <div class="item-text">
+                  <span class="item-title">Appearance / Theme</span>
+                  <span class="item-desc">Dark Purple, Neon, etc.</span>
+                </div>
+                <span class="item-arrow">›</span>
+              </div>
+              <div class="hub-item">
+                <span class="item-icon">⚙️</span>
+                <div class="item-text">
+                  <span class="item-title">Preferences</span>
+                  <span class="item-desc">General app behavior</span>
+                </div>
+                <span class="item-arrow">›</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="screen-data" class="tab-screen sub-screen">
+        <div class="sub-screen-header">
+          <button class="back-btn">‹ Back</button>
+          <h2>Data Management</h2>
+        </div>
+        <div class="more-hub-container">
+          <div class="hub-card">
+            <div class="hub-menu-list">
+              <div class="hub-item">
+                <span class="item-icon">📤</span>
+                <div class="item-text"><span class="item-title">Export Data</span></div>
+                <span class="item-arrow">›</span>
+              </div>
+              <div class="hub-item">
+                <span class="item-icon">📥</span>
+                <div class="item-text"><span class="item-title">Import Data</span></div>
+                <span class="item-arrow">›</span>
+              </div>
+              <div class="hub-item">
+                <span class="item-icon">☁️</span>
+                <div class="item-text"><span class="item-title">Backup / Restore</span></div>
+                <span class="item-arrow">›</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

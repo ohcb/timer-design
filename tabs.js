@@ -19,7 +19,8 @@ export function initTabs() {
 
     tabs.forEach(tab => {
       const tabData = (tab.getAttribute('data-tab') || tab.textContent.trim()).toLowerCase();
-      if (tabData === currentTabName) {
+      // 서브 화면(profile, tools, settings, data)에 있을 때도 More 탭을 활성화 상태로 유지
+      if (tabData === currentTabName || (tabData === 'more' && ['profile', 'tools', 'settings', 'data'].includes(currentTabName))) {
         tab.classList.add('active');
       } else {
         tab.classList.remove('active');
@@ -33,10 +34,10 @@ export function initTabs() {
   function activateScreen(targetScreenId) {
     screens.forEach(screen => {
       if (screen.id === targetScreenId) {
-        screen.style.display = 'block';
+        screen.style.setProperty('display', 'block', 'important');
         screen.classList.add('active-screen');
       } else {
-        screen.style.display = 'none';
+        screen.style.setProperty('display', 'none', 'important');
         screen.classList.remove('active-screen');
       }
     });
@@ -75,4 +76,21 @@ export function initTabs() {
       activateScreen('screen-more');
     }
   });
-}
+
+  // 7. 서브 페이지 이동 클릭 이벤트 (함수 내부로 이동!)
+  document.querySelectorAll('.clickable-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const targetSubscreen = card.getAttribute('data-subscreen');
+      if (targetSubscreen) {
+        activateScreen(targetSubscreen);
+      }
+    });
+  });
+
+  // 8. 서브 페이지 상단 'Back' 버튼 클릭 시 More 화면으로 복귀 (함수 내부로 이동!)
+  document.querySelectorAll('.back-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activateScreen('screen-more');
+    });
+  });
+} // 👈 initTabs() 함수가 여기서 닫혀야 정상입니다!

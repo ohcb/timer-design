@@ -1,91 +1,238 @@
 /* ==========================================================================
-   🍔 More / Settings Screen Styles
+   More Screen & Sub Screens
    ========================================================================== */
 
-.more-container {
-  width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 1rem;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
+/* 전체 화면 영역 기본 패딩 */
+#screen-more,
+.sub-screen {
+  width: 100% !important;
+  padding-bottom: 120px !important;
+  box-sizing: border-box !important;
 }
 
-.more-profile-card {
-  background-color: #18191c;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 14px;
-  padding: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 12px;
+/* 카드들을 감싸는 메인 컨테이너 */
+.more-hub-container {
+  max-width: 500px !important;
+  margin: 0 auto !important;
+  padding: 20px 16px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 16px !important;
+  text-align: left !important;
+  box-sizing: border-box !important;
 }
 
-.profile-avatar {
-  width: 44px;
-  height: 44px;
-  background-color: #2c2c2e;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.2rem;
+/* 공통 카드 스타일 */
+.more-hub-container .hub-card {
+  background-color: #18191c !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 16px !important;
+  padding: 18px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  display: block !important;
+  text-align: left !important;
 }
 
-.profile-info h3 {
-  margin: 0;
-  font-size: 1rem;
-  color: #f2f3f5;
+/* --------------------------------------------------------------------------
+   1. 메인 More 허브용 클릭 가능 카드 (.clickable-card)
+   -------------------------------------------------------------------------- */
+.more-hub-container .clickable-card {
+  cursor: pointer !important;
+  transition: transform 0.15s ease, background-color 0.15s ease !important;
 }
 
-.profile-info p {
-  margin: 2px 0 0 0;
-  font-size: 0.75rem;
-  color: #8e9297;
+.more-hub-container .clickable-card:active {
+  transform: scale(0.98) !important;
+  background-color: #202125 !important;
 }
 
-.more-group {
-  background-color: #18191c;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 14px;
-  padding: 0.5rem 1rem;
+.more-hub-container .card-header-flex {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  width: 100% !important;
 }
 
-.group-title {
-  font-size: 0.7rem;
-  color: #8e9297;
-  letter-spacing: 0.8px;
-  margin: 0.75rem 0 0.25rem 0;
+.more-hub-container .card-title {
+  font-size: 0.95rem !important;
+  font-weight: 700 !important;
+  color: #a855f7 !important; /* 네온 퍼플 */
+  letter-spacing: 0.05em !important;
 }
 
-.more-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  font-size: 0.85rem;
-  color: #f2f3f5;
+.more-hub-container .card-desc {
+  font-size: 0.8rem !important;
+  color: #8e9297 !important;
+  margin: 6px 0 0 0 !important;
+  line-height: 1.3 !important;
 }
 
-.more-item:last-child {
-  border-bottom: none;
+/* --------------------------------------------------------------------------
+   2. 프로필 카드 내부
+   -------------------------------------------------------------------------- */
+.more-hub-container .profile-main {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  width: 100% !important;
 }
 
-.more-item.clickable {
-  cursor: pointer;
+.more-hub-container .profile-avatar {
+  width: 48px !important;
+  height: 48px !important;
+  background-color: rgba(168, 85, 247, 0.15) !important;
+  border: 1px solid #a855f7 !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 1.3rem !important;
+  flex-shrink: 0 !important;
 }
 
-.item-value {
-  color: #8e9297;
-  font-size: 0.8rem;
+.more-hub-container .profile-details {
+  flex: 1 !important;
+  text-align: left !important;
 }
 
-.toggle-switch {
-  accent-color: #a855f7;
-  width: 18px;
-  height: 18px;
-  cursor: pointer;
+.more-hub-container .profile-name {
+  margin: 0 !important;
+  font-size: 1.05rem !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+.more-hub-container .profile-email {
+  margin: 2px 0 0 0 !important;
+  font-size: 0.8rem !important;
+  color: #8e9297 !important;
+}
+
+.more-hub-container .edit-btn {
+  background: transparent !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: #ffffff !important;
+  padding: 6px 12px !important;
+  border-radius: 8px !important;
+  font-size: 0.8rem !important;
+  cursor: pointer !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. 서브 페이지 내부 목록 아이템 (Tools, Settings, Data 내부)
+   -------------------------------------------------------------------------- */
+.more-hub-container .hub-menu-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  width: 100% !important;
+}
+
+.more-hub-container .hub-item {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 10px 12px !important;
+  border-radius: 10px !important;
+  background-color: rgba(255, 255, 255, 0.02) !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  cursor: pointer !important;
+}
+
+.more-hub-container .hub-item:active {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+.more-hub-container .item-icon {
+  font-size: 1.2rem !important;
+  margin-right: 12px !important;
+  flex-shrink: 0 !important;
+}
+
+.more-hub-container .item-text {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  text-align: left !important;
+}
+
+.more-hub-container .item-title {
+  color: #ffffff !important;
+  font-size: 0.9rem !important;
+  font-weight: 600 !important;
+  text-align: left !important;
+}
+
+.more-hub-container .item-desc {
+  color: #8e9297 !important;
+  font-size: 0.75rem !important;
+  margin-top: 2px !important;
+  text-align: left !important;
+}
+
+.more-hub-container .item-arrow {
+  color: #a855f7 !important;
+  font-weight: bold !important;
+  font-size: 1.1rem !important;
+  margin-left: 8px !important;
+}
+
+/* --------------------------------------------------------------------------
+   4. About 행 정렬
+   -------------------------------------------------------------------------- */
+.more-hub-container .info-row {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 6px 0 !important;
+  width: 100% !important;
+}
+
+.more-hub-container .info-label {
+  color: #8e9297 !important;
+  font-size: 0.85rem !important;
+}
+
+.more-hub-container .info-value {
+  color: #a855f7 !important;
+  font-weight: 600 !important;
+  font-size: 0.85rem !important;
+}
+
+/* --------------------------------------------------------------------------
+   5. 서브 페이지 상단 헤더 (Back 버튼)
+   -------------------------------------------------------------------------- */
+.sub-screen-header {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  max-width: 500px !important;
+  margin: 0 auto !important;
+  padding: 16px 16px 0 16px !important;
+  box-sizing: border-box !important;
+}
+
+.sub-screen-header h2 {
+  font-size: 1.2rem !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  margin: 0 !important;
+}
+
+.back-btn {
+  background: none !important;
+  border: none !important;
+  color: #a855f7 !important;
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  padding: 6px 10px !important;
+  border-radius: 8px !important;
+}
+
+.back-btn:active {
+  background-color: rgba(168, 85, 247, 0.15) !important;
 }
