@@ -2,6 +2,7 @@
 
 import { addSolve, getSolves, updateSolvePenalty, deleteSolve } from './storage.js';
 import { getBestTime, calculateAoN } from './stats-calculator.js';
+import { renderSolvesList } from './solves.js'; // 💡 Solves 탭 리스트 연동 추가
 
 // 시간 표시 포맷 (패널티 고려)
 export function formatTime(ms, penalty = 'NONE') {
@@ -95,7 +96,7 @@ export function renderStats() {
   updateRow(4, curAo12, bestAo12);
 }
 
-// 💡 [추가] 모달 이벤트 및 관리 로직 초기화
+// 💡 모달 이벤트 및 관리 로직
 function initSolveModal() {
   const modal = document.getElementById('solve-modal');
   const solveList = document.querySelector('.solve-list');
@@ -114,7 +115,6 @@ function initSolveModal() {
     activeSolveId = id;
     modalTimeEl.textContent = formatTime(target.time, target.penalty);
 
-    // 패널티 버튼 활성화 상태 표시
     penaltyBtns.forEach(btn => {
       const p = btn.dataset.penalty;
       if ((target.penalty || 'NONE') === p) {
@@ -132,7 +132,6 @@ function initSolveModal() {
     activeSolveId = null;
   }
 
-  // 리스트 아이템 클릭 시 모달 열기
   if (solveList) {
     solveList.addEventListener('click', (e) => {
       const li = e.target.closest('li');
@@ -150,10 +149,10 @@ function initSolveModal() {
       
       updateSolvePenalty(activeSolveId, penalty);
       
-      // 모달 닫고 UI 및 Stats 즉시 재계산!
       closeModal();
       renderRecentSolves();
       renderStats();
+      if (typeof renderSolvesList === 'function') renderSolvesList(); // 💡 Solves 탭도 갱신
     });
   });
 
@@ -167,10 +166,10 @@ function initSolveModal() {
       closeModal();
       renderRecentSolves();
       renderStats();
+      if (typeof renderSolvesList === 'function') renderSolvesList(); // 💡 Solves 탭도 갱신
     });
   }
 
-  // 닫기 및 바깥 클릭 이벤트
   if (closeBtn) closeBtn.addEventListener('click', closeModal);
   if (modal) {
     modal.addEventListener('click', (e) => {
@@ -187,7 +186,7 @@ export function initTimer() {
 
   renderRecentSolves();
   renderStats();
-  initSolveModal(); // 💡 모달 이벤트 바인딩
+  initSolveModal();
 
   let mode = 'idle';
   let startAt = 0;
@@ -244,6 +243,7 @@ export function initTimer() {
     addSolve(timeMs);
     renderRecentSolves();
     renderStats();
+    if (typeof renderSolvesList === 'function') renderSolvesList(); // 💡 Solves 탭 갱신
   }
 
   // 이벤트 연결
