@@ -78,11 +78,3 @@ export function initSolves() {
   });
 }
 
-
-    // 2. 탭 이동 버튼 클릭 시 목록 새로고침
-    const navBtn = e.target.closest('[data-target], [data-tab], .nav-item, .tab-btn');
-    if (navBtn) {
-      renderSolvesList();
-    }
-  });
-}
