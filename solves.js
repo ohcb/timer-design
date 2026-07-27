@@ -54,19 +54,21 @@ export function renderSolvesList() {
     .join('');
 }
 
+// solves.js 의 initSolves 함수 수정
 export function initSolves() {
   renderSolvesList();
 
-  // 💡 2. 클릭 이벤트 세팅 (카드 클릭 시 바텀시트 열기 + 탭 변경 시 리스트 갱신)
-  document.addEventListener('click', (e) => {
-    // 기록 카드 클릭 감지
+  // 💡 최상단 document에서 클릭을 감지하여 실행
+  document.body.addEventListener('click', (e) => {
+    // 1. Solves 카드 클릭 감지
     const card = e.target.closest('.record-card');
     if (card && card.dataset.id) {
+      console.log('카드 클릭됨! ID:', card.dataset.id); // 콘솔 출력 확인용
       openSolveBottomSheet(card.dataset.id);
       return;
     }
 
-    // 탭 이동 버튼 클릭 감지
+    // 2. 탭 이동 버튼 클릭 시 리스트 새로고침
     const navBtn = e.target.closest('[data-target], [data-tab], .nav-item, .tab-btn');
     if (navBtn) {
       renderSolvesList();
