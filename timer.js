@@ -33,23 +33,40 @@ export function renderRecentSolves() {
     .join('');
 }
 
-// 💡 Current & Best 통계 표 갱신 함수
+// timer.js 안의 renderStats 함수 교체
 export function renderStats() {
   const solves = getSolves(); // 전체 솔브 목록
 
-  const bestVal = getBestTime(solves);
+  // 계산 결과값들
+  const curTime = solves.length > 0 ? solves[0].time : null; // 가장 최근 기록
+  const bestTime = getBestTime(solves); // 전체 PB
   const curAo5 = calculateAoN(solves, 5);
   const curAo12 = calculateAoN(solves, 12);
 
-  // 화면 요소 찾기 (Current / Best 셀)
-  const singleBestEl = document.querySelector('.stat-single-best');
-  const ao5CurEl = document.querySelector('.stat-ao5-cur');
-  const ao12CurEl = document.querySelector('.stat-ao12-cur');
+  // stats-table 내부의 row 행들 찾기
+  const rows = document.querySelectorAll('.stats-table .row');
+  if (rows.length < 5) return; // 구조가 다르면 중단
 
-  if (singleBestEl) singleBestEl.textContent = bestVal ? formatTime(bestVal) : '-';
-  if (ao5CurEl) ao5CurEl.textContent = curAo5 ? formatTime(curAo5) : '-';
-  if (ao12CurEl) ao12CurEl.textContent = curAo12 ? formatTime(curAo12) : '-';
+  // 1. time 행 (row[1]) -> Cur / Best
+  const timeSpans = rows[1].querySelectorAll('span');
+  if (timeSpans.length >= 3) {
+    timeSpans[1].textContent = curTime ? formatTime(curTime) : '-';
+    timeSpans[2].textContent = bestTime ? formatTime(bestTime) : '-';
+  }
+
+  // 2. ao5 행 (row[3]) -> Cur
+  const ao5Spans = rows[3].querySelectorAll('span');
+  if (ao5Spans.length >= 3) {
+    ao5Spans[1].textContent = curAo5 ? formatTime(curAo5) : '-';
+  }
+
+  // 3. ao12 행 (row[4]) -> Cur
+  const ao12Spans = rows[4].querySelectorAll('span');
+  if (ao12Spans.length >= 3) {
+    ao12Spans[1].textContent = curAo12 ? formatTime(curAo12) : '-';
+  }
 }
+
 
 export function initTimer() {
   const timerDisplay = document.querySelector('.timer-display');
