@@ -190,3 +190,56 @@ export function initSolvesManager() {
     });
   }
 }
+
+// solve-bottom-sheet.js
+
+let undoTimer = null;
+let lastDeletedSolve = null; // 실행 취소(Undo)할 마지막 데이터 저장
+
+// 💡 Undo 토스트 띄우기 함수
+export function showUndoToast(deletedSolve, onUndoCallback) {
+  const toast = document.getElementById('global-undo-toast');
+  const undoBtn = document.getElementById('global-undo-btn');
+  if (!toast) return;
+
+  lastDeletedSolve = deletedSolve;
+
+  // 기존 타이머가 작동 중이면 리셋
+  if (undoTimer) clearTimeout(undoTimer);
+
+  // 토스트 강제 출력
+  toast.classList.add('show');
+  toast.style.setProperty('display', 'flex', 'important');
+  toast.style.setProperty('opacity', '1', 'important');
+
+  // Undo 버튼 이벤트 등록 (한 번만 실행되도록 { once: true })
+  if (undoBtn) {
+    // 기존 리스너 중복 방지를 위해 클론 또는 이벤트 교체
+    const newUndoBtn = undoBtn.cloneNode(true);
+    undoBtn.parentNode.replaceChild(newUndoBtn, undoBtn);
+
+    newUndoBtn.addEventListener('click', () => {
+      if (onUndoCallback && lastDeletedSolve) {
+        onUndoCallback(lastDeletedSolve);
+      }
+      hideUndoToast();
+    }, { once: true });
+  }
+
+  // 4초 후 자동으로 토스트 숨김
+  undoTimer = setTimeout(() => {
+    hideUndoToast();
+  }, 4000);
+}
+
+// 💡 Undo 토스트 숨기기 함수
+export function hideUndoToast() {
+  const toast = document.getElementById('global-undo-toast');
+  if (toast) {
+    toast.classList.remove('show');
+    toast.style.setProperty('display', 'none', 'important');
+    toast.style.setProperty('opacity', '0', 'important');
+  }
+  if (undoTimer) clearTimeout(undoTimer);
+  lastDeletedSolve = null;
+}
