@@ -1,63 +1,96 @@
 // tabs.js
 
 export function initTabs() {
-  document.addEventListener('click', (e) => {
-    // 1. 클릭된 요소 또는 부모 중 탭 버튼 탐색
-    const tabBtn = e.target.closest('[data-tab], [data-target], .tab-btn, .nav-item, nav a');
-    if (!tabBtn) return;
+  const tabs = document.querySelectorAll('.nav-tab');
+  const screens = document.querySelectorAll('.tab-screen');
+  const headerCenter = document.querySelector('.header-center');
 
-    // 2. 이동할 탭 ID 가져오기
-    const rawTarget = tabBtn.dataset.tab || tabBtn.dataset.target || tabBtn.getAttribute('href')?.replace('#', '');
-    if (!rawTarget) return;
+  if (tabs.length === 0 || screens.length === 0) return;
 
-    // 3. 다양한 HTML id 패턴 대조 (timer, screen-timer, timer-screen 등)
-    const possibleIds = [
-      rawTarget,
-      `screen-${rawTarget}`,
-      `${rawTarget}-screen`,
-      `tab-${rawTarget}`,
-      `${rawTarget}-tab`
-    ];
+  // 1. Timer 화면일 때만 상단 세션/종목 선택 영역 노출
+  function toggleHeaderCenter(screenId) {
+    if (!headerCenter) return;
+    headerCenter.style.display = (screenId === 'screen-timer') ? 'flex' : 'none';
+  }
 
-    let targetScreen = null;
-    for (const id of possibleIds) {
-      const el = document.getElementById(id);
-      if (el) {
-        targetScreen = el;
-        break;
-      }
-    }
+  // 2. 하단 내비게이션 active 클래스 동기화
+  function syncNavWithActiveScreen(targetScreenId) {
+    const currentTabName = targetScreenId.replace('screen-', '').toLowerCase();
 
-    if (!targetScreen) return;
-
-    // 4. 모든 탭 화면 숨기기
-    const allScreens = document.querySelectorAll('.tab-screen, .screen, [id*="screen"], [id*="tab"]');
-    allScreens.forEach(screen => {
-      if (screen.classList.contains('tab-screen') || screen.classList.contains('screen')) {
-        screen.classList.remove('active');
-        screen.style.display = 'none';
+    tabs.forEach(tab => {
+      const tabData = (tab.getAttribute('data-tab') || tab.textContent.trim()).toLowerCase();
+      // 서브 화면(profile, tools, settings, data)에 있을 때도 More 탭을 활성화 상태로 유지
+      if (tabData === currentTabName || (tabData === 'more' && ['profile', 'tools', 'settings', 'data'].includes(currentTabName))) {
+        tab.classList.add('active');
+      } else {
+        tab.classList.remove('active');
       }
     });
 
-    // 5. 클릭한 탭 화면 활성화
-    targetScreen.classList.add('active');
-    targetScreen.style.display = 'block';
+    toggleHeaderCenter(targetScreenId);
+  }
 
-    // 6. 하단 네비게이션 버튼 active 클래스 교체
-    const allNavBtns = document.querySelectorAll('[data-tab], [data-target], .tab-btn, .nav-item');
-    allNavBtns.forEach(btn => btn.classList.remove('active'));
-    tabBtn.classList.add('active');
-
-    // 7. 💡 상단 탑바(.topbar) 노출 제어
-    const topBar = document.querySelector('.topbar');
-    if (topBar) {
-      const isTimerTab = rawTarget === 'timer' || rawTarget.includes('timer');
-      
-      if (isTimerTab) {
-        topBar.style.setProperty('display', 'flex', 'important'); // 타이머 탭에서는 보임
+  // 3. 화면 전환 (스크린 숨김/노출)
+  function activateScreen(targetScreenId) {
+    screens.forEach(screen => {
+      if (screen.id === targetScreenId) {
+        screen.style.setProperty('display', 'block', 'important');
+        screen.classList.add('active-screen');
       } else {
-        topBar.style.setProperty('display', 'none', 'important'); // 다른 탭에서는 숨김
+        screen.style.setProperty('display', 'none', 'important');
+        screen.classList.remove('active-screen');
       }
+    });
+
+    syncNavWithActiveScreen(targetScreenId);
+  }
+
+  // 4. 초기 화면 설정 (기본값: screen-timer)
+  let activeFound = false;
+  screens.forEach(screen => {
+    if (screen.classList.contains('active-screen')) {
+      activateScreen(screen.id);
+      activeFound = true;
     }
   });
-}
+
+  // active-screen 클래스가 지정된 게 없다면 기본으로 타이머 화면 켜기
+  if (!activeFound) {
+    activateScreen('screen-timer');
+  }
+
+  // 5. 하단 탭 클릭 이벤트 연결
+  tabs.forEach(tab => {
+    tab.addEventListener('click', (event) => {
+      event.preventDefault();
+      const tabName = tab.getAttribute('data-tab');
+      if (tabName) {
+        activateScreen(`screen-${tabName.toLowerCase()}`);
+      }
+    });
+  });
+
+  // 6. 퀵 설정 버튼 등 외부 클릭 이벤트 연결
+  document.addEventListener('click', (event) => {
+    if (event.target.closest('#quick-settings-btn')) {
+      activateScreen('screen-more');
+    }
+  });
+
+  // 7. 서브 페이지 이동 클릭 이벤트 (함수 내부로 이동!)
+  document.querySelectorAll('.clickable-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const targetSubscreen = card.getAttribute('data-subscreen');
+      if (targetSubscreen) {
+        activateScreen(targetSubscreen);
+      }
+    });
+  });
+
+  // 8. 서브 페이지 상단 'Back' 버튼 클릭 시 More 화면으로 복귀 (함수 내부로 이동!)
+  document.querySelectorAll('.back-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activateScreen('screen-more');
+    });
+  });
+} // 👈 initTabs() 함수가 여기서 닫혀야 정상입니다!
