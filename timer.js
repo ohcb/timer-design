@@ -1,6 +1,6 @@
 // timer.js
 
-import { addSolve } from './storage.js';
+import { addSolve, getActiveSession } from './storage.js';
 
 export function formatTime(ms) {
   if (ms == null || Number.isNaN(ms)) return '0.00';
@@ -12,15 +12,40 @@ export function formatTime(ms) {
     : seconds.toFixed(2);
 }
 
+// 💡 Recent Solves (HTML) 리스트를 로컬스토리지 데이터로 갱신하는 함수
+function renderRecentSolves() {
+  const solveList = document.querySelector('.solve-list');
+  if (!solveList) return;
+
+  const session = getActiveSession();
+  const recentSolves = session.solves.slice(0, 5); // 최근 5개만 가져오기
+
+  // 저장된 기록이 없을 때
+  if (recentSolves.length === 0) {
+    solveList.innerHTML = '<li><span class="num">-</span> 기록 없음</li>';
+    return;
+  }
+
+  // HTML 동적 생성 (고정되어 있던 HTML 태그를 진짜 데이터로 교체!)
+  solveList.innerHTML = recentSolves
+    .map((solve, index) => {
+      const num = recentSolves.length - index;
+      return `<li><span class="num">${num}.</span> ${formatTime(solve.time)}</li>`;
+    })
+    .join('');
+}
+
 export function initTimer() {
   const timerDisplay = document.querySelector('.timer-display');
-  // 화면 중앙의 타이머 구역 (.timer-zone)
   const timerZone = document.querySelector('.timer-zone') || timerDisplay;
   
   if (!timerDisplay) {
     console.error("타이머 디스플레이(.timer-display) 태그를 찾을 수 없습니다.");
     return;
   }
+
+  // 💡 앱 처음 켜졌을 때 기존 저장되어 있던 기록들 화면에 바로 띄우기!
+  renderRecentSolves();
 
   let mode = 'idle'; // 'idle' | 'holding' | 'ready' | 'running'
   let startAt = 0;
@@ -32,13 +57,13 @@ export function initTimer() {
     mode = nextMode;
 
     if (nextMode === 'holding') {
-      timerDisplay.style.color = '#ef4444'; // 빨간색
+      timerDisplay.style.color = '#ef4444';
     } else if (nextMode === 'ready') {
-      timerDisplay.style.color = '#22c55e'; // 초록색
+      timerDisplay.style.color = '#22c55e';
     } else if (nextMode === 'running') {
-      timerDisplay.style.color = '#ffffff'; // 흰색
+      timerDisplay.style.color = '#ffffff';
     } else {
-      timerDisplay.style.color = ''; // 기본색
+      timerDisplay.style.color = '';
     }
   }
 
@@ -81,26 +106,21 @@ export function initTimer() {
     }
   }
 
-    function stopTimer() {
+  function stopTimer() {
     cancelAnimationFrame(rafId);
     const timeMs = Math.round(performance.now() - startAt);
     setMode('idle');
     timerDisplay.textContent = formatTime(timeMs);
 
     // 1. Storage에 저장
-    const savedSolve = addSolve(timeMs);
+    addSolve(timeMs);
 
-    // 👇 2. 화면의 Recent Solves 리스트 맨 위에 방금 잰 시간 추가하기!
-    const solveList = document.querySelector('.solve-list');
-    if (solveList) {
-      solveList.insertAdjacentHTML('afterbegin', `<li><span class="num">•</span> ${formatTime(timeMs)}</li>`);
-    }
+    // 2. 💡 저장하자마자 HTML 화면 Recent Solves 즉시 갱신!
+    renderRecentSolves();
   }
 
-
-  // --- 1. PC 스페이스바 (화면 전체 어디서나 사용 가능) ---
+  // --- 이벤트 리스너 (키보드, 터치, 마우스) ---
   window.addEventListener('keydown', (e) => {
-    // input이나 textarea에 타이핑 중일 때만 스페이스바 타이머 작동 방지
     if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) return;
 
     if (e.code === 'Space' && !e.repeat) {
@@ -123,12 +143,10 @@ export function initTimer() {
     }
   });
 
-  // --- 2. 터치 및 마우스 클릭 (.timer-zone 구역 전용) ---
   timerZone.style.cursor = 'pointer';
 
-  // 터치 기반 (아이패드/모바일)
   timerZone.addEventListener('touchstart', (e) => {
-    e.preventDefault(); // 스크롤 등 기본 동작 방지
+    e.preventDefault();
     handlePressStart();
   }, { passive: false });
 
@@ -137,9 +155,8 @@ export function initTimer() {
     handlePressEnd();
   });
 
-  // 마우스 기반 (PC 마우스 클릭 테스트용)
   timerZone.addEventListener('mousedown', (e) => {
-    if (e.button !== 0) return; // 좌클릭만
+    if (e.button !== 0) return;
     handlePressStart();
   });
 
