@@ -1,4 +1,5 @@
 // solves.js
+
 import { getSolves, updateSolvePenalty, deleteSolve } from './storage.js';
 import { formatTime } from './timer.js';
 
@@ -51,4 +52,18 @@ export function renderSolvesList() {
       `;
     })
     .join('');
+}
+
+// 💡 [추가] app.js에서 불러올 Solves 초기화 함수
+export function initSolves() {
+  // 앱 실행 시 첫 렌더링
+  renderSolvesList();
+
+  // 하단 탭 중 Solves 탭 클릭 시 리스트 자동 새로고침 이벤트 바인딩
+  const solvesTabBtn = document.querySelector('[data-target="screen-solves"], [data-tab="solves"]');
+  if (solvesTabBtn) {
+    solvesTabBtn.addEventListener('click', () => {
+      renderSolvesList();
+    });
+  }
 }
