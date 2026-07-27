@@ -2,6 +2,7 @@
 
 import { getSolves } from './storage.js';
 import { formatTime } from './timer.js';
+import { openSolveBottomSheet } from './solve-bottom-sheet.js'; // 💡 1. 바텀시트 모듈 import 추가
 
 function formatDate(timestamp) {
   if (!timestamp) return '-';
@@ -32,6 +33,7 @@ export function renderSolvesList() {
       const displayTime = formatTime(solve.time, solve.penalty);
       const isPB = false;
       const formattedDate = formatDate(solve.createdAt || Date.now());
+      const starIcon = solve.isBookmarked ? '⭐' : '☆';
 
       return `
         <div class="record-card ${isPB ? 'pb-card' : ''}" data-id="${solve.id}">
@@ -40,10 +42,11 @@ export function renderSolvesList() {
               <span class="record-time">${displayTime}</span>
               ${isPB ? '<span class="badge pb-badge">PB</span>' : ''}
             </div>
-            <span class="badge tag-badge">3x3</span>
+            <span class="badge tag-badge">${solve.note ? '📝 메모' : '3x3'}</span>
           </div>
           <div class="card-right">
             <span class="card-date">${formattedDate}</span>
+            <span class="bookmark-icon">${starIcon}</span>
           </div>
         </div>
       `;
@@ -54,10 +57,18 @@ export function renderSolvesList() {
 export function initSolves() {
   renderSolvesList();
 
-  // 하단 네비게이션 버튼 및 탭 버튼 클릭 감지
+  // 💡 2. 클릭 이벤트 세팅 (카드 클릭 시 바텀시트 열기 + 탭 변경 시 리스트 갱신)
   document.addEventListener('click', (e) => {
-    const btn = e.target.closest('[data-target], [data-tab], .nav-item, .tab-btn');
-    if (btn) {
+    // 기록 카드 클릭 감지
+    const card = e.target.closest('.record-card');
+    if (card && card.dataset.id) {
+      openSolveBottomSheet(card.dataset.id);
+      return;
+    }
+
+    // 탭 이동 버튼 클릭 감지
+    const navBtn = e.target.closest('[data-target], [data-tab], .nav-item, .tab-btn');
+    if (navBtn) {
       renderSolvesList();
     }
   });
