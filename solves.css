@@ -459,3 +459,49 @@ div.bottom-sheet-overlay#detail-bottom-sheet .bottom-sheet-content {
 .record-card:hover {
   background-color: #2c2c2e !important; /* 호버/터치 시 피드백 */
 }
+
+/* ==========================================
+   Solves Tab - Detail Bottom Sheet (바텀시트)
+   ========================================== */
+
+/* 1. 기본 숨김 상태 */
+#detail-bottom-sheet {
+  display: none;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background-color: rgba(0, 0, 0, 0.7) !important;
+  z-index: 999999 !important;
+  backdrop-filter: blur(4px);
+}
+
+/* 2. active 클래스가 붙거나 display: flex일 때 화면 아래에 출력 */
+#detail-bottom-sheet.active,
+#detail-bottom-sheet[style*="display: flex"],
+#detail-bottom-sheet[style*="display:flex"],
+#detail-bottom-sheet[style*="display: block"] {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: flex-end !important;
+}
+
+/* 3. 바텀시트 내부 카드 박스 */
+#detail-bottom-sheet .bottom-sheet-content {
+  background-color: #1e293b !important;
+  color: #ffffff !important;
+  width: 100% !important;
+  max-width: 480px !important;
+  border-radius: 20px 20px 0 0 !important;
+  padding: 20px 24px 32px !important;
+  box-sizing: border-box !important;
+  position: relative !important;
+  z-index: 1000000 !important;
+  animation: slideUp 0.2s ease-out;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
