@@ -385,41 +385,52 @@ div.bottom-sheet-overlay#detail-bottom-sheet .bottom-sheet-content {
   font-family: inherit;
 }
 
+/* ==========================================
+   Global Undo Toast (삭제 실행 취소 알림)
+   ========================================== */
+
 #global-undo-toast {
   position: fixed !important;
-  bottom: 110px !important;
+  bottom: 90px !important; /* 하단 네비게이션 바로 위에 위치 */
   left: 50% !important;
-  transform: translate(-50%, 150px) !important;
+  transform: translate(-50%, 100px); /* 기본 위치: 아래로 내려 숨김 */
   background-color: #2c2c2e !important; 
   color: #ffffff !important;
-  padding: 14px 24px !important;
+  padding: 12px 20px !important;
   border-radius: 12px !important;
-  display: none !important;
+  display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
-  gap: 24px !important;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
-  z-index: 9999999 !important;
-  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s !important;
-  opacity: 0 !important;
-  min-width: 280px;
+  gap: 20px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6) !important;
+  z-index: 10000000 !important; /* 최상단 레이어 */
+  transition: transform 0.25s ease-out, opacity 0.25s ease-out !important;
+  opacity: 0;
+  pointer-events: none; /* 숨겨져 있을 때 클릭 간섭 방지 */
+  min-width: 260px;
 }
 
+/* 활성화 시 위로 부드럽게 짠! 올라옴 */
 #global-undo-toast.show {
   opacity: 1 !important;
   transform: translate(-50%, 0) !important;
-  display: flex !important;
+  pointer-events: auto !important;
 }
 
 #global-undo-btn {
   background: none !important;
   border: none !important;
-  color: #ff9f0a !important;
+  color: #ff9f0a !important; /* 주황색 포인트 */
   font-weight: bold !important;
-  font-size: 1rem !important;
+  font-size: 0.9rem !important;
   cursor: pointer !important;
   padding: 4px 8px !important;
 }
+
+#global-undo-btn:hover {
+  opacity: 0.8;
+}
+
 
 
 /* ==========================================
