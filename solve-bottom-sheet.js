@@ -1,124 +1,167 @@
 // solve-bottom-sheet.js
-export function initSolvesManager() {
-  const container = document.getElementById('record-cards-container');
+
+import { getSolves, updateSolvePenalty, deleteSolve, updateSolveNote, toggleSolveBookmark } from './storage.js';
+import { formatTime, renderRecentSolves, renderStats } from './timer.js';
+import { renderSolvesList } from './solves.js';
+
+let activeSolveId = null;
+
+// 날짜 포맷 함수 (YYYY.MM.DD HH:mm:ss)
+function formatFullDate(timestamp) {
+  if (!timestamp) return '-';
+  const date = new Date(timestamp);
+  const yyyy = date.getFullYear();
+  const mm = String(date.getMonth() + 1).padStart(2, '0');
+  const dd = String(date.getDate()).padStart(2, '0');
+  const hh = String(date.getHours()).padStart(2, '0');
+  const min = String(date.getMinutes()).padStart(2, '0');
+  const ss = String(date.getSeconds()).padStart(2, '0');
+  return `${yyyy}.${mm}.${dd} ${hh}:${min}:${ss}`;
+}
+
+export function openSolveBottomSheet(id) {
+  const solves = getSolves();
+  const target = solves.find(s => s.id === id);
+  if (!target) return;
+
+  activeSolveId = id;
+
   const sheet = document.getElementById('detail-bottom-sheet');
+  if (!sheet) return;
 
-  if (!container || !sheet) return;
+  // 1. 시간 및 날짜 표시
+  const timeEl = sheet.querySelector('.sheet-main-time');
+  const dateEl = sheet.querySelector('.date-value');
+  const scrambleEl = sheet.querySelector('.scramble-text');
+  const noteInput = sheet.querySelector('.sheet-note-input');
+  const bookmarkBtn = document.getElementById('sheet-bookmark-btn');
 
-  let deleteTimeout = null;
-  let pendingCardElement = null;
+  if (timeEl) timeEl.textContent = formatTime(target.time, target.penalty);
+  if (dateEl) dateEl.textContent = formatFullDate(target.createdAt || Date.now());
+  if (scrambleEl) scrambleEl.textContent = target.scramble || "R2 U' F2 D L2 B2 D' F2 U2 R2 D' F2 ...";
+  if (noteInput) noteInput.value = target.note || '';
+  if (bookmarkBtn) bookmarkBtn.textContent = target.isBookmarked ? '⭐' : '🤍';
 
-  // 1. 카드 클릭 시 바텀 시트 열기
-  container.addEventListener('click', (event) => {
-    const card = event.target.closest('.record-card');
-    if (!card) return;
-    
-    pendingCardElement = card;
-    sheet.classList.add('open');
-  });
-
-  // 2. 바텀 시트 내부 클릭 이벤트 분기
-  sheet.addEventListener('click', (event) => {
-    const contextMenu = document.getElementById('sheet-context-menu');
-    if (!contextMenu) return;
-
-    // 더보기(⋮) 버튼 클릭
-    if (event.target.closest('#sheet-more-btn')) {
-      event.stopPropagation();
-      if (contextMenu.style.getPropertyValue('display') === 'flex') {
-        contextMenu.style.setProperty('display', 'none', 'important');
-      } else {
-        contextMenu.style.setProperty('display', 'flex', 'important');
-      }
-      return;
-    }
-
-    // Edit / Delete 메뉴 아이템 클릭
-    if (event.target.closest('.menu-item')) {
-      contextMenu.style.setProperty('display', 'none', 'important');
-      
-      // 🗑️ Delete 버튼 클릭 시
-      if (event.target.id === 'menu-delete') {
-        sheet.classList.remove('open'); // 바텀시트 닫기
-        
-        if (pendingCardElement) {
-          // 1. 카드를 화면에서 스르륵 투명하게 숨기기
-          pendingCardElement.classList.add('removing');
-          
-          // 2. 기존 타이머가 돌고 있다면 청소
-          if (deleteTimeout) clearTimeout(deleteTimeout);
-          
-          // 3. 진짜 토스트 바 가동!
-          triggerUndoToast();
-        }
-      }
-      return;
-    }
-
-    // 바깥 오버레이 클릭 시 닫기
-    if (!event.target.closest('.bottom-sheet-content')) {
-      sheet.classList.remove('open');
-      contextMenu.style.setProperty('display', 'none', 'important');
+  // 2. 패널티 버튼 활성화 상태 표시
+  const penaltyBtns = sheet.querySelectorAll('.penalty-segmented-control .penalty-btn');
+  penaltyBtns.forEach(btn => {
+    const p = btn.dataset.penalty;
+    const currentP = target.penalty === 'NONE' ? 'OK' : target.penalty;
+    if (currentP === p || (target.penalty === undefined && p === 'OK')) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
     }
   });
 
-  // 바탕 화면 클릭 시 미니 메뉴만 숨기기
-  document.addEventListener('click', (event) => {
-    const contextMenu = document.getElementById('sheet-context-menu');
-    if (contextMenu && !event.target.closest('.more-menu-container')) {
-      contextMenu.style.setProperty('display', 'none', 'important');
+  // 바텀시트 열기
+  sheet.classList.add('active');
+  sheet.style.display = 'block';
+}
+
+export function closeSolveBottomSheet() {
+  const sheet = document.getElementById('detail-bottom-sheet');
+  if (sheet) {
+    sheet.classList.remove('active');
+    sheet.style.display = 'none';
+  }
+  activeSolveId = null;
+}
+
+export function initSolvesManager() {
+  const sheet = document.getElementById('detail-bottom-sheet');
+  if (!sheet) return;
+
+  // 1. 바깥 영역 클릭시 바텀시트 닫기
+  sheet.addEventListener('click', (e) => {
+    if (e.target === sheet) {
+      closeSolveBottomSheet();
     }
   });
 
-  // 💡 진짜로 토스트 바를 켜고 끄는 핵심 제어 함수
-  function triggerUndoToast() {
-    const toast = document.getElementById('global-undo-toast');
-    const undoBtn = document.getElementById('global-undo-btn');
-    if (!toast || !undoBtn) return;
+  // 2. 핸들 바 클릭시 닫기
+  const handle = sheet.querySelector('.bottom-sheet-handle');
+  if (handle) {
+    handle.addEventListener('click', closeSolveBottomSheet);
+  }
 
-    // [1] 토스트 바를 화면에 강제로 등장시킵니다.
-    toast.style.setProperty('display', 'flex', 'important');
-    
-    // 브라우저가 정렬을 계산할 시간을 아주 잠깐(0.02초) 준 뒤 애니메이션 실행
-    setTimeout(() => {
-      toast.style.setProperty('opacity', '1', 'important');
-      toast.style.setProperty('transform', 'translate(-50%, 0)', 'important');
-    }, 20);
+  // 3. 패널티 변경 이벤트
+  const penaltyBtns = sheet.querySelectorAll('.penalty-segmented-control .penalty-btn');
+  penaltyBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (!activeSolveId) return;
 
-    // [2] 5초 타이머 작동 (가만히 두면 영구 삭제)
-    deleteTimeout = setTimeout(() => {
-      // 토스트 바 아래로 숨기기
-      toast.style.setProperty('opacity', '0', 'important');
-      toast.style.setProperty('transform', 'translate(-50%, 150px)', 'important');
-      
-      setTimeout(() => {
-        toast.style.setProperty('display', 'none', 'important');
-      }, 300);
-      
-      // 5초 지났으니 진짜로 DOM(화면)에서 카드 없애버리기
-      if (pendingCardElement) {
-        pendingCardElement.remove();
-        pendingCardElement = null;
-      }
-    }, 5000);
+      let penalty = btn.dataset.penalty;
+      if (penalty === 'OK') penalty = 'NONE';
 
-    // [3] Undo(실행 취소) 버튼을 눌렀을 때의 로직
-    undoBtn.onclick = () => {
-      clearTimeout(deleteTimeout); // 5초 카운트다운 폭파!
+      updateSolvePenalty(activeSolveId, penalty);
       
-      // 토스트 바 숨기기
-      toast.style.setProperty('opacity', '0', 'important');
-      toast.style.setProperty('transform', 'translate(-50%, 150px)', 'important');
+      // UI 갱신
+      openSolveBottomSheet(activeSolveId); // 시트 내용 업데이트
+      renderSolvesList(); // Solves 리스트 갱신
+      renderRecentSolves(); // Timer 탭 Recent Solves 갱신
+      renderStats(); // Stats 갱신
+    });
+  });
+
+  // 4. 메모(Notes) 입력 시 자동 저장
+  const noteInput = sheet.querySelector('.sheet-note-input');
+  if (noteInput) {
+    noteInput.addEventListener('input', (e) => {
+      if (!activeSolveId) return;
+      updateSolveNote(activeSolveId, e.target.value);
+    });
+  }
+
+  // 5. 북마크 버튼
+  const bookmarkBtn = document.getElementById('sheet-bookmark-btn');
+  if (bookmarkBtn) {
+    bookmarkBtn.addEventListener('click', () => {
+      if (!activeSolveId) return;
+      const isBookmarked = toggleSolveBookmark(activeSolveId);
+      bookmarkBtn.textContent = isBookmarked ? '⭐' : '🤍';
+      renderSolvesList();
+    });
+  }
+
+  // 6. 삭제 기능 (메뉴 또는 삭제 버튼)
+  const deleteBtn = sheet.querySelector('#menu-delete, .delete-item');
+  if (deleteBtn) {
+    deleteBtn.addEventListener('click', () => {
+      if (!activeSolveId) return;
       
-      setTimeout(() => {
-        toast.style.setProperty('display', 'none', 'important');
-      }, 300);
+      deleteSolve(activeSolveId);
+      closeSolveBottomSheet();
       
-      // 숨겨졌던 카드를 다시 선명하게 부활시키기!
-      if (pendingCardElement) {
-        pendingCardElement.classList.remove('removing');
-        pendingCardElement = null;
-      }
-    };
+      renderSolvesList();
+      renderRecentSolves();
+      renderStats();
+    });
+  }
+
+  // 7. 더보기(⋮) 메뉴 토글
+  const moreBtn = document.getElementById('sheet-more-btn');
+  const contextMenu = document.getElementById('sheet-context-menu');
+  if (moreBtn && contextMenu) {
+    moreBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      contextMenu.style.display = contextMenu.style.display === 'none' ? 'block' : 'none';
+    });
+
+    document.addEventListener('click', () => {
+      contextMenu.style.display = 'none';
+    });
+  }
+
+  // 8. 스크램블 복사 기능
+  const copyBtn = sheet.querySelector('.scramble-copy-btn');
+  const scrambleText = sheet.querySelector('.scramble-text');
+  if (copyBtn && scrambleText) {
+    copyBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText(scrambleText.textContent).then(() => {
+        copyBtn.textContent = '✅';
+        setTimeout(() => { copyBtn.textContent = '📋'; }, 1500);
+      });
+    });
   }
 }
