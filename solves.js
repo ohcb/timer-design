@@ -1,8 +1,8 @@
-// solves.js
+// solves.js (완벽 수정본)
 
 import { getSolves } from './storage.js';
 import { formatTime } from './timer.js';
-import { openSolveBottomSheet } from './solve-bottom-sheet.js'; // 💡 1. 바텀시트 모듈 import 추가
+import { openSolveBottomSheet } from './solve-bottom-sheet.js';
 
 function formatDate(timestamp) {
   if (!timestamp) return '-';
@@ -35,16 +35,17 @@ export function renderSolvesList() {
       const formattedDate = formatDate(solve.createdAt || Date.now());
       const starIcon = solve.isBookmarked ? '⭐' : '☆';
 
+      // 💡 pointer-events: none 으로 내부 자식 요소가 클릭 이벤트를 방해하지 않도록 처리
       return `
         <div class="record-card ${isPB ? 'pb-card' : ''}" data-id="${solve.id}">
-          <div class="card-left">
-            <div class="time-row">
+          <div class="card-left" style="pointer-events: none;">
+            <div class="time-row" style="pointer-events: none;">
               <span class="record-time">${displayTime}</span>
               ${isPB ? '<span class="badge pb-badge">PB</span>' : ''}
             </div>
             <span class="badge tag-badge">${solve.note ? '📝 메모' : '3x3'}</span>
           </div>
-          <div class="card-right">
+          <div class="card-right" style="pointer-events: none;">
             <span class="card-date">${formattedDate}</span>
             <span class="bookmark-icon">${starIcon}</span>
           </div>
@@ -54,21 +55,22 @@ export function renderSolvesList() {
     .join('');
 }
 
-// solves.js 의 initSolves 함수 수정
 export function initSolves() {
   renderSolvesList();
 
-  // 💡 최상단 document에서 클릭을 감지하여 실행
-  document.body.addEventListener('click', (e) => {
-    // 1. Solves 카드 클릭 감지
+  // 💡 카드 상위 컨테이너 또는 body에 확실하게 이벤트 바인딩
+  document.addEventListener('click', (e) => {
+    // 1. 카드 클릭 탐색 (.record-card)
     const card = e.target.closest('.record-card');
-    if (card && card.dataset.id) {
-      console.log('카드 클릭됨! ID:', card.dataset.id); // 콘솔 출력 확인용
-      openSolveBottomSheet(card.dataset.id);
-      return;
+    if (card) {
+      const solveId = card.getAttribute('data-id');
+      if (solveId) {
+        openSolveBottomSheet(solveId);
+        return;
+      }
     }
 
-    // 2. 탭 이동 버튼 클릭 시 리스트 새로고침
+    // 2. 탭 이동 버튼 클릭 시 목록 새로고침
     const navBtn = e.target.closest('[data-target], [data-tab], .nav-item, .tab-btn');
     if (navBtn) {
       renderSolvesList();
