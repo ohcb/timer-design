@@ -81,18 +81,22 @@ export function initTimer() {
     }
   }
 
-  function stopTimer() {
+    function stopTimer() {
     cancelAnimationFrame(rafId);
     const timeMs = Math.round(performance.now() - startAt);
     setMode('idle');
     timerDisplay.textContent = formatTime(timeMs);
 
-    // 💡 측정 종료 즉시 Storage에 저장!
+    // 1. Storage에 저장
     const savedSolve = addSolve(timeMs);
-    console.log('⏱️ 측정 및 저장 완료:', timeMs, 'ms', savedSolve);
 
-    // 💡 TODO: Recent Solves 리스트 갱신 함수 연결 지점
+    // 👇 2. 화면의 Recent Solves 리스트 맨 위에 방금 잰 시간 추가하기!
+    const solveList = document.querySelector('.solve-list');
+    if (solveList) {
+      solveList.insertAdjacentHTML('afterbegin', `<li><span class="num">•</span> ${formatTime(timeMs)}</li>`);
+    }
   }
+
 
   // --- 1. PC 스페이스바 (화면 전체 어디서나 사용 가능) ---
   window.addEventListener('keydown', (e) => {
