@@ -1,8 +1,10 @@
 // timer.js
+
 import { addSolve, getSolves } from './storage.js';
+import { getBestTime, calculateAoN } from './stats-calculator.js';
 
 export function formatTime(ms) {
-  if (ms == null || Number.isNaN(ms)) return '0.00';
+  if (ms == null || Number.isNaN(ms) || ms === 'DNF') return 'DNF';
   const total = ms / 1000;
   const minutes = Math.floor(total / 60);
   const seconds = total % 60;
@@ -11,12 +13,12 @@ export function formatTime(ms) {
     : seconds.toFixed(2);
 }
 
-// Recent Solves 목록을 HTML에 그려주는 함수
+// Recent Solves 목록 갱신
 export function renderRecentSolves() {
   const solveList = document.querySelector('.solve-list');
   if (!solveList) return;
 
-  const solves = getSolves().slice(0, 5); // 최근 5개 가져오기
+  const solves = getSolves().slice(0, 5);
 
   if (solves.length === 0) {
     solveList.innerHTML = '<li><span class="num">-</span> 기록 없음</li>';
@@ -31,14 +33,33 @@ export function renderRecentSolves() {
     .join('');
 }
 
+// 💡 Current & Best 통계 표 갱신 함수
+export function renderStats() {
+  const solves = getSolves(); // 전체 솔브 목록
+
+  const bestVal = getBestTime(solves);
+  const curAo5 = calculateAoN(solves, 5);
+  const curAo12 = calculateAoN(solves, 12);
+
+  // 화면 요소 찾기 (Current / Best 셀)
+  const singleBestEl = document.querySelector('.stat-single-best');
+  const ao5CurEl = document.querySelector('.stat-ao5-cur');
+  const ao12CurEl = document.querySelector('.stat-ao12-cur');
+
+  if (singleBestEl) singleBestEl.textContent = bestVal ? formatTime(bestVal) : '-';
+  if (ao5CurEl) ao5CurEl.textContent = curAo5 ? formatTime(curAo5) : '-';
+  if (ao12CurEl) ao12CurEl.textContent = curAo12 ? formatTime(curAo12) : '-';
+}
+
 export function initTimer() {
   const timerDisplay = document.querySelector('.timer-display');
   const timerZone = document.querySelector('.timer-zone') || timerDisplay;
 
   if (!timerDisplay) return;
 
-  // 1. 앱 켜질 때 저장된 데이터로 Recent Solves 화면 구성
+  // 앱 켜질 때 화면 초기화
   renderRecentSolves();
+  renderStats();
 
   let mode = 'idle';
   let startAt = 0;
@@ -92,14 +113,13 @@ export function initTimer() {
     setMode('idle');
     timerDisplay.textContent = formatTime(timeMs);
 
-    // 2. Storage에 기록 저장
+    // 저장 및 화면 갱신
     addSolve(timeMs);
-
-    // 3. 저장 후 Recent Solves 화면 갱신
     renderRecentSolves();
+    renderStats(); // 💡 통계 표 즉시 업데이트!
   }
 
-  // 터치/마우스/키보드 이벤트 연결
+  // 이벤트 연결
   timerZone.style.cursor = 'pointer';
   timerZone.addEventListener('touchstart', (e) => { e.preventDefault(); handlePressStart(); }, { passive: false });
   timerZone.addEventListener('touchend', (e) => { e.preventDefault(); handlePressEnd(); });
