@@ -21,15 +21,11 @@ function formatFullDate(timestamp) {
 
 export function openSolveBottomSheet(id) {
   const solves = getSolves();
-  
-  // 💡 [핵심 수정!] id 비교 시 String/Number 상관없이 느슨한 비교(==) 적용
-  const target = solves.find(s => s.id == id);
-  if (!target) {
-    console.warn('해당 ID의 Solves 데이터를 찾을 수 없습니다:', id);
-    return;
-  }
+  // 💡 타입 변환(String)을 추가하여 id 비교 오류 방지
+  const target = solves.find(s => String(s.id) === String(id));
+  if (!target) return;
 
-  activeSolveId = target.id; // 안전하게 실제 ID 저장
+  activeSolveId = target.id;
 
   const sheet = document.getElementById('detail-bottom-sheet');
   if (!sheet) return;
@@ -43,7 +39,7 @@ export function openSolveBottomSheet(id) {
 
   if (timeEl) timeEl.textContent = formatTime(target.time, target.penalty);
   if (dateEl) dateEl.textContent = formatFullDate(target.createdAt || Date.now());
-  if (scrambleEl) scrambleEl.textContent = target.scramble || "R2 U' F2 D L2 B2 D' F2 U2 R2 D' F2 ...";
+  if (scrambleEl) scrambleEl.textContent = target.scramble || "U2 F2 U' R2 D B2 F2 D L2 U' L2 B2";
   if (noteInput) noteInput.value = target.note || '';
   if (bookmarkBtn) bookmarkBtn.textContent = target.isBookmarked ? '⭐' : '🤍';
 
@@ -59,7 +55,7 @@ export function openSolveBottomSheet(id) {
     }
   });
 
-  // 💡 [수정] 바텀시트 여는 구문 보강 (flex 및 active 동시에)
+  // 💡 확실하게 띄우기 (flex 스타일 지정)
   sheet.classList.add('active');
   sheet.style.display = 'flex';
 }
@@ -93,4 +89,80 @@ export function initSolvesManager() {
   // 3. 패널티 변경 이벤트
   const penaltyBtns = sheet.querySelectorAll('.penalty-segmented-control .penalty-btn');
   penaltyBtns.forEach(btn => {
-    btn.addEventListener('click', () =>
+    btn.addEventListener('click', () => {
+      if (!activeSolveId) return;
+
+      let penalty = btn.dataset.penalty;
+      if (penalty === 'OK') penalty = 'NONE';
+
+      updateSolvePenalty(activeSolveId, penalty);
+      
+      // UI 갱신
+      openSolveBottomSheet(activeSolveId); // 시트 내용 업데이트
+      renderSolvesList(); // Solves 리스트 갱신
+      renderRecentSolves(); // Timer 탭 Recent Solves 갱신
+      renderStats(); // Stats 갱신
+    });
+  });
+
+  // 4. 메모(Notes) 입력 시 자동 저장
+  const noteInput = sheet.querySelector('.sheet-note-input');
+  if (noteInput) {
+    noteInput.addEventListener('input', (e) => {
+      if (!activeSolveId) return;
+      updateSolveNote(activeSolveId, e.target.value);
+    });
+  }
+
+  // 5. 북마크 버튼
+  const bookmarkBtn = document.getElementById('sheet-bookmark-btn');
+  if (bookmarkBtn) {
+    bookmarkBtn.addEventListener('click', () => {
+      if (!activeSolveId) return;
+      const isBookmarked = toggleSolveBookmark(activeSolveId);
+      bookmarkBtn.textContent = isBookmarked ? '⭐' : '🤍';
+      renderSolvesList();
+    });
+  }
+
+  // 6. 삭제 기능 (메뉴 또는 삭제 버튼)
+  const deleteBtn = sheet.querySelector('#menu-delete, .delete-item');
+  if (deleteBtn) {
+    deleteBtn.addEventListener('click', () => {
+      if (!activeSolveId) return;
+      
+      deleteSolve(activeSolveId);
+      closeSolveBottomSheet();
+      
+      renderSolvesList();
+      renderRecentSolves();
+      renderStats();
+    });
+  }
+
+  // 7. 더보기(⋮) 메뉴 토글
+  const moreBtn = document.getElementById('sheet-more-btn');
+  const contextMenu = document.getElementById('sheet-context-menu');
+  if (moreBtn && contextMenu) {
+    moreBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      contextMenu.style.display = contextMenu.style.display === 'none' ? 'block' : 'none';
+    });
+
+    document.addEventListener('click', () => {
+      contextMenu.style.display = 'none';
+    });
+  }
+
+  // 8. 스크램블 복사 기능
+  const copyBtn = sheet.querySelector('.scramble-copy-btn');
+  const scrambleText = sheet.querySelector('.scramble-text');
+  if (copyBtn && scrambleText) {
+    copyBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText(scrambleText.textContent).then(() => {
+        copyBtn.textContent = '✅';
+        setTimeout(() => { copyBtn.textContent = '📋'; }, 1500);
+      });
+    });
+  }
+}
