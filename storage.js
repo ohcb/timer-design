@@ -48,3 +48,27 @@ export function deleteSolve(id) {
   const filtered = solves.filter(s => s.id !== id);
   saveSolves(filtered);
 }
+
+// storage.js 에 추가
+
+// 💡 메모(Note) 업데이트
+export function updateSolveNote(id, note) {
+  const solves = getSolves();
+  const index = solves.findIndex(s => s.id === id);
+  if (index !== -1) {
+    solves[index].note = note;
+    saveSolves(solves);
+  }
+}
+
+// 💡 북마크(Bookmark) 토글
+export function toggleSolveBookmark(id) {
+  const solves = getSolves();
+  const index = solves.findIndex(s => s.id === id);
+  if (index !== -1) {
+    solves[index].isBookmarked = !solves[index].isBookmarked;
+    saveSolves(solves);
+    return solves[index].isBookmarked;
+  }
+  return false;
+}
