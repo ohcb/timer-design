@@ -21,10 +21,15 @@ function formatFullDate(timestamp) {
 
 export function openSolveBottomSheet(id) {
   const solves = getSolves();
-  const target = solves.find(s => s.id === id);
-  if (!target) return;
+  
+  // 💡 [핵심 수정!] id 비교 시 String/Number 상관없이 느슨한 비교(==) 적용
+  const target = solves.find(s => s.id == id);
+  if (!target) {
+    console.warn('해당 ID의 Solves 데이터를 찾을 수 없습니다:', id);
+    return;
+  }
 
-  activeSolveId = id;
+  activeSolveId = target.id; // 안전하게 실제 ID 저장
 
   const sheet = document.getElementById('detail-bottom-sheet');
   if (!sheet) return;
@@ -46,17 +51,17 @@ export function openSolveBottomSheet(id) {
   const penaltyBtns = sheet.querySelectorAll('.penalty-segmented-control .penalty-btn');
   penaltyBtns.forEach(btn => {
     const p = btn.dataset.penalty;
-    const currentP = target.penalty === 'NONE' ? 'OK' : target.penalty;
-    if (currentP === p || (target.penalty === undefined && p === 'OK')) {
+    const currentP = (target.penalty === 'NONE' || !target.penalty) ? 'OK' : target.penalty;
+    if (currentP === p) {
       btn.classList.add('active');
     } else {
       btn.classList.remove('active');
     }
   });
 
-  // 바텀시트 열기
+  // 💡 [수정] 바텀시트 여는 구문 보강 (flex 및 active 동시에)
   sheet.classList.add('active');
-  sheet.style.display = 'block';
+  sheet.style.display = 'flex';
 }
 
 export function closeSolveBottomSheet() {
@@ -88,80 +93,4 @@ export function initSolvesManager() {
   // 3. 패널티 변경 이벤트
   const penaltyBtns = sheet.querySelectorAll('.penalty-segmented-control .penalty-btn');
   penaltyBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      if (!activeSolveId) return;
-
-      let penalty = btn.dataset.penalty;
-      if (penalty === 'OK') penalty = 'NONE';
-
-      updateSolvePenalty(activeSolveId, penalty);
-      
-      // UI 갱신
-      openSolveBottomSheet(activeSolveId); // 시트 내용 업데이트
-      renderSolvesList(); // Solves 리스트 갱신
-      renderRecentSolves(); // Timer 탭 Recent Solves 갱신
-      renderStats(); // Stats 갱신
-    });
-  });
-
-  // 4. 메모(Notes) 입력 시 자동 저장
-  const noteInput = sheet.querySelector('.sheet-note-input');
-  if (noteInput) {
-    noteInput.addEventListener('input', (e) => {
-      if (!activeSolveId) return;
-      updateSolveNote(activeSolveId, e.target.value);
-    });
-  }
-
-  // 5. 북마크 버튼
-  const bookmarkBtn = document.getElementById('sheet-bookmark-btn');
-  if (bookmarkBtn) {
-    bookmarkBtn.addEventListener('click', () => {
-      if (!activeSolveId) return;
-      const isBookmarked = toggleSolveBookmark(activeSolveId);
-      bookmarkBtn.textContent = isBookmarked ? '⭐' : '🤍';
-      renderSolvesList();
-    });
-  }
-
-  // 6. 삭제 기능 (메뉴 또는 삭제 버튼)
-  const deleteBtn = sheet.querySelector('#menu-delete, .delete-item');
-  if (deleteBtn) {
-    deleteBtn.addEventListener('click', () => {
-      if (!activeSolveId) return;
-      
-      deleteSolve(activeSolveId);
-      closeSolveBottomSheet();
-      
-      renderSolvesList();
-      renderRecentSolves();
-      renderStats();
-    });
-  }
-
-  // 7. 더보기(⋮) 메뉴 토글
-  const moreBtn = document.getElementById('sheet-more-btn');
-  const contextMenu = document.getElementById('sheet-context-menu');
-  if (moreBtn && contextMenu) {
-    moreBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      contextMenu.style.display = contextMenu.style.display === 'none' ? 'block' : 'none';
-    });
-
-    document.addEventListener('click', () => {
-      contextMenu.style.display = 'none';
-    });
-  }
-
-  // 8. 스크램블 복사 기능
-  const copyBtn = sheet.querySelector('.scramble-copy-btn');
-  const scrambleText = sheet.querySelector('.scramble-text');
-  if (copyBtn && scrambleText) {
-    copyBtn.addEventListener('click', () => {
-      navigator.clipboard.writeText(scrambleText.textContent).then(() => {
-        copyBtn.textContent = '✅';
-        setTimeout(() => { copyBtn.textContent = '📋'; }, 1500);
-      });
-    });
-  }
-}
+    btn.addEventListener('click', () =>
