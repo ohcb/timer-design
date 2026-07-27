@@ -646,6 +646,29 @@
     <button id="global-undo-btn" class="undo-btn">Undo</button>
   </div>
 
+  <div id="solve-modal" class="modal-backdrop" style="display: none;">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-solve-time">0.00</span>
+      <button type="button" class="modal-close-btn" id="modal-close">&times;</button>
+    </div>
+
+    <div class="modal-body">
+      <p class="modal-section-title">Penalty</p>
+      <div class="penalty-options">
+        <button type="button" class="penalty-btn" data-penalty="NONE">NONE</button>
+        <button type="button" class="penalty-btn" data-penalty="+2">+2</button>
+        <button type="button" class="penalty-btn" data-penalty="DNF">DNF</button>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="delete-btn" id="modal-delete-btn">Delete Solve</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script type="module" src="./app.js"></script>
 </body>
