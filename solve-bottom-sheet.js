@@ -140,19 +140,35 @@ export function initSolvesManager() {
     });
   }
 
-  // 7. 더보기(⋮) 메뉴 토글
+    // 7. 더보기(⋮) 메뉴 토글 (확실하게 보이기)
   const moreBtn = document.getElementById('sheet-more-btn');
   const contextMenu = document.getElementById('sheet-context-menu');
+
   if (moreBtn && contextMenu) {
     moreBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      contextMenu.style.display = contextMenu.style.display === 'none' ? 'block' : 'none';
+      e.stopPropagation(); // 바텀시트 닫힘 방지
+      
+      // show 클래스 토글 및 style display 강제 지정
+      const isHidden = contextMenu.style.display === 'none' || !contextMenu.classList.contains('show');
+      
+      if (isHidden) {
+        contextMenu.classList.add('show');
+        contextMenu.style.setProperty('display', 'flex', 'important');
+      } else {
+        contextMenu.classList.remove('show');
+        contextMenu.style.setProperty('display', 'none', 'important');
+      }
     });
 
-    document.addEventListener('click', () => {
-      contextMenu.style.display = 'none';
+    // 메뉴 바깥 화면이나 메뉴 항목 누르면 메뉴 닫기
+    document.addEventListener('click', (e) => {
+      if (!moreBtn.contains(e.target)) {
+        contextMenu.classList.remove('show');
+        contextMenu.style.setProperty('display', 'none', 'important');
+      }
     });
   }
+
 
   // 8. 스크램블 복사 기능
   const copyBtn = sheet.querySelector('.scramble-copy-btn');
