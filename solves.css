@@ -2,7 +2,6 @@
 
 #screen-solves {
   padding: 16px;
-  background-color: #121212; /* 전체 화면의 깊은 다크 배경 */
   min-height: 100%;
   color: #fff;
   box-sizing: border-box;
@@ -10,36 +9,34 @@
 }
 
 /* ================================================= */
-/* 🎛️ [1번 해결] 상단 필터/컨트롤 영역 1열 압축 정렬 */
+/* 🎛️ 상단 필터/컨트롤 영역 1열 압축 정렬 */
 /* ================================================= */
 .solves-control-manager {
   display: flex !important;
-  justify-content: space-between !important; /* 왼쪽 그룹과 오른쪽 그룹을 양끝 배치 */
+  justify-content: space-between !important;
   align-items: center !important;
   margin-bottom: 20px;
   padding: 4px 0;
+  background: transparent !important;
 }
 
-/* 왼쪽 드롭다운 2개를 묶는 그룹 */
 .control-left-group {
   display: flex;
   gap: 8px;
 }
 
-/* 오른쪽 필터/정렬 버튼 2개를 묶는 그룹 */
 .control-right-group {
   display: flex;
   gap: 6px;
 }
 
-/* 🎨 드롭다운 컴포넌트 커스텀 디자인 (투박한 순정 스타일 완벽 제거) */
 .custom-dropdown {
   appearance: none !important;
-  -webkit-appearance: none !important; /* iOS 사파리 기본 화살표 제거 */
+  -webkit-appearance: none !important;
   padding: 8px 14px !important;
   border-radius: 10px !important;
   border: none !important;
-  background-color: #1e1e1e !important; /* 우측 버튼들과 톤 싱크 맞춤 */
+  background-color: #1e1e1e !important;
   font-size: 0.85rem !important;
   font-weight: 600 !important;
   color: #fff !important;
@@ -52,12 +49,11 @@
   background-color: #252525 !important;
 }
 
-/* 우측 필터 & 정렬 버튼 스타일 최적화 */
 .icon-control-btn {
   background-color: #1e1e1e;
   border: none;
   color: #fff;
-  padding: 8px 14px; /* 드롭다운과 높이/핏 일치 */
+  padding: 8px 14px;
   border-radius: 10px;
   font-size: 0.85rem;
   font-weight: 600;
@@ -74,19 +70,18 @@
 
 
 /* ================================================= */
-/* 📦 [2번 해결] 카드 리스트 및 배경색 단층 현상 교정 */
+/* 📦 카드 리스트 및 배경색 */
 /* ================================================= */
 .record-cards-list {
   display: grid !important;
   grid-template-columns: repeat(3, 1fr) !important;
   gap: 8px !important; 
   text-align: left !important;
-  background: transparent !important; /* 불필요한 배경색 차단 */
+  background: transparent !important;
 }
 
-/* 카드 투톤 에러를 잡기 위해 배경색을 한 단계 어둡고 자연스럽게 조정 */
 .record-card {
-  background-color: #1a1a1c !important; /* #121212 배경 위에 살짝 얹어지는 부드러운 다크 그레이 */
+  background-color: #1c1c1e !important;
   border-radius: 10px;
   padding: 10px 12px !important; 
   display: flex !important;
@@ -96,19 +91,16 @@
   cursor: pointer;
   box-sizing: border-box;
   width: 100%;
-  
   aspect-ratio: unset !important;
-  height: 68px !important; /* 고정 높이 유지 */
-  
+  height: 68px !important;
   position: relative;
   transition: background-color 0.2s, transform 0.1s;
 }
 
 .record-card:hover {
-  background-color: #222224 !important; /* 부드러운 터치/호버 피드백 */
+  background-color: #2c2c2e !important;
 }
 
-/* PB 카드 테두리 골드 포인트 */
 .record-card.pb-card {
   border: 1px solid rgba(255, 215, 0, 0.25) !important;
 }
@@ -136,7 +128,6 @@
   letter-spacing: -0.3px;
 }
 
-/* 배지 스타일 */
 .badge {
   font-size: 0.65rem;
   padding: 1px 4px;
@@ -157,7 +148,6 @@
   text-overflow: ellipsis;
 }
 
-/* 하단 날짜 및 북마크 */
 .card-right {
   display: flex;
   justify-content: space-between !important;
@@ -168,7 +158,7 @@
 
 .card-date {
   font-size: 0.7rem;
-  color: #636366; /* 너무 어두웠던 글자색을 살짝 밝혀 가독성 향상 */
+  color: #636366;
 }
 
 .bookmark-icon {
@@ -179,47 +169,59 @@
   color: #ffd700;
 }
 
-/* ⚠️ 기존에 꼬여있던 무의미한 중복/쓰레기 클래스 정의들 이하 생략 및 정리 완료 ⚠️ */
+/* ================================================= */
+/* 🗂️ [통합 교정] 바텀시트 오버레이 (열림 충돌 해결) */
+/* ================================================= */
 
-/* ================================================= */
-/* 🗂️ 바텀시트 최종 안전 교정 (그대로 유지) */
-/* ================================================= */
+/* 1. 기본 상태: 숨김 */
+#detail-bottom-sheet,
 div.bottom-sheet-overlay#detail-bottom-sheet {
+  display: none !important;
   position: fixed !important;
   top: 0 !important;
   left: 0 !important;
   width: 100vw !important;
   height: 100vh !important;
   height: 100dvh !important;
-  background-color: rgba(0, 0, 0, 0.6) !important;
-  z-index: 999998 !important;
+  background-color: rgba(0, 0, 0, 0.7) !important;
+  z-index: 999999 !important;
+  backdrop-filter: blur(4px);
   justify-content: center !important;
   align-items: flex-end !important;
-  display: none !important; 
 }
 
-div.bottom-sheet-overlay#detail-bottom-sheet.open {
+/* 2. active 또는 open 클래스가 추가되거나 display:flex 스타일이 지정될 때 활성화 */
+#detail-bottom-sheet.active,
+#detail-bottom-sheet.open,
+div.bottom-sheet-overlay#detail-bottom-sheet.open,
+div.bottom-sheet-overlay#detail-bottom-sheet.active {
   display: flex !important;
 }
 
+/* 3. 바텀시트 내부 컨텐츠 상자 */
+#detail-bottom-sheet .bottom-sheet-content,
 div.bottom-sheet-overlay#detail-bottom-sheet .bottom-sheet-content {
   background-color: #18181a !important;
+  color: #ffffff !important;
   width: 100% !important;
   max-width: 500px !important; 
   border-radius: 28px 28px 0 0 !important; 
   position: relative !important;
   margin: 0 auto !important;
-  top: unset !important;
-  bottom: 0 !important;
-  left: unset !important;
-  transform: unset !important;
-  padding: 24px 24px 130px 24px !important; 
+  padding: 24px 24px 40px 24px !important; 
   max-height: 85dvh !important; 
   overflow-y: auto !important;
   box-sizing: border-box !important;
   box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.6) !important;
+  animation: slideUp 0.2s ease-out;
 }
 
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+/* 바텀시트 내부 부속 요소 스타일 */
 .drag-handle {
   width: 40px !important;
   height: 4px !important;
@@ -315,11 +317,6 @@ div.bottom-sheet-overlay#detail-bottom-sheet .bottom-sheet-content {
   color: #fff;
 }
 
-.more-menu-container {
-  position: relative !important;
-  display: inline-block;
-}
-
 .sheet-context-menu {
   position: absolute !important;
   top: 100% !important;
@@ -361,10 +358,6 @@ div.bottom-sheet-overlay#detail-bottom-sheet .bottom-sheet-content {
   color: #ff453a !important;
 }
 
-.menu-item.delete-item:hover {
-  background-color: rgba(255, 69, 58, 0.15) !important;
-}
-
 .sheet-date-row {
   display: flex;
   justify-content: space-between;
@@ -378,12 +371,6 @@ div.bottom-sheet-overlay#detail-bottom-sheet .bottom-sheet-content {
   flex-direction: column;
   gap: 6px;
   margin-bottom: 20px;
-}
-
-.section-title {
-  font-size: 0.8rem;
-  color: #8e8e93;
-  font-weight: 600;
 }
 
 .sheet-note-input {
@@ -421,6 +408,7 @@ div.bottom-sheet-overlay#detail-bottom-sheet .bottom-sheet-content {
 #global-undo-toast.show {
   opacity: 1 !important;
   transform: translate(-50%, 0) !important;
+  display: flex !important;
 }
 
 #global-undo-btn {
@@ -431,77 +419,4 @@ div.bottom-sheet-overlay#detail-bottom-sheet .bottom-sheet-content {
   font-size: 1rem !important;
   cursor: pointer !important;
   padding: 4px 8px !important;
-}
-
-/* ================================================= */
-/* 🎨 위쪽 영역의 물 빠진 회색을 빼고 아래쪽 정답 색상과 일체화 */
-/* ================================================= */
-
-/* 1. 상단 화면 베이스를 완전히 투명하게 하거나 아래쪽 판때기 색상과 동기화 */
-#screen-solves, 
-.tab-screen#screen-solves {
-  background-color: transparent !important;
-  background: transparent !important;
-}
-
-/* 2. 카드 그리드 리스트와 컨트롤 매니저 배경도 전부 투명화해서 배경 단층 제거 */
-.solves-control-manager,
-.record-cards-list {
-  background: transparent !important;
-  background-color: transparent !important;
-}
-
-/* 3. 투명해진 카드들이 너무 묻히지 않도록, 카드 자체의 배경색만 살짝 고급스러운 다크로 포인트 */
-.record-card {
-  background-color: #1c1c1e !important; /* 주변 정답 배경보다 반 톤 밝은 세련된 카드 색상 */
-}
-
-.record-card:hover {
-  background-color: #2c2c2e !important; /* 호버/터치 시 피드백 */
-}
-
-/* ==========================================
-   Solves Tab - Detail Bottom Sheet (바텀시트)
-   ========================================== */
-
-/* 1. 기본 숨김 상태 */
-#detail-bottom-sheet {
-  display: none;
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 100vw !important;
-  height: 100vh !important;
-  background-color: rgba(0, 0, 0, 0.7) !important;
-  z-index: 999999 !important;
-  backdrop-filter: blur(4px);
-}
-
-/* 2. active 클래스가 붙거나 display: flex일 때 화면 아래에 출력 */
-#detail-bottom-sheet.active,
-#detail-bottom-sheet[style*="display: flex"],
-#detail-bottom-sheet[style*="display:flex"],
-#detail-bottom-sheet[style*="display: block"] {
-  display: flex !important;
-  justify-content: center !important;
-  align-items: flex-end !important;
-}
-
-/* 3. 바텀시트 내부 카드 박스 */
-#detail-bottom-sheet .bottom-sheet-content {
-  background-color: #1e293b !important;
-  color: #ffffff !important;
-  width: 100% !important;
-  max-width: 480px !important;
-  border-radius: 20px 20px 0 0 !important;
-  padding: 20px 24px 32px !important;
-  box-sizing: border-box !important;
-  position: relative !important;
-  z-index: 1000000 !important;
-  animation: slideUp 0.2s ease-out;
-}
-
-@keyframes slideUp {
-  from { transform: translateY(100%); }
-  to { transform: translateY(0); }
 }
