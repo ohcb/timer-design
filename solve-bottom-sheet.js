@@ -21,7 +21,8 @@ function formatFullDate(timestamp) {
   return `${yyyy}.${mm}.${dd} ${hh}:${min}:${ss}`;
 }
 
-// 💡 Undo 토스트 띄우기 함수
+// solve-bottom-sheet.js 의 Toast 관련 함수
+
 export function showUndoToast(deletedSolve, onUndoCallback) {
   const toast = document.getElementById('global-undo-toast');
   const undoBtn = document.getElementById('global-undo-btn');
@@ -29,15 +30,11 @@ export function showUndoToast(deletedSolve, onUndoCallback) {
 
   lastDeletedSolve = deletedSolve;
 
-  // 기존 타이머 리셋
   if (undoTimer) clearTimeout(undoTimer);
 
-  // 토스트 표시
+  // 💡 show 클래스만 부여하면 CSS 트랜지션으로 위로 쓱 올라옵니다.
   toast.classList.add('show');
-  toast.style.setProperty('display', 'flex', 'important');
-  toast.style.setProperty('opacity', '1', 'important');
 
-  // Undo 버튼 이벤트 등록 (이벤트 중복 방지를 위한 노드 교체)
   if (undoBtn) {
     const newUndoBtn = undoBtn.cloneNode(true);
     undoBtn.parentNode.replaceChild(newUndoBtn, undoBtn);
@@ -50,23 +47,21 @@ export function showUndoToast(deletedSolve, onUndoCallback) {
     }, { once: true });
   }
 
-  // 4초 후 자동으로 토스트 숨김
+  // 4초 후 자동 숨김
   undoTimer = setTimeout(() => {
     hideUndoToast();
   }, 4000);
 }
 
-// 💡 Undo 토스트 숨기기 함수
 export function hideUndoToast() {
   const toast = document.getElementById('global-undo-toast');
   if (toast) {
     toast.classList.remove('show');
-    toast.style.setProperty('display', 'none', 'important');
-    toast.style.setProperty('opacity', '0', 'important');
   }
   if (undoTimer) clearTimeout(undoTimer);
   lastDeletedSolve = null;
 }
+
 
 export function openSolveBottomSheet(id) {
   const solves = getSolves();
