@@ -32,29 +32,27 @@ export function addSolve(timeMs) {
   return newSolve;
 }
 
-// 💡 [추가] 특정 기록의 패널티 업데이트
+// 💡 특정 기록의 패널티 업데이트 (ID 타입 일치 보장)
 export function updateSolvePenalty(id, penalty) {
   const solves = getSolves();
-  const index = solves.findIndex(s => s.id === id);
+  const index = solves.findIndex(s => String(s.id) === String(id));
   if (index !== -1) {
-    solves[index].penalty = penalty; // 'NONE', '+2', 'DNF'
+    solves[index].penalty = penalty;
     saveSolves(solves);
   }
 }
 
-// 💡 [추가] 특정 기록 삭제
+// 💡 특정 기록 삭제 (ID 타입 일치 보장)
 export function deleteSolve(id) {
   const solves = getSolves();
-  const filtered = solves.filter(s => s.id !== id);
+  const filtered = solves.filter(s => String(s.id) !== String(id));
   saveSolves(filtered);
 }
-
-// storage.js 에 추가
 
 // 💡 메모(Note) 업데이트
 export function updateSolveNote(id, note) {
   const solves = getSolves();
-  const index = solves.findIndex(s => s.id === id);
+  const index = solves.findIndex(s => String(s.id) === String(id));
   if (index !== -1) {
     solves[index].note = note;
     saveSolves(solves);
@@ -64,7 +62,7 @@ export function updateSolveNote(id, note) {
 // 💡 북마크(Bookmark) 토글
 export function toggleSolveBookmark(id) {
   const solves = getSolves();
-  const index = solves.findIndex(s => s.id === id);
+  const index = solves.findIndex(s => String(s.id) === String(id));
   if (index !== -1) {
     solves[index].isBookmarked = !solves[index].isBookmarked;
     saveSolves(solves);
