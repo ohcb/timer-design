@@ -420,3 +420,37 @@ div.bottom-sheet-overlay#detail-bottom-sheet .bottom-sheet-content {
   cursor: pointer !important;
   padding: 4px 8px !important;
 }
+
+
+/* ==========================================
+   Bottom Sheet - Context Menu (Edit/Delete)
+   ========================================== */
+
+.more-menu-container {
+  position: relative !important;
+  display: inline-block;
+}
+
+/* 메뉴 드롭다운 박스 위치 고정 및 최상단 z-index 부여 */
+#sheet-context-menu,
+.sheet-context-menu {
+  position: absolute !important;
+  top: 100% !important;
+  right: 0 !important;
+  margin-top: 6px !important;
+  background-color: #2c2c2e !important;
+  border-radius: 10px !important;
+  padding: 6px !important;
+  min-width: 120px !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6) !important;
+  z-index: 1000010 !important; /* 바텀시트 내부 요소보다 상위에 띄움 */
+  flex-direction: column !important;
+  gap: 4px !important;
+}
+
+/* show 클래스 적용 시 출력 */
+#sheet-context-menu.show,
+.sheet-context-menu.show {
+  display: flex !important;
+}
+
