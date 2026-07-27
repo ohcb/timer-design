@@ -242,16 +242,104 @@
   border-radius: 1px;
 }
 
-/* 하단 도구 버튼 */
-.tools-area {
+
+/* Modal / Bottom Sheet Style */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
+  align-items: flex-end; /* 모바일에서 바텀시트 스타일 */
+  z-index: 1000;
+  backdrop-filter: blur(2px);
 }
-.clean-border-btn {
-  background-color: transparent;
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 0.75rem;
+
+.modal-content {
+  background-color: #1e293b;
+  color: #ffffff;
+  width: 100%;
+  max-width: 480px;
+  border-radius: 16px 16px 0 0;
+  padding: 24px;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.2s ease-out;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.modal-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.modal-close-btn {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 2rem;
   cursor: pointer;
-  transition: all 0.2s;
+}
+
+.modal-section-title {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  margin-bottom: 10px;
+}
+
+.penalty-options {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.penalty-btn {
+  flex: 1;
+  padding: 12px 0;
+  border: 1px solid #334155;
+  background-color: #0f172a;
+  color: #f8fafc;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.penalty-btn.active {
+  background-color: #3b82f6;
+  border-color: #3b82f6;
+}
+
+.delete-btn {
+  width: 100%;
+  padding: 12px 0;
+  border: none;
+  background-color: #ef4444;
+  color: white;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Recent Solves 클릭 가능 UI 표시 */
+.solve-list li {
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.15s;
+}
+
+.solve-list li:hover {
+  background-color: rgba(255, 255, 255, 0.05);
 }
