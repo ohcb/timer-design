@@ -140,34 +140,42 @@ export function initSolvesManager() {
     });
   }
 
-    // 7. 더보기(⋮) 메뉴 토글 (확실하게 보이기)
+  // 7. 더보기(⋮) 메뉴 토글 (인라인 스타일 우선 제어)
   const moreBtn = document.getElementById('sheet-more-btn');
   const contextMenu = document.getElementById('sheet-context-menu');
 
   if (moreBtn && contextMenu) {
     moreBtn.addEventListener('click', (e) => {
-      e.stopPropagation(); // 바텀시트 닫힘 방지
-      
-      // show 클래스 토글 및 style display 강제 지정
-      const isHidden = contextMenu.style.display === 'none' || !contextMenu.classList.contains('show');
-      
+      e.stopPropagation(); // 바텀시트가 닫히거나 다른 클릭 이벤트와 충돌하는 것을 방지
+
+      // 현재 닫혀있는지 확인
+      const isHidden = window.getComputedStyle(contextMenu).display === 'none';
+
       if (isHidden) {
         contextMenu.classList.add('show');
-        contextMenu.style.setProperty('display', 'flex', 'important');
+        contextMenu.style.display = 'flex'; // 강제로 flex 지정
       } else {
         contextMenu.classList.remove('show');
-        contextMenu.style.setProperty('display', 'none', 'important');
+        contextMenu.style.display = 'none'; // 강제로 숨김
       }
     });
 
-    // 메뉴 바깥 화면이나 메뉴 항목 누르면 메뉴 닫기
-    document.addEventListener('click', (e) => {
-      if (!moreBtn.contains(e.target)) {
+    // 메뉴 항목(Edit, Delete) 클릭 시 메뉴 닫기
+    contextMenu.addEventListener('click', (e) => {
+      e.stopPropagation();
+      contextMenu.classList.remove('show');
+      contextMenu.style.display = 'none';
+    });
+
+    // 바깥 영역 클릭 시 메뉴 닫기
+    document.addEventListener('click', () => {
+      if (contextMenu) {
         contextMenu.classList.remove('show');
-        contextMenu.style.setProperty('display', 'none', 'important');
+        contextMenu.style.display = 'none';
       }
     });
   }
+
 
 
   // 8. 스크램블 복사 기능
