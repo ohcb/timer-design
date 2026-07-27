@@ -55,20 +55,29 @@ export function renderSolvesList() {
     .join('');
 }
 
+// solves.js 하단 부분
+
 export function initSolves() {
   renderSolvesList();
 
-  // 💡 카드 상위 컨테이너 또는 body에 확실하게 이벤트 바인딩
+  // Solves 카드 클릭 이벤트만 단독 처리
   document.addEventListener('click', (e) => {
-    // 1. 카드 클릭 탐색 (.record-card)
+    // 탭 버튼 클릭인 경우 handles.js(tabs.js)에 양보하고 통과
+    if (e.target.closest('[data-tab], [data-target], .nav-item, .tab-btn')) {
+      return;
+    }
+
+    // 카드 클릭 처리
     const card = e.target.closest('.record-card');
     if (card) {
       const solveId = card.getAttribute('data-id');
       if (solveId) {
         openSolveBottomSheet(solveId);
-        return;
       }
     }
+  });
+}
+
 
     // 2. 탭 이동 버튼 클릭 시 목록 새로고침
     const navBtn = e.target.closest('[data-target], [data-tab], .nav-item, .tab-btn');
