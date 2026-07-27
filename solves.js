@@ -1,9 +1,8 @@
 // solves.js
 
-import { getSolves, updateSolvePenalty, deleteSolve } from './storage.js';
+import { getSolves } from './storage.js';
 import { formatTime } from './timer.js';
 
-// 날짜 포맷 유틸 함수 (MM/DD HH:mm)
 function formatDate(timestamp) {
   if (!timestamp) return '-';
   const date = new Date(timestamp);
@@ -14,12 +13,11 @@ function formatDate(timestamp) {
   return `${month}/${day} ${hours}:${minutes}`;
 }
 
-// Solves 탭 리스트 렌더링
 export function renderSolvesList() {
   const container = document.getElementById('record-cards-container');
   if (!container) return;
 
-  const solves = getSolves(); // localStorage에서 가져오기
+  const solves = getSolves();
 
   if (solves.length === 0) {
     container.innerHTML = `
@@ -29,11 +27,10 @@ export function renderSolvesList() {
     return;
   }
 
-  // 최신순 기본 정렬 후 렌더링
   container.innerHTML = solves
     .map((solve) => {
       const displayTime = formatTime(solve.time, solve.penalty);
-      const isPB = false; // (추후 PB 판별 로직 연결 가능)
+      const isPB = false;
       const formattedDate = formatDate(solve.createdAt || Date.now());
 
       return `
@@ -54,16 +51,14 @@ export function renderSolvesList() {
     .join('');
 }
 
-// 💡 [추가] app.js에서 불러올 Solves 초기화 함수
 export function initSolves() {
-  // 앱 실행 시 첫 렌더링
   renderSolvesList();
 
-  // 하단 탭 중 Solves 탭 클릭 시 리스트 자동 새로고침 이벤트 바인딩
-  const solvesTabBtn = document.querySelector('[data-target="screen-solves"], [data-tab="solves"]');
-  if (solvesTabBtn) {
-    solvesTabBtn.addEventListener('click', () => {
+  // 하단 네비게이션 버튼 및 탭 버튼 클릭 감지
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-target], [data-tab], .nav-item, .tab-btn');
+    if (btn) {
       renderSolvesList();
-    });
-  }
+    }
+  });
 }
