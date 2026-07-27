@@ -33,39 +33,61 @@ export function renderRecentSolves() {
     .join('');
 }
 
-// timer.js 안의 renderStats 함수 교체
+// timer.js 내 renderStats 함수 수정
 export function renderStats() {
   const solves = getSolves(); // 전체 솔브 목록
 
-  // 계산 결과값들
-  const curTime = solves.length > 0 ? solves[0].time : null; // 가장 최근 기록
-  const bestTime = getBestTime(solves); // 전체 PB
+  // 1. 계산값 구하기
+  const curTime = solves.length > 0 ? solves[0].time : null; // 가장 최근
+  const bestSingle = getBestTime(solves); // 단일 PB
+
   const curAo5 = calculateAoN(solves, 5);
   const curAo12 = calculateAoN(solves, 12);
 
-  // stats-table 내부의 row 행들 찾기
+  // 💡 Best ao5 / ao12 계산 (과거 모든 구간 중 최댓값/최솟값 검색)
+  let bestAo5 = null;
+  if (solves.length >= 5) {
+    const ao5List = [];
+    for (let i = 0; i <= solves.length - 5; i++) {
+      const avg = calculateAoN(solves.slice(i, i + 5), 5);
+      if (avg && avg !== 'DNF') ao5List.push(avg);
+    }
+    if (ao5List.length > 0) bestAo5 = Math.min(...ao5List);
+  }
+
+  let bestAo12 = null;
+  if (solves.length >= 12) {
+    const ao12List = [];
+    for (let i = 0; i <= solves.length - 12; i++) {
+      const avg = calculateAoN(solves.slice(i, i + 12), 12);
+      if (avg && avg !== 'DNF') ao12List.push(avg);
+    }
+    if (ao12List.length > 0) bestAo12 = Math.min(...ao12List);
+  }
+
+  // 2. DOM 요소 매핑 (HTML row 수집)
   const rows = document.querySelectorAll('.stats-table .row');
-  if (rows.length < 5) return; // 구조가 다르면 중단
+  if (!rows || rows.length < 5) return;
 
-  // 1. time 행 (row[1]) -> Cur / Best
-  const timeSpans = rows[1].querySelectorAll('span');
-  if (timeSpans.length >= 3) {
-    timeSpans[1].textContent = curTime ? formatTime(curTime) : '-';
-    timeSpans[2].textContent = bestTime ? formatTime(bestTime) : '-';
-  }
+  // 값 적용 유틸 함수 (row 인덱스, Cur값, Best값)
+  const updateRow = (rowIndex, curVal, bestVal) => {
+    const spans = rows[rowIndex]?.querySelectorAll('span');
+    if (spans && spans.length >= 3) {
+      spans[1].textContent = curVal ? formatTime(curVal) : '-';
+      spans[2].textContent = bestVal ? formatTime(bestVal) : '-';
+    }
+  };
 
-  // 2. ao5 행 (row[3]) -> Cur
-  const ao5Spans = rows[3].querySelectorAll('span');
-  if (ao5Spans.length >= 3) {
-    ao5Spans[1].textContent = curAo5 ? formatTime(curAo5) : '-';
-  }
+  // row[1]: time (Cur, Best)
+  updateRow(1, curTime, bestSingle);
 
-  // 3. ao12 행 (row[4]) -> Cur
-  const ao12Spans = rows[4].querySelectorAll('span');
-  if (ao12Spans.length >= 3) {
-    ao12Spans[1].textContent = curAo12 ? formatTime(curAo12) : '-';
-  }
+  // row[3]: ao5 (Cur, Best)
+  updateRow(3, curAo5, bestAo5);
+
+  // row[4]: ao12 (Cur, Best)
+  updateRow(4, curAo12, bestAo12);
 }
+
 
 
 export function initTimer() {
