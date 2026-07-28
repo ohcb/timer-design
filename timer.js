@@ -2,7 +2,6 @@
 
 import { getCurrentSession, saveCurrentSession } from './session-manager.js';
 import { renderSolvesList } from './solves.js';
-import { openSolveBottomSheet } from './solve-bottom-sheet.js';
 
 let isRunning = false;
 let startTime = 0;
@@ -21,12 +20,11 @@ export function formatTime(ms, penalty) {
   return penalty === '+2' ? `${seconds}+` : seconds;
 }
 
-// 2. Average / Mean 통계 계산 헬퍼 함수
+// 2. Average / Mean 통계 계산 헬퍼
 function calculateAverage(solves, count) {
-  if (solves.length < count) return '-';
+  if (!solves || solves.length < count) return '-';
   const slice = solves.slice(0, count);
   
-  // DNF 개수 체크
   const dnfCount = slice.filter(s => s.penalty === 'DNF').length;
   if (dnfCount > 1) return 'DNF';
 
@@ -36,22 +34,20 @@ function calculateAverage(solves, count) {
   });
 
   if (count >= 5) {
-    // 가장 빠른 기록과 가장 느린 기록 1개씩 제외
     times.sort((a, b) => a - b);
-    times.pop(); // 최고 비정상 기록(최댓값/DNF) 제거
-    times.shift(); // 최저 기록 제거
+    times.pop();
+    times.shift();
   }
 
   const sum = times.reduce((acc, cur) => acc + cur, 0);
   return (sum / times.length / 1000).toFixed(2);
 }
 
-// 3. Current & Best 및 ao5 / ao12 통계 렌더링
+// 3. Current & Best 통계 렌더링
 export function renderStats() {
   const session = getCurrentSession();
   const solves = session ? (session.solves || []) : [];
 
-  // 메인 타이머 아래 간이 통계 (ao5: X.XX ao12: X.XX)
   const timerSummary = document.querySelector('.timer-summary');
   const curAo5 = calculateAverage(solves, 5);
   const curAo12 = calculateAverage(solves, 12);
@@ -63,13 +59,11 @@ export function renderStats() {
     `;
   }
 
-  // Current & Best 테이블 렌더링
   const statsTable = document.querySelector('.stats-table');
   if (!statsTable) return;
 
   const curSingle = solves.length > 0 ? formatTime(solves[0].time, solves[0].penalty) : '-';
   
-  // Best Single 구하기
   const validSolves = solves.filter(s => s.penalty !== 'DNF');
   let bestSingle = '-';
   if (validSolves.length > 0) {
@@ -89,7 +83,7 @@ export function renderStats() {
   `;
 }
 
-// 4. Recent Solves 목록 렌더링 & 클릭 시 상세창 연결
+// 4. Recent Solves 목록 렌더링
 export function renderRecentSolves() {
   const container = document.querySelector('.recent-solves .solve-list') || 
                     document.querySelector('.solve-list');
@@ -114,9 +108,9 @@ export function renderRecentSolves() {
     .map((s, idx) => {
       const num = recent.length - idx;
       const formattedTime = formatTime(s.time, s.penalty);
-      return `<li data-id="${s.id}" class="recent-solve-item" style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 14px; cursor: pointer;">
-        <span class="num" style="color: #64748b; margin-right: 8px;">${num}.</span> 
-        <span style="font-weight: 600; color: #f8fafc;">${formattedTime}</span>
+      return `<li data-id="${s.id}" class="recent-solve-item" style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 14px; cursor: pointer; user-select: none;">
+        <span class="num" style="color: #64748b; margin-right: 8px; pointer-events: none;">${num}.</span> 
+        <span style="font-weight: 600; color: #f8fafc; pointer-events: none;">${formattedTime}</span>
       </li>`;
     })
     .join('');
@@ -131,7 +125,6 @@ export function initTimer() {
 
   if (!timerDisplay) return;
 
-  // 초기 렌더링
   setTimeout(() => {
     renderRecentSolves();
     renderStats();
@@ -179,7 +172,6 @@ export function initTimer() {
       saveCurrentSession(session);
     }
 
-    // 💡 저장 즉시 모든 UI 실시간 업데이트
     renderRecentSolves();
     renderStats();
     if (typeof renderSolvesList === 'function') {
@@ -187,13 +179,19 @@ export function initTimer() {
     }
   }
 
-  // --- 최근 기록 항목 클릭 시 상세 바텀시트 열기 ---
+  // --- Recent Solves 클릭 시 바텀시트 열기 ---
   document.addEventListener('click', (e) => {
     const item = e.target.closest('.recent-solve-item');
     if (item) {
       const solveId = item.getAttribute('data-id');
-      if (solveId && typeof openSolveBottomSheet === 'function') {
-        openSolveBottomSheet(solveId);
+      if (solveId) {
+        // 전역 이벤트 발행 또는 바텀시트 오픈 함수 직접 호출
+        if (typeof window.openSolveBottomSheet === 'function') {
+          window.openSolveBottomSheet(solveId);
+        } else {
+          // 커스텀 이벤트를 발생시켜 바텀시트 모듈이 수신하도록 함
+          window.dispatchEvent(new CustomEvent('openSolveDetail', { detail: { solveId } }));
+        }
       }
     }
   });
