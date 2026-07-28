@@ -8,8 +8,18 @@ let sessions = [];
 let currentSessionId = null;
 
 // ==========================================
-// 2. UI 제어 함수 (기존 구현 유지)
+// 2. 동기화 및 UI 헬퍼 함수
 // ==========================================
+
+// LocalStorage 동기화 (최상단 배치)
+function persistState() {
+  try {
+    saveToStorage('cub3_sessions', sessions);
+    saveToStorage('cub3_current_session_id', currentSessionId);
+  } catch (e) {
+    console.error('Session Persist Error:', e);
+  }
+}
 
 // 💡 세션 개수에 따라 Empty State를 자동으로 숨기고 보여주는 함수
 export function updateEmptyState() {
@@ -25,12 +35,6 @@ export function updateEmptyState() {
   } else {
     emptyState.style.setProperty('display', 'none', 'important');
   }
-}
-
-// LocalStorage 동기화
-function persistState() {
-  saveToStorage('cub3_sessions', sessions);
-  saveToStorage('cub3_current_session_id', currentSessionId);
 }
 
 // ==========================================
@@ -116,34 +120,31 @@ export function initSessionManager() {
     currentSessionId = defaultSession.id;
   } else if (!currentSessionId || !getCurrentSession()) {
     const activeSession = sessions.find(s => s.status === 'active') || sessions[0];
-    currentSessionId = activeSession.id;
+    currentSessionId = activeSession ? activeSession.id : null;
   }
   persistState();
 
-  // B. UI 요소 가져오기
-  const modalOverlay = document.getElementById('session-modal-overlay');
-  const modalTitle = document.getElementById('modal-target-title');
-  const cancelBtn = document.getElementById('modal-opt-cancel');
-
-  let activeTargetSessionId = null; // 모달이 켜졌을 때 선택된 세션 ID 저장용
-
-  // 1. 페이지 로드 즉시 세션 개수 체크해서 Empty State 정리
+  // B. UI 요소 가드 처리
   updateEmptyState();
 
-  if (!modalOverlay) return;
+  const modalOverlay = document.getElementById('session-modal-overlay');
+  if (!modalOverlay) return; // 모달 요소가 없는 페이지에서는 이벤트 바인딩 건너뜀
+
+  const modalTitle = document.getElementById('modal-target-title');
+  const cancelBtn = document.getElementById('modal-opt-cancel');
+  let activeTargetSessionId = null;
 
   function closeModal() {
     modalOverlay.style.display = 'none';
     activeTargetSessionId = null;
   }
 
-  // Active 세션 카드 클릭 시 모달 오픈 (이벤트 위임)
+  // Active 세션 카드 클릭 시 모달 오픈
   const activeList = document.getElementById('active-session-list');
   if (activeList) {
     activeList.addEventListener('click', (e) => {
       const card = e.target.closest('.session-manage-card');
       if (card) {
-        // HTML 요소에 data-session-id 속성도 부여해 두면 연동하기 아주 쉽습니다.
         activeTargetSessionId = card.getAttribute('data-session-id'); 
         const sessionName = card.getAttribute('data-session-name') || 'Session';
         
@@ -153,14 +154,13 @@ export function initSessionManager() {
     });
   }
 
-  // 취소 버튼 및 배경 클릭 시 모달 닫기
   if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
   modalOverlay.addEventListener('click', (e) => {
     if (e.target === modalOverlay) closeModal();
   });
 
-  // 모달 옵션 1: 이름 변경 (Rename)
   document.getElementById('modal-opt-rename')?.addEventListener('click', () => {
+    if (!modalTitle) return;
     const currentName = modalTitle.textContent;
     const newName = prompt('Enter new session name:', currentName);
     
@@ -170,28 +170,25 @@ export function initSessionManager() {
         session.name = newName.trim();
         session.updatedAt = Date.now();
         persistState();
-        // UI 갱신 로직 (필요시 renderSessionList() 호출)
       }
     }
     closeModal();
   });
 
-  // 모달 옵션 2: 완료/보관 (Archive / Complete)
   document.getElementById('modal-opt-archive')?.addEventListener('click', () => {
     const session = sessions.find(s => s.id === activeTargetSessionId);
     if (session) {
       session.status = 'completed';
       session.updatedAt = Date.now();
       persistState();
-      // UI 갱신 & Empty State 체크
       updateEmptyState();
     }
     closeModal();
   });
 
-  // 모달 옵션 3: 삭제 (Delete)
   document.getElementById('modal-opt-delete')?.addEventListener('click', () => {
-    if (confirm(`Delete "${modalTitle.textContent}"? This cannot be undone.`)) {
+    const sessionName = modalTitle ? modalTitle.textContent : 'Session';
+    if (confirm(`Delete "${sessionName}"? This cannot be undone.`)) {
       const session = sessions.find(s => s.id === activeTargetSessionId);
       if (session) {
         session.status = 'deleted';
