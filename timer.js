@@ -1,15 +1,15 @@
-// timer.js
+// timer.js (새로 작성된 타이머 완결본)
 
 import { saveToStorage, loadFromStorage } from './storage.js';
+import { renderSolvesList } from './solves.js';
 
-let timerInterval = null;
+let isRunning = false;
 let startTime = 0;
 let elapsedTime = 0;
-let isRunning = false;
 let holdTimeout = null;
 let isReady = false;
 
-// 시간을 0.00 형식의 문자열로 변환하는 헬퍼 함수
+// 1. 시간 포맷 변환 함수 (모듈 공용)
 export function formatTime(ms, penalty) {
   if (penalty === 'DNF') return 'DNF';
   
@@ -20,21 +20,17 @@ export function formatTime(ms, penalty) {
   return penalty === '+2' ? `${seconds}+` : seconds;
 }
 
-// 화면에 최근 기록 반영 (다른 모듈 호환용)
+// 2. 외부 및 내부 연동용 UI 갱신 함수들
 export function renderRecentSolves() {
-  const recentEl = document.getElementById('recent-solves');
-  if (!recentEl) return;
-  // 유연한 처리를 위해 존재할 때만 실행
+  // 메인 타이머 하단에 최근 5개 기록 등을 띄우는 용도
 }
 
-// 화면에 통계 반영 (다른 모듈 호환용)
 export function renderStats() {
-  const statsEl = document.getElementById('stats-container');
-  if (!statsEl) return;
+  // 메인 타이머 하단에 ao5, ao12 통계를 계산해 띄우는 용도
 }
 
+// 3. 메인 타이머 초기화 함수
 export function initTimer() {
-  // 💡 HTML의 타이머 글자 요소를 유연하게 탐색 (.timer-display, #timer, .timer 등)
   const timerDisplay = document.querySelector('.timer-display') || 
                        document.getElementById('timer-display') || 
                        document.querySelector('.timer-zone') ||
@@ -45,11 +41,13 @@ export function initTimer() {
     return;
   }
 
+  // 화면 숫자 업데이트
   function updateDisplay(timeMs) {
     const sec = (timeMs / 1000).toFixed(2);
     timerDisplay.textContent = sec;
   }
 
+  // 타이머 시작
   function startTimer() {
     isRunning = true;
     startTime = performance.now();
@@ -64,58 +62,83 @@ export function initTimer() {
     requestAnimationFrame(tick);
   }
 
+  // 타이머 정지 & 기록 저장
   function stopTimer() {
     isRunning = false;
-    timerDisplay.style.color = ''; // 기본 색상 원복
-    
-    // 기록 저장 로직 호출 (필요시 추가)
-    const currentSessionId = loadFromStorage('cub3_current_session_id');
-    const sessions = loadFromStorage('cub3_sessions') || [];
-    let activeSession = sessions.find(s => String(s.id) === String(currentSessionId)) || sessions[0];
+    timerDisplay.style.color = ''; // 색상 원복
 
-    if (activeSession) {
-      activeSession.solves = activeSession.solves || [];
-      activeSession.solves.unshift({
-        id: Date.now(),
-        time: Math.round(elapsedTime),
-        penalty: 'NONE',
-        createdAt: Date.now(),
-        scramble: document.querySelector('.scramble-text')?.textContent || ''
-      });
-      saveToStorage('cub3_sessions', sessions);
+    // [A] 데이터 저장
+    try {
+      const sessions = loadFromStorage('cub3_sessions') || [];
+      const currentSessionId = loadFromStorage('cub3_current_session_id');
+      
+      let activeSession = sessions.find(s => String(s.id) === String(currentSessionId));
+      if (!activeSession && sessions.length > 0) {
+        activeSession = sessions[0];
+      }
+
+      if (activeSession) {
+        activeSession.solves = activeSession.solves || [];
+        
+        const scrambleText = document.querySelector('.scramble-text')?.textContent || '';
+        
+        const newSolve = {
+          id: Date.now(),
+          time: Math.round(elapsedTime),
+          penalty: 'NONE',
+          createdAt: Date.now(),
+          scramble: scrambleText,
+          note: '',
+          isBookmarked: false
+        };
+
+        // 최신 기록을 맨 앞에 저장
+        activeSession.solves.unshift(newSolve);
+        saveToStorage('cub3_sessions', sessions);
+        console.log('✅ [기록 저장 성공]', newSolve);
+      } else {
+        console.warn('⚠️ 활성화된 세션이 없어 저장하지 못했습니다.');
+      }
+    } catch (e) {
+      console.error('❌ [저장 실패]', e);
     }
 
-    // 기록 및 통계 UI 갱신
-    if (window.renderSolvesList) window.renderSolvesList();
-    renderRecentSolves();
-    renderStats();
+    // [B] 저장 완료 후 화면 갱신
+    try {
+      if (typeof renderSolvesList === 'function') renderSolvesList();
+      renderRecentSolves();
+      renderStats();
+    } catch (e) {
+      console.error('❌ [UI 갱신 실패]', e);
+    }
   }
 
-  // --- Press & Hold 로직 (터치/마우스/키보드 공용) ---
+  // --- 이벤트 핸들러 ---
 
   function handlePressStart(e) {
-    // 버튼, 입력창, 세션 탭 등을 누를 때는 타이머 안 동작하게 예외 처리
-    if (e && e.target && e.target.closest('button, a, input, select, .nav-item, .tab-btn, .record-card')) {
+    // 버튼, 입력창, 세션 탭, 카드 등을 누를 때는 타이머 동작 방지
+    if (e && e.target && e.target.closest('button, a, input, select, .nav-item, .tab-btn, .record-card, .bottom-sheet')) {
       return;
     }
 
+    // 이미 가동 중이면 즉시 멈추기
     if (isRunning) {
       stopTimer();
       return;
     }
 
-    timerDisplay.style.color = '#ef4444'; // 누르고 있을 때 빨간색
+    timerDisplay.style.color = '#ef4444'; // 눌렀을 때 빨간색
     isReady = false;
 
     clearTimeout(holdTimeout);
     holdTimeout = setTimeout(() => {
       isReady = true;
-      timerDisplay.style.color = '#22c55e'; // 준비 완료 초록색
+      timerDisplay.style.color = '#22c55e'; // 0.3초 대기 완료 후 초록색
     }, 300);
   }
 
   function handlePressEnd(e) {
-    if (e && e.target && e.target.closest('button, a, input, select, .nav-item, .tab-btn, .record-card')) {
+    if (e && e.target && e.target.closest('button, a, input, select, .nav-item, .tab-btn, .record-card, .bottom-sheet')) {
       return;
     }
 
@@ -126,16 +149,16 @@ export function initTimer() {
     if (isReady) {
       startTimer();
     } else {
-      timerDisplay.style.color = ''; // 준비 안 됐으면 원복
+      timerDisplay.style.color = ''; // 대기 시간 채우기 전에 떼면 원복
     }
     isReady = false;
   }
 
-  // 1. 모바일 / 아이패드 터치 이벤트 바인딩
+  // Touch (모바일/아이패드)
   document.addEventListener('touchstart', handlePressStart, { passive: true });
   document.addEventListener('touchend', handlePressEnd);
 
-  // 2. PC 마우스 이벤트 바인딩
+  // Mouse (PC 테스트용)
   document.addEventListener('mousedown', (e) => {
     if (e.button === 0) handlePressStart(e);
   });
@@ -143,7 +166,7 @@ export function initTimer() {
     if (e.button === 0) handlePressEnd(e);
   });
 
-  // 3. 키보드 스페이스바 이벤트 바인딩
+  // Keyboard (스페이스바)
   document.addEventListener('keydown', (e) => {
     if (e.code === 'Space' && !e.repeat) {
       e.preventDefault();
@@ -157,5 +180,5 @@ export function initTimer() {
     }
   });
 
-  console.log('✅ [Timer] 타이머 이벤트 리스너 바인딩 완료');
+  console.log('✅ [timer.js] 타이머 초기화 완료');
 }
