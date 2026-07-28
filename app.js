@@ -2,10 +2,10 @@
 
 import { initTabs } from './tabs.js';
 import { initSessionManager } from './session-manager.js';
-// import { initSolvesManager } from './solve-bottom-sheet.js';
+import { initSolvesManager } from './solve-bottom-sheet.js';
 import { initTimer } from './timer.js';
-// import { initStats } from './stats.js';
-// import { initSolves } from './solves.js';
+import { initStats } from './stats.js';
+import { initSolves } from './solves.js';
 
 function safeInit(fnName, initFn) {
   try {
@@ -22,8 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
   safeInit('SessionManager', initSessionManager);
   safeInit('Tabs', initTabs);
 
-  // safeInit('SolvesManager', initSolvesManager);
-  // safeInit('Solves', initSolves);
-  // safeInit('Stats', initStats);
+  safeInit('SolvesManager', initSolvesManager);
+  safeInit('Solves', initSolves);
+  safeInit('Stats', initStats);
   safeInit('Timer', initTimer);
 });
