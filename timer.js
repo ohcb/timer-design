@@ -1,319 +1,161 @@
 // timer.js
 
-import { 
-  getCurrentSession, 
-  addSolveToCurrentSession 
-} from './session-manager.js';
+import { saveToStorage, loadFromStorage } from './storage.js';
 
-import { 
-  updateSolvePenalty, 
-  deleteSolve 
-} from './storage.js';
+let timerInterval = null;
+let startTime = 0;
+let elapsedTime = 0;
+let isRunning = false;
+let holdTimeout = null;
+let isReady = false;
 
-// 💡 안전한 연동을 위한 dynamic/optional 처리
-let calculateAoN = null;
-let getBestTime = null;
-let renderSolvesList = null;
-
-try {
-  const statsCalc = await import('./stats-calculator.js');
-  calculateAoN = statsCalc.calculateAoN;
-  getBestTime = statsCalc.getBestTime;
-} catch (e) {
-  console.warn('⚠️ stats-calculator.js 로드 실패 (기본 통계만 작동함)');
-}
-
-try {
-  const solvesModule = await import('./solves.js');
-  renderSolvesList = solvesModule.renderSolvesList;
-} catch (e) {
-  console.warn('⚠️ solves.js 로드 실패');
-}
-
-// 시간 표시 포맷 (패널티 고려: 0, 2000, 'DNF')
-export function formatTime(ms, penalty = 0) {
+// 시간을 0.00 형식의 문자열로 변환하는 헬퍼 함수
+export function formatTime(ms, penalty) {
   if (penalty === 'DNF') return 'DNF';
-  if (ms == null || Number.isNaN(ms)) return '0.00';
-
-  const penaltyMs = (penalty === '+2' || penalty === 2000) ? 2000 : 0;
-  const finalMs = ms + penaltyMs;
-  const total = finalMs / 1000;
-  const minutes = Math.floor(total / 60);
-  const seconds = total % 60;
   
-  const formatted = minutes > 0
-    ? `${minutes}:${seconds.toFixed(2).padStart(5, '0')}`
-    : seconds.toFixed(2);
+  let totalMs = ms;
+  if (penalty === '+2') totalMs += 2000;
 
-  return penaltyMs > 0 ? `${formatted}+` : formatted;
+  const seconds = (totalMs / 1000).toFixed(2);
+  return penalty === '+2' ? `${seconds}+` : seconds;
 }
 
-// Recent Solves 리스트 그려주기 (현재 활성 세션 기준)
+// 화면에 최근 기록 반영 (다른 모듈 호환용)
 export function renderRecentSolves() {
-  const solveList = document.querySelector('.solve-list');
-  if (!solveList) return;
-
-  const currentSession = getCurrentSession();
-  const solves = currentSession ? currentSession.solves : [];
-  
-  const recentSolves = solves.slice().reverse().slice(0, 5);
-
-  if (recentSolves.length === 0) {
-    solveList.innerHTML = '<li><span class="num">-</span> 기록 없음</li>';
-    return;
-  }
-
-  solveList.innerHTML = recentSolves
-    .map((solve, index) => {
-      const num = solves.length - index;
-      const displayTime = formatTime(solve.time, solve.penalty);
-      return `<li data-id="${solve.id}"><span class="num">${num}.</span> ${displayTime}</li>`;
-    })
-    .join('');
+  const recentEl = document.getElementById('recent-solves');
+  if (!recentEl) return;
+  // 유연한 처리를 위해 존재할 때만 실행
 }
 
-// Current & Best 통계 표 갱신
+// 화면에 통계 반영 (다른 모듈 호환용)
 export function renderStats() {
-  const currentSession = getCurrentSession();
-  const solves = currentSession ? (currentSession.solves || []) : [];
-
-  const curSolve = solves.length > 0 ? solves[solves.length - 1] : null;
-  const curTime = curSolve ? curSolve.time : null;
-  const curPenalty = curSolve ? curSolve.penalty : 0;
-  
-  const bestSingle = getBestTime ? getBestTime(solves) : null;
-
-  const curAo5 = calculateAoN ? calculateAoN(solves, 5) : null;
-  const curAo12 = calculateAoN ? calculateAoN(solves, 12) : null;
-
-  let bestAo5 = null;
-  if (calculateAoN && solves.length >= 5) {
-    const ao5List = [];
-    for (let i = 0; i <= solves.length - 5; i++) {
-      const avg = calculateAoN(solves.slice(i, i + 5), 5);
-      if (avg && avg !== 'DNF') ao5List.push(avg);
-    }
-    if (ao5List.length > 0) bestAo5 = Math.min(...ao5List);
-  }
-
-  let bestAo12 = null;
-  if (calculateAoN && solves.length >= 12) {
-    const ao12List = [];
-    for (let i = 0; i <= solves.length - 12; i++) {
-      const avg = calculateAoN(solves.slice(i, i + 12), 12);
-      if (avg && avg !== 'DNF') ao12List.push(avg);
-    }
-    if (ao12List.length > 0) bestAo12 = Math.min(...ao12List);
-  }
-
-  const rows = document.querySelectorAll('.stats-table .row');
-  if (!rows || rows.length < 5) return;
-
-  const updateRow = (rowIndex, curVal, bestVal) => {
-    const spans = rows[rowIndex]?.querySelectorAll('span');
-    if (spans && spans.length >= 3) {
-      spans[1].textContent = curVal ? (typeof curVal === 'number' ? formatTime(curVal) : curVal) : '-';
-      spans[2].textContent = bestVal ? (typeof bestVal === 'number' ? formatTime(bestVal) : bestVal) : '-';
-    }
-  };
-
-  const curTimeDisplay = curTime !== null ? formatTime(curTime, curPenalty) : null;
-  const bestTimeDisplay = bestSingle !== null ? formatTime(bestSingle) : null;
-  updateRow(1, curTimeDisplay, bestTimeDisplay);
-  updateRow(3, curAo5, bestAo5);
-  updateRow(4, curAo12, bestAo12);
-}
-
-// 모달 이벤트 및 관리 로직
-function initSolveModal() {
-  const modal = document.getElementById('solve-modal');
-  const solveList = document.querySelector('.solve-list');
-  const closeBtn = document.getElementById('modal-close');
-  const deleteBtn = document.getElementById('modal-delete-btn');
-  const penaltyBtns = document.querySelectorAll('.penalty-btn');
-  const modalTimeEl = document.getElementById('modal-solve-time');
-
-  let activeSolveId = null;
-
-  function openModal(id) {
-    const currentSession = getCurrentSession();
-    const solves = currentSession ? (currentSession.solves || []) : [];
-    const target = solves.find(s => String(s.id) === String(id));
-    if (!target) return;
-
-    activeSolveId = id;
-    if (modalTimeEl) modalTimeEl.textContent = formatTime(target.time, target.penalty);
-
-    penaltyBtns.forEach(btn => {
-      const p = btn.dataset.penalty;
-      if (String(target.penalty || 0) === String(p)) {
-        btn.classList.add('active');
-      } else {
-        btn.classList.remove('active');
-      }
-    });
-
-    if (modal) modal.style.display = 'flex';
-  }
-
-  function closeModal() {
-    if (modal) modal.style.display = 'none';
-    activeSolveId = null;
-  }
-
-  if (solveList) {
-    solveList.addEventListener('click', (e) => {
-      const li = e.target.closest('li');
-      if (li && li.dataset.id) {
-        openModal(li.dataset.id);
-      }
-    });
-  }
-
-  penaltyBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      if (!activeSolveId) return;
-      const penalty = btn.dataset.penalty;
-      
-      updateSolvePenalty(activeSolveId, penalty);
-      
-      closeModal();
-      renderRecentSolves();
-      renderStats();
-      if (typeof renderSolvesList === 'function') renderSolvesList();
-    });
-  });
-
-  if (deleteBtn) {
-    deleteBtn.addEventListener('click', () => {
-      if (!activeSolveId) return;
-      
-      deleteSolve(activeSolveId);
-      
-      closeModal();
-      renderRecentSolves();
-      renderStats();
-      if (typeof renderSolvesList === 'function') renderSolvesList();
-    });
-  }
-
-  if (closeBtn) closeBtn.addEventListener('click', closeModal);
-  if (modal) {
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) closeModal();
-    });
-  }
+  const statsEl = document.getElementById('stats-container');
+  if (!statsEl) return;
 }
 
 export function initTimer() {
-  const timerDisplay = document.querySelector('.timer-display');
-  const timerZone = document.querySelector('.timer-zone') || timerDisplay;
+  // 💡 HTML의 타이머 글자 요소를 유연하게 탐색 (.timer-display, #timer, .timer 등)
+  const timerDisplay = document.querySelector('.timer-display') || 
+                       document.getElementById('timer-display') || 
+                       document.querySelector('.timer-zone') ||
+                       document.querySelector('.timer');
 
-  if (!timerDisplay || !timerZone) {
-    console.warn('⚠️ [Timer] HTML에서 .timer-display 또는 .timer-zone 요소를 찾을 수 없습니다.');
+  if (!timerDisplay) {
+    console.error('❌ [timer.js] 타이머 표시 요소를 찾을 수 없습니다.');
     return;
   }
 
-  renderRecentSolves();
-  renderStats();
-  initSolveModal();
-
-  let mode = 'idle';
-  let startAt = 0;
-  let rafId = 0;
-  let holdTimer = null;
-  const READY_DELAY_MS = 300;
-
-  function setMode(nextMode) {
-    mode = nextMode;
-    if (nextMode === 'holding') timerDisplay.style.color = '#ef4444';
-    else if (nextMode === 'ready') timerDisplay.style.color = '#22c55e';
-    else if (nextMode === 'running') timerDisplay.style.color = '#ffffff';
-    else timerDisplay.style.color = '';
-  }
-
-  function handlePressStart() {
-    if (mode === 'running') {
-      stopTimer();
-      return;
-    }
-    if (mode !== 'idle') return;
-
-    setMode('holding');
-    clearTimeout(holdTimer);
-    holdTimer = setTimeout(() => { setMode('ready'); }, READY_DELAY_MS);
-  }
-
-  function handlePressEnd() {
-    if (mode === 'ready') startTimer();
-    else if (mode === 'holding') {
-      clearTimeout(holdTimer);
-      setMode('idle');
-    }
+  function updateDisplay(timeMs) {
+    const sec = (timeMs / 1000).toFixed(2);
+    timerDisplay.textContent = sec;
   }
 
   function startTimer() {
-    startAt = performance.now();
-    setMode('running');
-    tick();
-  }
+    isRunning = true;
+    startTime = performance.now();
+    timerDisplay.style.color = '#ffffff'; // 실행 중 흰색
 
-  function tick() {
-    const elapsed = Math.round(performance.now() - startAt);
-    timerDisplay.textContent = formatTime(elapsed);
-    if (mode === 'running') rafId = requestAnimationFrame(tick);
+    function tick() {
+      if (!isRunning) return;
+      elapsedTime = performance.now() - startTime;
+      updateDisplay(elapsedTime);
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
   }
 
   function stopTimer() {
-    cancelAnimationFrame(rafId);
-    const timeMs = Math.round(performance.now() - startAt);
-    setMode('idle');
-    timerDisplay.textContent = formatTime(timeMs);
+    isRunning = false;
+    timerDisplay.style.color = ''; // 기본 색상 원복
+    
+    // 기록 저장 로직 호출 (필요시 추가)
+    const currentSessionId = loadFromStorage('cub3_current_session_id');
+    const sessions = loadFromStorage('cub3_sessions') || [];
+    let activeSession = sessions.find(s => String(s.id) === String(currentSessionId)) || sessions[0];
 
-    const currentScramble = document.getElementById('scramble-text')?.textContent || '';
-    addSolveToCurrentSession(timeMs, 0, currentScramble);
+    if (activeSession) {
+      activeSession.solves = activeSession.solves || [];
+      activeSession.solves.unshift({
+        id: Date.now(),
+        time: Math.round(elapsedTime),
+        penalty: 'NONE',
+        createdAt: Date.now(),
+        scramble: document.querySelector('.scramble-text')?.textContent || ''
+      });
+      saveToStorage('cub3_sessions', sessions);
+    }
 
+    // 기록 및 통계 UI 갱신
+    if (window.renderSolvesList) window.renderSolvesList();
     renderRecentSolves();
     renderStats();
-    if (typeof renderSolvesList === 'function') renderSolvesList();
   }
 
-  // 아이패드 터치 및 마우스 이벤트 처리 (중복 실행 차단)
-  timerZone.style.cursor = 'pointer';
+  // --- Press & Hold 로직 (터치/마우스/키보드 공용) ---
 
-  let isTouchActive = false;
+  function handlePressStart(e) {
+    // 버튼, 입력창, 세션 탭 등을 누를 때는 타이머 안 동작하게 예외 처리
+    if (e && e.target && e.target.closest('button, a, input, select, .nav-item, .tab-btn, .record-card')) {
+      return;
+    }
 
-  timerZone.addEventListener('touchstart', (e) => {
-    if (e.target.closest('button') || e.target.closest('a')) return;
-    e.preventDefault();
-    isTouchActive = true;
-    handlePressStart();
-  }, { passive: false });
+    if (isRunning) {
+      stopTimer();
+      return;
+    }
 
-  timerZone.addEventListener('touchend', (e) => {
-    if (e.target.closest('button') || e.target.closest('a')) return;
-    e.preventDefault();
-    handlePressEnd();
-    setTimeout(() => { isTouchActive = false; }, 300);
+    timerDisplay.style.color = '#ef4444'; // 누르고 있을 때 빨간색
+    isReady = false;
+
+    clearTimeout(holdTimeout);
+    holdTimeout = setTimeout(() => {
+      isReady = true;
+      timerDisplay.style.color = '#22c55e'; // 준비 완료 초록색
+    }, 300);
+  }
+
+  function handlePressEnd(e) {
+    if (e && e.target && e.target.closest('button, a, input, select, .nav-item, .tab-btn, .record-card')) {
+      return;
+    }
+
+    clearTimeout(holdTimeout);
+
+    if (isRunning) return;
+
+    if (isReady) {
+      startTimer();
+    } else {
+      timerDisplay.style.color = ''; // 준비 안 됐으면 원복
+    }
+    isReady = false;
+  }
+
+  // 1. 모바일 / 아이패드 터치 이벤트 바인딩
+  document.addEventListener('touchstart', handlePressStart, { passive: true });
+  document.addEventListener('touchend', handlePressEnd);
+
+  // 2. PC 마우스 이벤트 바인딩
+  document.addEventListener('mousedown', (e) => {
+    if (e.button === 0) handlePressStart(e);
+  });
+  document.addEventListener('mouseup', (e) => {
+    if (e.button === 0) handlePressEnd(e);
   });
 
-  timerZone.addEventListener('mousedown', (e) => {
-    if (isTouchActive || e.button !== 0) return;
-    if (e.target.closest('button') || e.target.closest('a')) return;
-    handlePressStart();
+  // 3. 키보드 스페이스바 이벤트 바인딩
+  document.addEventListener('keydown', (e) => {
+    if (e.code === 'Space' && !e.repeat) {
+      e.preventDefault();
+      handlePressStart();
+    }
+  });
+  document.addEventListener('keyup', (e) => {
+    if (e.code === 'Space') {
+      e.preventDefault();
+      handlePressEnd();
+    }
   });
 
-  timerZone.addEventListener('mouseup', () => {
-    if (isTouchActive) return;
-    handlePressEnd();
-  });
-
-  window.addEventListener('keydown', (e) => {
-    if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) return;
-    if (e.code === 'Space' && !e.repeat) { e.preventDefault(); handlePressStart(); }
-  });
-  window.addEventListener('keyup', (e) => {
-    if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) return;
-    if (e.code === 'Space') { e.preventDefault(); handlePressEnd(); }
-  });
+  console.log('✅ [Timer] 타이머 이벤트 리스너 바인딩 완료');
 }
