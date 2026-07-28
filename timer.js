@@ -1,15 +1,25 @@
 // timer.js
 
-import { addSolve, getSolves, updateSolvePenalty, deleteSolve } from './storage.js';
-import { getBestTime, calculateAoN } from './stats-calculator.js';
-import { renderSolvesList } from './solves.js'; // 💡 Solves 탭 리스트 연동 추가
+import { 
+  getCurrentSession, 
+  addSolveToCurrentSession 
+} from './session-manager.js';
 
-// 시간 표시 포맷 (패널티 고려)
-export function formatTime(ms, penalty = 'NONE') {
+import { 
+  updateSolvePenalty, 
+  deleteSolve 
+} from './storage.js';
+
+import { getBestTime, calculateAoN } from './stats-calculator.js';
+import { renderSolvesList } from './solves.js'; // 💡 Solves 탭 리스트 연동
+
+// 시간 표시 포맷 (패널티 고려: 0, 2000, 'DNF')
+export function formatTime(ms, penalty = 0) {
   if (penalty === 'DNF') return 'DNF';
   if (ms == null || Number.isNaN(ms)) return '0.00';
 
-  const finalMs = penalty === '+2' ? ms + 2000 : ms;
+  const penaltyMs = (penalty === '+2' || penalty === 2000) ? 2000 : 0;
+  const finalMs = ms + penaltyMs;
   const total = finalMs / 1000;
   const minutes = Math.floor(total / 60);
   const seconds = total % 60;
@@ -18,22 +28,26 @@ export function formatTime(ms, penalty = 'NONE') {
     ? `${minutes}:${seconds.toFixed(2).padStart(5, '0')}`
     : seconds.toFixed(2);
 
-  return penalty === '+2' ? `${formatted}+` : formatted;
+  return penaltyMs > 0 ? `${formatted}+` : formatted;
 }
 
-// Recent Solves 리스트 그려주기 (data-id 할당)
+// Recent Solves 리스트 그려주기 (현재 활성 세션 기준)
 export function renderRecentSolves() {
   const solveList = document.querySelector('.solve-list');
   if (!solveList) return;
 
-  const solves = getSolves().slice(0, 5);
+  const currentSession = getCurrentSession();
+  const solves = currentSession ? currentSession.solves : [];
+  
+  // 최근 5개 기록 (최신순)
+  const recentSolves = solves.slice().reverse().slice(0, 5);
 
-  if (solves.length === 0) {
+  if (recentSolves.length === 0) {
     solveList.innerHTML = '<li><span class="num">-</span> 기록 없음</li>';
     return;
   }
 
-  solveList.innerHTML = solves
+  solveList.innerHTML = recentSolves
     .map((solve, index) => {
       const num = solves.length - index;
       const displayTime = formatTime(solve.time, solve.penalty);
@@ -44,10 +58,13 @@ export function renderRecentSolves() {
 
 // Current & Best 통계 표 갱신
 export function renderStats() {
-  const solves = getSolves();
+  const currentSession = getCurrentSession();
+  const solves = currentSession ? currentSession.solves : [];
 
-  const curTime = solves.length > 0 ? solves[0].time : null;
-  const curPenalty = solves.length > 0 ? solves[0].penalty : 'NONE';
+  const curSolve = solves.length > 0 ? solves[solves.length - 1] : null;
+  const curTime = curSolve ? curSolve.time : null;
+  const curPenalty = curSolve ? curSolve.penalty : 0;
+  
   const bestSingle = getBestTime(solves);
 
   const curAo5 = calculateAoN(solves, 5);
@@ -84,7 +101,7 @@ export function renderStats() {
     }
   };
 
-  // row[1]: time (최근 기록은 패널티 반영)
+  // row[1]: time (최근 기록)
   const curTimeDisplay = curTime !== null ? formatTime(curTime, curPenalty) : null;
   const bestTimeDisplay = bestSingle !== null ? formatTime(bestSingle) : null;
   updateRow(1, curTimeDisplay, bestTimeDisplay);
@@ -108,16 +125,17 @@ function initSolveModal() {
   let activeSolveId = null;
 
   function openModal(id) {
-    const solves = getSolves();
-    const target = solves.find(s => s.id === id);
+    const currentSession = getCurrentSession();
+    const solves = currentSession ? currentSession.solves : [];
+    const target = solves.find(s => String(s.id) === String(id));
     if (!target) return;
 
     activeSolveId = id;
     modalTimeEl.textContent = formatTime(target.time, target.penalty);
 
     penaltyBtns.forEach(btn => {
-      const p = btn.dataset.penalty;
-      if ((target.penalty || 'NONE') === p) {
+      const p = btn.dataset.penalty; // '0', '2000', 'DNF' 등
+      if (String(target.penalty || 0) === String(p)) {
         btn.classList.add('active');
       } else {
         btn.classList.remove('active');
@@ -128,7 +146,7 @@ function initSolveModal() {
   }
 
   function closeModal() {
-    modal.style.display = 'none';
+    if (modal) modal.style.display = 'none';
     activeSolveId = null;
   }
 
@@ -145,14 +163,14 @@ function initSolveModal() {
   penaltyBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       if (!activeSolveId) return;
-      const penalty = btn.dataset.penalty;
+      const penalty = btn.dataset.penalty; // 0, 2000, 'DNF'
       
       updateSolvePenalty(activeSolveId, penalty);
       
       closeModal();
       renderRecentSolves();
       renderStats();
-      if (typeof renderSolvesList === 'function') renderSolvesList(); // 💡 Solves 탭도 갱신
+      if (typeof renderSolvesList === 'function') renderSolvesList();
     });
   });
 
@@ -166,7 +184,7 @@ function initSolveModal() {
       closeModal();
       renderRecentSolves();
       renderStats();
-      if (typeof renderSolvesList === 'function') renderSolvesList(); // 💡 Solves 탭도 갱신
+      if (typeof renderSolvesList === 'function') renderSolvesList();
     });
   }
 
@@ -240,10 +258,13 @@ export function initTimer() {
     setMode('idle');
     timerDisplay.textContent = formatTime(timeMs);
 
-    addSolve(timeMs);
+    // 💡 현재 활성 세션에 스크램블과 함께 기록 추가
+    const currentScramble = document.getElementById('scramble-text')?.textContent || '';
+    addSolveToCurrentSession(timeMs, 0, currentScramble);
+
     renderRecentSolves();
     renderStats();
-    if (typeof renderSolvesList === 'function') renderSolvesList(); // 💡 Solves 탭 갱신
+    if (typeof renderSolvesList === 'function') renderSolvesList();
   }
 
   // 이벤트 연결
