@@ -31,5 +31,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 3. 통계 및 타이머 초기화
   safeInit('Stats', initStats);
-  safeInit('Timer', initTimer);
+  // safeInit('Timer', initTimer);
 });
