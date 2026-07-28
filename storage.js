@@ -7,7 +7,6 @@ export function saveToStorage(key, value) {
   try {
     localStorage.setItem(key, JSON.stringify(value));
   } catch (e) {
-    // 시크릿 모드로 인해 localStorage가 막히면 메모리에 임시 저장
     memoryStorage[key] = JSON.stringify(value);
   }
 }
@@ -17,7 +16,6 @@ export function loadFromStorage(key) {
     const raw = localStorage.getItem(key);
     return raw ? JSON.parse(raw) : (memoryStorage[key] ? JSON.parse(memoryStorage[key]) : null);
   } catch (e) {
-    // 시크릿 모드일 경우 메모리에서 불러옴
     return memoryStorage[key] ? JSON.parse(memoryStorage[key]) : null;
   }
 }
@@ -32,6 +30,17 @@ function getSessionsData() {
 
 function saveSessionsData(sessions) {
   saveToStorage('cub3_sessions', sessions);
+}
+
+// 🔑 [핵심 추가] 타 모듈에서 호환성을 위해 찾는 getSolves 함수
+export function getSolves() {
+  const sessions = getSessionsData();
+  const currentSessionId = loadFromStorage('cub3_current_session_id');
+  
+  // 현재 활성화된 세션 찾기 (없으면 첫 번째 세션 사용)
+  const activeSession = sessions.find(s => String(s.id) === String(currentSessionId)) || sessions[0];
+  
+  return activeSession ? (activeSession.solves || []) : [];
 }
 
 function findSolveInSessions(solveId) {
