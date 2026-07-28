@@ -1,6 +1,5 @@
 // storage.js
 
-// 💡 시크릿 모드 및 localStorage 차단 환경용 메모리 저장소
 const memoryStorage = {};
 
 export function saveToStorage(key, value) {
@@ -20,10 +19,6 @@ export function loadFromStorage(key) {
   }
 }
 
-// ==========================================
-// 💡 세션 내 개별 Solve(기록) 제어 헬퍼
-// ==========================================
-
 function getSessionsData() {
   return loadFromStorage('cub3_sessions') || [];
 }
@@ -32,7 +27,6 @@ function saveSessionsData(sessions) {
   saveToStorage('cub3_sessions', sessions);
 }
 
-// 🔑 [타 모듈 호환용] getSolves
 export function getSolves() {
   const sessions = getSessionsData();
   const currentSessionId = loadFromStorage('cub3_current_session_id');
@@ -40,26 +34,11 @@ export function getSolves() {
   return activeSession ? (activeSession.solves || []) : [];
 }
 
-// 🔑 [타 모듈 호환용] saveSolves (현재 활성 세션에 solves 리스트 저장)
-export function saveSolves(solves) {
-  const sessions = getSessionsData();
-  const currentSessionId = loadFromStorage('cub3_current_session_id');
-  
-  let activeSession = sessions.find(s => String(s.id) === String(currentSessionId));
-  if (!activeSession && sessions.length > 0) {
-    activeSession = sessions[0];
-  }
-
-  if (activeSession) {
-    activeSession.solves = solves;
-    saveSessionsData(sessions);
-  }
-}
-
 function findSolveInSessions(solveId) {
   const sessions = getSessionsData();
   for (const session of sessions) {
-    const solve = session.solves?.find(s => String(s.id) === String(solveId));
+    if (!session.solves) continue;
+    const solve = session.solves.find(s => String(s.id) === String(solveId));
     if (solve) {
       return { sessions, session, solve };
     }
