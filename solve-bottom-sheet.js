@@ -1,6 +1,6 @@
 // solve-bottom-sheet.js
 
-import { getSolves, saveSolves, updateSolvePenalty, deleteSolve, updateSolveNote, toggleSolveBookmark } from './storage.js';
+import { getSolves, updateSolvePenalty, deleteSolve, updateSolveNote, toggleSolveBookmark, saveToStorage, loadFromStorage } from './storage.js';
 import { formatTime, renderRecentSolves, renderStats } from './timer.js';
 import { renderSolvesList } from './solves.js';
 
@@ -21,8 +21,7 @@ function formatFullDate(timestamp) {
   return `${yyyy}.${mm}.${dd} ${hh}:${min}:${ss}`;
 }
 
-// solve-bottom-sheet.js 의 Toast 관련 함수
-
+// Toast 관련 함수
 export function showUndoToast(deletedSolve, onUndoCallback) {
   const toast = document.getElementById('global-undo-toast');
   const undoBtn = document.getElementById('global-undo-btn');
@@ -32,7 +31,6 @@ export function showUndoToast(deletedSolve, onUndoCallback) {
 
   if (undoTimer) clearTimeout(undoTimer);
 
-  // 💡 show 클래스만 부여하면 CSS 트랜지션으로 위로 쓱 올라옵니다.
   toast.classList.add('show');
 
   if (undoBtn) {
@@ -61,7 +59,6 @@ export function hideUndoToast() {
   if (undoTimer) clearTimeout(undoTimer);
   lastDeletedSolve = null;
 }
-
 
 export function openSolveBottomSheet(id) {
   const solves = getSolves();
@@ -98,7 +95,6 @@ export function openSolveBottomSheet(id) {
     }
   });
 
-  // 시트 보이기
   sheet.classList.add('active', 'open');
   sheet.style.setProperty('display', 'flex', 'important');
 }
@@ -167,7 +163,7 @@ export function initSolvesManager() {
     });
   }
 
-  // 6. 삭제 기능 (삭제 후 Undo 토스트 연동 💡)
+  // 6. 삭제 기능 (Undo 원복 포함)
   const deleteBtn = sheet.querySelector('#menu-delete, .delete-item');
   if (deleteBtn) {
     deleteBtn.addEventListener('click', () => {
@@ -177,22 +173,25 @@ export function initSolvesManager() {
       const targetSolve = solves.find(s => String(s.id) === String(activeSolveId));
       if (!targetSolve) return;
 
-      // 1) 기록 삭제 실행
       deleteSolve(activeSolveId);
       closeSolveBottomSheet();
 
-      // 2) UI 갱신
       renderSolvesList();
       renderRecentSolves();
       renderStats();
 
-      // 3) 실행 취소(Undo) 토스트 호출 및 복구 정의
+      // Undo 복구 처리 (saveSolves 대신 세션 데이터에 직접 다시 밀어넣기)
       showUndoToast(targetSolve, (restoredSolve) => {
-        const currentSolves = getSolves();
-        currentSolves.unshift(restoredSolve); // 삭제 기록 원복
-        saveSolves(currentSolves);
+        const sessions = loadFromStorage('cub3_sessions') || [];
+        const currentSessionId = loadFromStorage('cub3_current_session_id');
+        let activeSession = sessions.find(s => String(s.id) === String(currentSessionId)) || sessions[0];
 
-        // UI 재갱신
+        if (activeSession) {
+          activeSession.solves = activeSession.solves || [];
+          activeSession.solves.unshift(restoredSolve);
+          saveToStorage('cub3_sessions', sessions);
+        }
+
         renderSolvesList();
         renderRecentSolves();
         renderStats();
