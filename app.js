@@ -2,7 +2,7 @@
 
 import { initTabs } from './tabs.js';
 import { initSolvesManager } from './solve-bottom-sheet.js';
-import { initTimer } from './timer.js';
+// import { initTimer } from './timer.js';
 import { initStats } from './stats.js';
 import { initSessionManager } from './session-manager.js';
 import { initSolves } from './solves.js';
