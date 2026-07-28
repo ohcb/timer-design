@@ -1,6 +1,6 @@
-// solves.js (완벽 수정본)
+// solves.js
 
-import { getSolves } from './storage.js';
+import { getCurrentSession } from './session-manager.js'; // 💡 storage 대신 session-manager 사용
 import { formatTime } from './timer.js';
 import { openSolveBottomSheet } from './solve-bottom-sheet.js';
 
@@ -18,7 +18,9 @@ export function renderSolvesList() {
   const container = document.getElementById('record-cards-container');
   if (!container) return;
 
-  const solves = getSolves();
+  // 💡 현재 활성화된 세션의 solves 목록을 가져옵니다.
+  const currentSession = getCurrentSession();
+  const solves = currentSession ? (currentSession.solves || []) : [];
 
   if (solves.length === 0) {
     container.innerHTML = `
@@ -29,13 +31,14 @@ export function renderSolvesList() {
   }
 
   container.innerHTML = solves
+    .slice()
+    .reverse() // 최신순 정렬
     .map((solve) => {
       const displayTime = formatTime(solve.time, solve.penalty);
       const isPB = false;
       const formattedDate = formatDate(solve.createdAt || Date.now());
       const starIcon = solve.isBookmarked ? '⭐' : '☆';
 
-      // 💡 pointer-events: none 으로 내부 자식 요소가 클릭 이벤트를 방해하지 않도록 처리
       return `
         <div class="record-card ${isPB ? 'pb-card' : ''}" data-id="${solve.id}">
           <div class="card-left" style="pointer-events: none;">
@@ -55,26 +58,21 @@ export function renderSolvesList() {
     .join('');
 }
 
-// solves.js 하단 부분
-
 export function initSolves() {
   renderSolvesList();
 
-  // Solves 카드 클릭 이벤트만 단독 처리
+  // Solves 카드 클릭 이벤트 처리
   document.addEventListener('click', (e) => {
-    // 탭 버튼 클릭인 경우 handles.js(tabs.js)에 양보하고 통과
     if (e.target.closest('[data-tab], [data-target], .nav-item, .tab-btn')) {
       return;
     }
 
-    // 카드 클릭 처리
     const card = e.target.closest('.record-card');
     if (card) {
       const solveId = card.getAttribute('data-id');
-      if (solveId) {
+      if (solveId && typeof openSolveBottomSheet === 'function') {
         openSolveBottomSheet(solveId);
       }
     }
   });
 }
-
