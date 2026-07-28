@@ -20,31 +20,39 @@ export function formatTime(ms, penalty) {
   return penalty === '+2' ? `${seconds}+` : seconds;
 }
 
-// 2. 타이머 화면 하단 최근 기록 렌더링
+// 2. 타이머 화면 Recent Solves (<ul class="solve-list">) 렌더링
 export function renderRecentSolves() {
-  const container = document.getElementById('recent-solves') || document.querySelector('.recent-solves-list');
+  // HTML 구조에 맞춰 .recent-solves 안의 .solve-list 탐색
+  const container = document.querySelector('.recent-solves .solve-list') || 
+                    document.querySelector('.solve-list') ||
+                    document.getElementById('recent-solves');
+
   if (!container) return;
 
   const session = getCurrentSession();
   const solves = session ? (session.solves || []) : [];
 
   if (solves.length === 0) {
-    container.innerHTML = '<span style="color:#64748b; font-size:14px;">기록 없음</span>';
+    container.innerHTML = '<li style="color:#64748b; font-size:14px; text-align:center;">기록 없음</li>';
     return;
   }
 
-  // 최신 5개 기록
+  // 최신 5개 기록 추출
   const recent = solves.slice(0, 5);
+
+  // HTML 구조(<li><span class="num">1.</span> 8.95</li>)에 맞춰 HTML 생성
   container.innerHTML = recent
-    .map(s => `<span style="margin: 0 6px; font-weight: 600;">${formatTime(s.time, s.penalty)}</span>`)
+    .map((s, idx) => {
+      const num = recent.length - idx; // 번호 부여 (5, 4, 3, 2, 1 순)
+      const formattedTime = formatTime(s.time, s.penalty);
+      return `<li><span class="num">${num}.</span> ${formattedTime}</li>`;
+    })
     .join('');
 }
 
 // 3. 타이머 화면 통계 (ao5, ao12 등) 렌더링
 export function renderStats() {
-  const statsEl = document.getElementById('stats-container');
-  if (!statsEl) return;
-  // 필요시 통계 계산 로직 연결
+  // 필요시 통계 계산 로직 구현
 }
 
 // 4. 메인 타이머 초기화 함수
@@ -108,7 +116,7 @@ export function initTimer() {
       saveCurrentSession(session);
     }
 
-    // 💡 2. 즉시 UI 화면 갱신 (새로고침 없이 반영)
+    // 💡 2. 저장 즉시 화면 UI 모두 실시간 갱신
     renderRecentSolves();
     renderStats();
     if (typeof renderSolvesList === 'function') {
@@ -119,7 +127,6 @@ export function initTimer() {
   // --- 입력 이벤트 처리 ---
 
   function handlePressStart(e) {
-    // 버튼, 탭, 입력창, 바텀시트 터치 시 타이머 작동 방지
     if (e && e.target && e.target.closest('button, a, input, select, .nav-item, .tab-btn, .record-card, .bottom-sheet')) {
       return;
     }
@@ -129,13 +136,13 @@ export function initTimer() {
       return;
     }
 
-    timerDisplay.style.color = '#ef4444'; // 준비 중 빨간색
+    timerDisplay.style.color = '#ef4444';
     isReady = false;
 
     clearTimeout(holdTimeout);
     holdTimeout = setTimeout(() => {
       isReady = true;
-      timerDisplay.style.color = '#22c55e'; // 0.3초 누른 후 준비 완료 초록색
+      timerDisplay.style.color = '#22c55e';
     }, 300);
   }
 
@@ -156,7 +163,6 @@ export function initTimer() {
     isReady = false;
   }
 
-  // 터치 및 마우스, 스페이스바 이벤트 설정
   document.addEventListener('touchstart', handlePressStart, { passive: true });
   document.addEventListener('touchend', handlePressEnd);
 
