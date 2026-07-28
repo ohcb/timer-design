@@ -45,6 +45,22 @@ export function getCurrentSession() {
   return sessions.find(s => s.id === currentSessionId) || null;
 }
 
+// 🔑 [추가] 외부 모듈(timer.js 등)에서 변경된 현재 세션을 안전하게 저장하는 함수
+export function saveCurrentSession(updatedSession) {
+  if (!updatedSession) return;
+
+  const index = sessions.findIndex(s => s.id === updatedSession.id);
+  if (index !== -1) {
+    sessions[index] = updatedSession;
+  } else {
+    sessions.push(updatedSession);
+  }
+
+  currentSessionId = updatedSession.id;
+  updatedSession.updatedAt = Date.now();
+  persistState();
+}
+
 export function getCurrentSessionId() {
   return currentSessionId;
 }
