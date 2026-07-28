@@ -2,6 +2,7 @@
 
 import { getCurrentSession, saveCurrentSession } from './session-manager.js';
 import { renderSolvesList } from './solves.js';
+import { openSolveBottomSheet } from './solve-bottom-sheet.js';
 
 let isRunning = false;
 let startTime = 0;
@@ -83,7 +84,7 @@ export function renderStats() {
   `;
 }
 
-// 4. Recent Solves 목록 렌더링
+// 4. Recent Solves 목록 렌더링 및 이벤트 바인딩
 export function renderRecentSolves() {
   const container = document.querySelector('.recent-solves .solve-list') || 
                     document.querySelector('.solve-list');
@@ -108,12 +109,28 @@ export function renderRecentSolves() {
     .map((s, idx) => {
       const num = recent.length - idx;
       const formattedTime = formatTime(s.time, s.penalty);
-      return `<li data-id="${s.id}" class="recent-solve-item" style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 14px; cursor: pointer; user-select: none;">
+      return `<li data-id="${s.id}" class="recent-solve-item" style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 14px; cursor: pointer;">
         <span class="num" style="color: #64748b; margin-right: 8px; pointer-events: none;">${num}.</span> 
         <span style="font-weight: 600; color: #f8fafc; pointer-events: none;">${formattedTime}</span>
       </li>`;
     })
     .join('');
+
+  // 💡 리스트 생성 직후 클릭 이벤트 직접 바인딩
+  const items = container.querySelectorAll('.recent-solve-item');
+  items.forEach(item => {
+    item.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const solveId = item.getAttribute('data-id');
+      if (solveId) {
+        if (typeof openSolveBottomSheet === 'function') {
+          openSolveBottomSheet(solveId);
+        } else if (typeof window.openSolveBottomSheet === 'function') {
+          window.openSolveBottomSheet(solveId);
+        }
+      }
+    });
+  });
 }
 
 // 5. 메인 타이머 초기화
@@ -179,24 +196,7 @@ export function initTimer() {
     }
   }
 
-  // --- Recent Solves 클릭 시 바텀시트 열기 ---
-  document.addEventListener('click', (e) => {
-    const item = e.target.closest('.recent-solve-item');
-    if (item) {
-      const solveId = item.getAttribute('data-id');
-      if (solveId) {
-        // 전역 이벤트 발행 또는 바텀시트 오픈 함수 직접 호출
-        if (typeof window.openSolveBottomSheet === 'function') {
-          window.openSolveBottomSheet(solveId);
-        } else {
-          // 커스텀 이벤트를 발생시켜 바텀시트 모듈이 수신하도록 함
-          window.dispatchEvent(new CustomEvent('openSolveDetail', { detail: { solveId } }));
-        }
-      }
-    }
-  });
-
-  // --- 입력 이벤트 ---
+  // --- 터치/입력 이벤트 ---
   function handlePressStart(e) {
     if (e && e.target && e.target.closest('button, a, input, select, .nav-item, .tab-btn, .record-card, .bottom-sheet, .recent-solve-item')) {
       return;
