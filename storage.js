@@ -1,87 +1,55 @@
 // storage.js
 
-// 💡 범용 저장/불러오기 헬퍼 함수 (session-manager.js 등에서 활용)
+// 시크릿 모드용 임시 메모리 저장소
+const memoryStorage = {};
+
 export function saveToStorage(key, value) {
   try {
     localStorage.setItem(key, JSON.stringify(value));
   } catch (e) {
-    console.error(`Storage Save Error [${key}]:`, e);
+    // 💡 시크릿 모드로 인해 localStorage 저장이 막혀도 메모리에 임시 저장하여 앱이 터지지 않음
+    memoryStorage[key] = JSON.stringify(value);
   }
 }
 
 export function loadFromStorage(key) {
   try {
     const raw = localStorage.getItem(key);
-    return raw ? JSON.parse(raw) : null;
+    return raw ? JSON.parse(raw) : (memoryStorage[key] ? JSON.parse(memoryStorage[key]) : null);
   } catch (e) {
-    console.error(`Storage Load Error [${key}]:`, e);
-    return null;
+    // 💡 시크릿 모드로 불러오기가 막혔을 때 메모리에서 가져옴
+    return memoryStorage[key] ? JSON.parse(memoryStorage[key]) : null;
   }
-}
-
-// ==========================================
-// 💡 세션 내 개별 Solve(기록) 제어 헬퍼
-// ==========================================
-
-// 활성 세션 데이터 전체 불러오기/저장하기
-function getSessionsData() {
-  return loadFromStorage('cub3_sessions') || [];
-}
-
-function saveSessionsData(sessions) {
-  saveToStorage('cub3_sessions', sessions);
 }
 
 // 특정 Solve 찾기 보조 함수
 function findSolveInSessions(solveId) {
-  const sessions = getSessionsData();
+  const sessions = loadFromStorage('cub3_sessions') || [];
   for (const session of sessions) {
     const solve = session.solves.find(s => String(s.id) === String(solveId));
     if (solve) {
       return { sessions, session, solve };
     }
   }
-  return { sessions, session: null, solve: null };
+  return { sessions: [], session: null, solve: null };
 }
 
-// 1. 특정 기록의 패널티 업데이트 ('NONE' | '+2' | 'DNF' 또는 숫자 패널티)
 export function updateSolvePenalty(solveId, penalty) {
   const { sessions, solve } = findSolveInSessions(solveId);
   if (solve) {
     solve.penalty = penalty;
-    saveSessionsData(sessions);
+    saveToStorage('cub3_sessions', sessions);
   }
 }
 
-// 2. 특정 기록 삭제
 export function deleteSolve(solveId) {
-  const sessions = getSessionsData();
+  const sessions = loadFromStorage('cub3_sessions') || [];
   for (const session of sessions) {
     const initialLen = session.solves.length;
     session.solves = session.solves.filter(s => String(s.id) !== String(solveId));
     if (session.solves.length !== initialLen) {
-      saveSessionsData(sessions);
+      saveToStorage('cub3_sessions', sessions);
       break;
     }
   }
-}
-
-// 3. 메모(Note) 업데이트
-export function updateSolveNote(solveId, note) {
-  const { sessions, solve } = findSolveInSessions(solveId);
-  if (solve) {
-    solve.note = note;
-    saveSessionsData(sessions);
-  }
-}
-
-// 4. 북마크(Bookmark) 토글
-export function toggleSolveBookmark(solveId) {
-  const { sessions, solve } = findSolveInSessions(solveId);
-  if (solve) {
-    solve.isBookmarked = !solve.isBookmarked;
-    saveSessionsData(sessions);
-    return solve.isBookmarked;
-  }
-  return false;
 }
