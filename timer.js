@@ -9,7 +9,7 @@ let elapsedTime = 0;
 let holdTimeout = null;
 let isReady = false;
 
-// 1. 포맷팅 헬퍼 (모듈 공용)
+// 1. 포맷팅 헬퍼
 export function formatTime(ms, penalty) {
   if (penalty === 'DNF') return 'DNF';
   
@@ -20,12 +20,11 @@ export function formatTime(ms, penalty) {
   return penalty === '+2' ? `${seconds}+` : seconds;
 }
 
-// 2. 타이머 화면 Recent Solves (<ul class="solve-list">) 렌더링
+// 2. Recent Solves (<ul class="solve-list">) 렌더링
 export function renderRecentSolves() {
-  // HTML 구조에 맞춰 .recent-solves 안의 .solve-list 탐색
+  // .recent-solves 안의 .solve-list 정밀 탐색
   const container = document.querySelector('.recent-solves .solve-list') || 
-                    document.querySelector('.solve-list') ||
-                    document.getElementById('recent-solves');
+                    document.querySelector('.solve-list');
 
   if (!container) return;
 
@@ -33,42 +32,47 @@ export function renderRecentSolves() {
   const solves = session ? (session.solves || []) : [];
 
   if (solves.length === 0) {
-    container.innerHTML = '<li style="color:#64748b; font-size:14px; text-align:center;">기록 없음</li>';
+    container.innerHTML = '<li style="color:#64748b; font-size:14px; padding: 4px 0;">기록 없음</li>';
     return;
   }
 
-  // 최신 5개 기록 추출
+  // 최신 5개 추출
   const recent = solves.slice(0, 5);
 
-  // HTML 구조(<li><span class="num">1.</span> 8.95</li>)에 맞춰 HTML 생성
+  // HTML 생성 & CSS 스타일 강제 부여 (안 보이는 현상 방지)
+  container.style.display = 'block';
+  container.style.visibility = 'visible';
+  container.style.opacity = '1';
+
   container.innerHTML = recent
     .map((s, idx) => {
-      const num = recent.length - idx; // 번호 부여 (5, 4, 3, 2, 1 순)
+      const num = recent.length - idx;
       const formattedTime = formatTime(s.time, s.penalty);
-      return `<li><span class="num">${num}.</span> ${formattedTime}</li>`;
+      return `<li style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 14px;">
+        <span class="num" style="color: #64748b; margin-right: 8px;">${num}.</span> 
+        <span style="font-weight: 600; color: #f8fafc;">${formattedTime}</span>
+      </li>`;
     })
     .join('');
 }
 
-// 3. 타이머 화면 통계 (ao5, ao12 등) 렌더링
 export function renderStats() {
-  // 필요시 통계 계산 로직 구현
+  // 통계 UI 갱신 필요시 구현
 }
 
-// 4. 메인 타이머 초기화 함수
+// 3. 메인 타이머 초기화
 export function initTimer() {
   const timerDisplay = document.querySelector('.timer-display') || 
                        document.getElementById('timer-display') || 
                        document.querySelector('.timer-zone') ||
                        document.querySelector('.timer');
 
-  if (!timerDisplay) {
-    console.error('❌ 타이머 표시 요소를 찾지 못했습니다.');
-    return;
-  }
+  if (!timerDisplay) return;
 
-  // 최초 로드 시 최근 기록 표시
-  renderRecentSolves();
+  // 로드 즉시 최근 기록 렌더링
+  setTimeout(() => {
+    renderRecentSolves();
+  }, 100);
 
   function updateDisplay(ms) {
     timerDisplay.textContent = (ms / 1000).toFixed(2);
@@ -92,7 +96,7 @@ export function initTimer() {
     isRunning = false;
     timerDisplay.style.color = '';
 
-    // 💡 1. 현재 활성화된 세션에 새로운 측정 결과 추가
+    // 💡 세션에 저장
     const session = getCurrentSession();
     if (session) {
       if (!session.solves) session.solves = [];
@@ -109,14 +113,11 @@ export function initTimer() {
         isBookmarked: false
       };
 
-      // 맨 앞에 추가 (최신순)
       session.solves.unshift(newSolve);
-      
-      // 세션 저장 실행
       saveCurrentSession(session);
     }
 
-    // 💡 2. 저장 즉시 화면 UI 모두 실시간 갱신
+    // 💡 화면 즉시 갱신
     renderRecentSolves();
     renderStats();
     if (typeof renderSolvesList === 'function') {
@@ -124,8 +125,7 @@ export function initTimer() {
     }
   }
 
-  // --- 입력 이벤트 처리 ---
-
+  // --- 터치/클릭/스페이스바 이벤트 ---
   function handlePressStart(e) {
     if (e && e.target && e.target.closest('button, a, input, select, .nav-item, .tab-btn, .record-card, .bottom-sheet')) {
       return;
