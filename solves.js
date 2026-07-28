@@ -1,6 +1,6 @@
 // solves.js
 
-import { getCurrentSession } from './session-manager.js'; // 💡 storage 대신 session-manager 사용
+import { getSolves } from './storage.js';
 import { formatTime } from './timer.js';
 import { openSolveBottomSheet } from './solve-bottom-sheet.js';
 
@@ -18,11 +18,9 @@ export function renderSolvesList() {
   const container = document.getElementById('record-cards-container');
   if (!container) return;
 
-  // 💡 현재 활성화된 세션의 solves 목록을 가져옵니다.
-  const currentSession = getCurrentSession();
-  const solves = currentSession ? (currentSession.solves || []) : [];
+  const solves = getSolves(); // 원본 기록 목록
 
-  if (solves.length === 0) {
+  if (!solves || solves.length === 0) {
     container.innerHTML = `
       <div style="text-align: center; color: #94a3b8; padding: 40px 0;">
         저장된 기록이 없습니다.
@@ -30,21 +28,20 @@ export function renderSolvesList() {
     return;
   }
 
-  container.innerHTML = solves
-    .slice()
-    .reverse() // 최신순 정렬
+  // 💡 최신순(createdAt / id 기준 내림차순) 정렬
+  const sortedSolves = solves.slice().sort((a, b) => (b.createdAt || b.id) - (a.createdAt || a.id));
+
+  container.innerHTML = sortedSolves
     .map((solve) => {
       const displayTime = formatTime(solve.time, solve.penalty);
-      const isPB = false;
-      const formattedDate = formatDate(solve.createdAt || Date.now());
-      const starIcon = solve.isBookmarked ? '⭐' : '☆';
+      const formattedDate = formatDate(solve.createdAt || solve.id);
+      const starIcon = solve.isBookmarked ? '⭐' : '🤍';
 
       return `
-        <div class="record-card ${isPB ? 'pb-card' : ''}" data-id="${solve.id}">
+        <div class="record-card" data-id="${solve.id}">
           <div class="card-left" style="pointer-events: none;">
             <div class="time-row" style="pointer-events: none;">
               <span class="record-time">${displayTime}</span>
-              ${isPB ? '<span class="badge pb-badge">PB</span>' : ''}
             </div>
             <span class="badge tag-badge">${solve.note ? '📝 메모' : '3x3'}</span>
           </div>
@@ -61,7 +58,7 @@ export function renderSolvesList() {
 export function initSolves() {
   renderSolvesList();
 
-  // Solves 카드 클릭 이벤트 처리
+  // Solves 카드 클릭 시 바텀시트 열기
   document.addEventListener('click', (e) => {
     if (e.target.closest('[data-tab], [data-target], .nav-item, .tab-btn')) {
       return;
