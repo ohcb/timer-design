@@ -1,8 +1,8 @@
 // app.js
 
 import { initTabs } from './tabs.js';
-import { initSessionManager } from './session-manager.js';
-import { initTimer } from './timer.js';
+// import { initSessionManager } from './session-manager.js';
+// import { initTimer } from './timer.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   // 1. 탭 전환 켜기
