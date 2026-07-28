@@ -32,15 +32,28 @@ function saveSessionsData(sessions) {
   saveToStorage('cub3_sessions', sessions);
 }
 
-// 🔑 [핵심 추가] 타 모듈에서 호환성을 위해 찾는 getSolves 함수
+// 🔑 [타 모듈 호환용] getSolves
 export function getSolves() {
   const sessions = getSessionsData();
   const currentSessionId = loadFromStorage('cub3_current_session_id');
-  
-  // 현재 활성화된 세션 찾기 (없으면 첫 번째 세션 사용)
   const activeSession = sessions.find(s => String(s.id) === String(currentSessionId)) || sessions[0];
-  
   return activeSession ? (activeSession.solves || []) : [];
+}
+
+// 🔑 [타 모듈 호환용] saveSolves (현재 활성 세션에 solves 리스트 저장)
+export function saveSolves(solves) {
+  const sessions = getSessionsData();
+  const currentSessionId = loadFromStorage('cub3_current_session_id');
+  
+  let activeSession = sessions.find(s => String(s.id) === String(currentSessionId));
+  if (!activeSession && sessions.length > 0) {
+    activeSession = sessions[0];
+  }
+
+  if (activeSession) {
+    activeSession.solves = solves;
+    saveSessionsData(sessions);
+  }
 }
 
 function findSolveInSessions(solveId) {
