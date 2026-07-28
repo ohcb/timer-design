@@ -108,9 +108,19 @@ export function closeSolveBottomSheet() {
   activeSolveId = null;
 }
 
+// 💡 window 글로벌 연결
+window.openSolveBottomSheet = openSolveBottomSheet;
+
 export function initSolvesManager() {
   const sheet = document.getElementById('detail-bottom-sheet');
   if (!sheet) return;
+
+  // 💡 [전역 이벤트 수신 추가] timer.js 등 다른 모듈에서 보낸 열기 이벤트 받기
+  window.addEventListener('openSolveDetail', (e) => {
+    if (e.detail && e.detail.solveId) {
+      openSolveBottomSheet(e.detail.solveId);
+    }
+  });
 
   // 1. 바깥 영역 클릭시 바텀시트 닫기
   sheet.addEventListener('click', (e) => {
