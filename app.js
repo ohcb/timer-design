@@ -4,7 +4,7 @@ import { initTabs } from './tabs.js';
 import { initSolvesManager } from './solve-bottom-sheet.js';
 import { initTimer } from './timer.js';
 import { initStats } from './stats.js';
-// import { initSessionManager } from './session-manager.js';
+import { initSessionManager } from './session-manager.js';
 import { initSolves } from './solves.js';
 
 // 💡 각 초기화 함수를 안전하게 실행하는 래퍼(Wrapper) 함수
