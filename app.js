@@ -3,7 +3,7 @@
 import { initTabs } from './tabs.js';
 import { initSessionManager } from './session-manager.js';
 // import { initSolvesManager } from './solve-bottom-sheet.js';
-// import { initTimer } from './timer.js';
+import { initTimer } from './timer.js';
 // import { initStats } from './stats.js';
 // import { initSolves } from './solves.js';
 
@@ -25,5 +25,5 @@ document.addEventListener('DOMContentLoaded', () => {
   // safeInit('SolvesManager', initSolvesManager);
   // safeInit('Solves', initSolves);
   // safeInit('Stats', initStats);
-  // safeInit('Timer', initTimer);
+  safeInit('Timer', initTimer);
 });
