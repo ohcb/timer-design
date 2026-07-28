@@ -1,72 +1,87 @@
 // storage.js
 
-const STORAGE_KEY = 'cub3_state_v1';
-
-export function getSolves() {
+// 💡 범용 저장/불러오기 헬퍼 함수 (session-manager.js 등에서 활용)
+export function saveToStorage(key, value) {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : [];
+    localStorage.setItem(key, JSON.stringify(value));
   } catch (e) {
-    return [];
+    console.error(`Storage Save Error [${key}]:`, e);
   }
 }
 
-export function saveSolves(solves) {
+export function loadFromStorage(key) {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(solves));
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : null;
   } catch (e) {
-    console.error('Storage Save Error:', e);
+    console.error(`Storage Load Error [${key}]:`, e);
+    return null;
   }
 }
 
-export function addSolve(timeMs) {
-  const solves = getSolves();
-  const newSolve = {
-    id: Date.now().toString(),
-    time: timeMs,
-    penalty: 'NONE', // 'NONE' | '+2' | 'DNF'
-    createdAt: Date.now()
-  };
-  solves.unshift(newSolve);
-  saveSolves(solves);
-  return newSolve;
+// ==========================================
+// 💡 세션 내 개별 Solve(기록) 제어 헬퍼
+// ==========================================
+
+// 활성 세션 데이터 전체 불러오기/저장하기
+function getSessionsData() {
+  return loadFromStorage('cub3_sessions') || [];
 }
 
-// 💡 특정 기록의 패널티 업데이트 (ID 타입 일치 보장)
-export function updateSolvePenalty(id, penalty) {
-  const solves = getSolves();
-  const index = solves.findIndex(s => String(s.id) === String(id));
-  if (index !== -1) {
-    solves[index].penalty = penalty;
-    saveSolves(solves);
+function saveSessionsData(sessions) {
+  saveToStorage('cub3_sessions', sessions);
+}
+
+// 특정 Solve 찾기 보조 함수
+function findSolveInSessions(solveId) {
+  const sessions = getSessionsData();
+  for (const session of sessions) {
+    const solve = session.solves.find(s => String(s.id) === String(solveId));
+    if (solve) {
+      return { sessions, session, solve };
+    }
+  }
+  return { sessions, session: null, solve: null };
+}
+
+// 1. 특정 기록의 패널티 업데이트 ('NONE' | '+2' | 'DNF' 또는 숫자 패널티)
+export function updateSolvePenalty(solveId, penalty) {
+  const { sessions, solve } = findSolveInSessions(solveId);
+  if (solve) {
+    solve.penalty = penalty;
+    saveSessionsData(sessions);
   }
 }
 
-// 💡 특정 기록 삭제 (ID 타입 일치 보장)
-export function deleteSolve(id) {
-  const solves = getSolves();
-  const filtered = solves.filter(s => String(s.id) !== String(id));
-  saveSolves(filtered);
-}
-
-// 💡 메모(Note) 업데이트
-export function updateSolveNote(id, note) {
-  const solves = getSolves();
-  const index = solves.findIndex(s => String(s.id) === String(id));
-  if (index !== -1) {
-    solves[index].note = note;
-    saveSolves(solves);
+// 2. 특정 기록 삭제
+export function deleteSolve(solveId) {
+  const sessions = getSessionsData();
+  for (const session of sessions) {
+    const initialLen = session.solves.length;
+    session.solves = session.solves.filter(s => String(s.id) !== String(solveId));
+    if (session.solves.length !== initialLen) {
+      saveSessionsData(sessions);
+      break;
+    }
   }
 }
 
-// 💡 북마크(Bookmark) 토글
-export function toggleSolveBookmark(id) {
-  const solves = getSolves();
-  const index = solves.findIndex(s => String(s.id) === String(id));
-  if (index !== -1) {
-    solves[index].isBookmarked = !solves[index].isBookmarked;
-    saveSolves(solves);
-    return solves[index].isBookmarked;
+// 3. 메모(Note) 업데이트
+export function updateSolveNote(solveId, note) {
+  const { sessions, solve } = findSolveInSessions(solveId);
+  if (solve) {
+    solve.note = note;
+    saveSessionsData(sessions);
+  }
+}
+
+// 4. 북마크(Bookmark) 토글
+export function toggleSolveBookmark(solveId) {
+  const { sessions, solve } = findSolveInSessions(solveId);
+  if (solve) {
+    solve.isBookmarked = !solve.isBookmarked;
+    saveSessionsData(sessions);
+    return solve.isBookmarked;
   }
   return false;
 }
