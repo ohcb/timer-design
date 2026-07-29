@@ -1,6 +1,6 @@
 // solve-bottom-sheet.js
 
-import { updateSolvePenalty, deleteSolve, updateSolveNote, toggleSolveBookmark, saveToStorage, loadFromStorage } from './storage.js';
+import { getSolves, updateSolvePenalty, deleteSolve, updateSolveNote, toggleSolveBookmark } from './storage.js';
 import { getCurrentSession, saveCurrentSession } from './session-manager.js';
 import { formatTime, renderRecentSolves, renderStats } from './timer.js';
 import { renderSolvesList } from './solves.js';
@@ -57,10 +57,13 @@ export function hideUndoToast() {
   lastDeletedSolve = null;
 }
 
-// 💡 [문제 1 해결] 세션에서 직접 기록 찾아와 바텀시트 열기
+// 💡 [해결] 세션 및 storage 양쪽에서 정밀 검색
 export function openSolveBottomSheet(id) {
   const session = getCurrentSession();
-  const solves = session ? (session.solves || []) : [];
+  const sessionSolves = session ? (session.solves || []) : [];
+  const storageSolves = typeof getSolves === 'function' ? getSolves() : [];
+
+  const solves = [...sessionSolves, ...storageSolves];
   const target = solves.find(s => String(s.id) === String(id));
   if (!target) return;
 
@@ -93,14 +96,14 @@ export function openSolveBottomSheet(id) {
   });
 
   sheet.classList.add('active', 'open');
-  sheet.style.setProperty('display', 'flex', 'important');
+  sheet.style.display = 'flex';
 }
 
 export function closeSolveBottomSheet() {
   const sheet = document.getElementById('detail-bottom-sheet');
   if (sheet) {
     sheet.classList.remove('active', 'open');
-    sheet.style.setProperty('display', 'none', 'important');
+    sheet.style.display = 'none';
   }
   activeSolveId = null;
 }
@@ -127,7 +130,9 @@ export function initSolvesManager() {
       let penalty = btn.dataset.penalty;
       if (penalty === 'OK') penalty = 'NONE';
 
-      updateSolvePenalty(activeSolveId, penalty);
+      if (typeof updateSolvePenalty === 'function') {
+        updateSolvePenalty(activeSolveId, penalty);
+      }
 
       const session = getCurrentSession();
       if (session && session.solves) {
@@ -148,7 +153,9 @@ export function initSolvesManager() {
   if (noteInput) {
     noteInput.addEventListener('input', (e) => {
       if (!activeSolveId) return;
-      updateSolveNote(activeSolveId, e.target.value);
+      if (typeof updateSolveNote === 'function') {
+        updateSolveNote(activeSolveId, e.target.value);
+      }
 
       const session = getCurrentSession();
       if (session && session.solves) {
@@ -164,12 +171,18 @@ export function initSolvesManager() {
   if (bookmarkBtn) {
     bookmarkBtn.addEventListener('click', () => {
       if (!activeSolveId) return;
-      const isBookmarked = toggleSolveBookmark(activeSolveId);
+      let isBookmarked = false;
+      if (typeof toggleSolveBookmark === 'function') {
+        isBookmarked = toggleSolveBookmark(activeSolveId);
+      }
 
       const session = getCurrentSession();
       if (session && session.solves) {
         const target = session.solves.find(s => String(s.id) === String(activeSolveId));
-        if (target) target.isBookmarked = isBookmarked;
+        if (target) {
+          target.isBookmarked = !target.isBookmarked;
+          isBookmarked = target.isBookmarked;
+        }
         saveCurrentSession(session);
       }
 
@@ -178,7 +191,7 @@ export function initSolvesManager() {
     });
   }
 
-  // 💡 [문제 3 해결] 세션에서 즉시 삭제하여 실시간 동기화
+  // 삭제 기능
   const deleteBtn = sheet.querySelector('#menu-delete, .delete-item');
   if (deleteBtn) {
     deleteBtn.addEventListener('click', () => {
@@ -192,18 +205,19 @@ export function initSolvesManager() {
 
       const targetSolve = session.solves[targetIndex];
 
-      // 세션 배열에서 직접 삭제 후 저장
       session.solves.splice(targetIndex, 1);
       saveCurrentSession(session);
 
-      deleteSolve(activeSolveId);
+      if (typeof deleteSolve === 'function') {
+        deleteSolve(activeSolveId);
+      }
+
       closeSolveBottomSheet();
 
       renderSolvesList();
       renderRecentSolves();
       renderStats();
 
-      // Undo 처리
       showUndoToast(targetSolve, (restoredSolve) => {
         const curSession = getCurrentSession();
         if (curSession) {
@@ -219,7 +233,7 @@ export function initSolvesManager() {
     });
   }
 
-  // 메뉴 토글
+  // 더보기 메뉴
   const moreBtn = document.getElementById('sheet-more-btn');
   const contextMenu = document.getElementById('sheet-context-menu');
 
@@ -250,7 +264,7 @@ export function initSolvesManager() {
     });
   }
 
-  // 복사
+  // 복사 기능
   const copyBtn = sheet.querySelector('.scramble-copy-btn');
   const scrambleText = sheet.querySelector('.scramble-text');
   if (copyBtn && scrambleText) {
