@@ -21,7 +21,7 @@ export function formatTime(ms, penalty) {
   return penalty === '+2' ? `${seconds}+` : seconds;
 }
 
-// 2. Average / Mean 통계 계산 헬퍼
+// 2. 통계 계산 헬퍼
 function calculateAverage(solves, count) {
   if (!solves || solves.length < count) return '-';
   const slice = solves.slice(0, count);
@@ -84,7 +84,7 @@ export function renderStats() {
   `;
 }
 
-// 4. Recent Solves 목록 렌더링 및 이벤트 바인딩
+// 4. Recent Solves 목록 렌더링
 export function renderRecentSolves() {
   const container = document.querySelector('.recent-solves .solve-list') || 
                     document.querySelector('.solve-list');
@@ -109,25 +109,21 @@ export function renderRecentSolves() {
     .map((s, idx) => {
       const num = recent.length - idx;
       const formattedTime = formatTime(s.time, s.penalty);
-      return `<li data-id="${s.id}" class="recent-solve-item" style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 14px; cursor: pointer;">
+      return `<li data-id="${s.id}" class="recent-solve-item" style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 14px; cursor: pointer; user-select: none;">
         <span class="num" style="color: #64748b; margin-right: 8px; pointer-events: none;">${num}.</span> 
         <span style="font-weight: 600; color: #f8fafc; pointer-events: none;">${formattedTime}</span>
       </li>`;
     })
     .join('');
 
-  // 💡 리스트 생성 직후 클릭 이벤트 직접 바인딩
+  // 💡 리스트 생성 직후 클릭 이벤트 직접 등록
   const items = container.querySelectorAll('.recent-solve-item');
   items.forEach(item => {
     item.addEventListener('click', (e) => {
       e.stopPropagation();
       const solveId = item.getAttribute('data-id');
       if (solveId) {
-        if (typeof openSolveBottomSheet === 'function') {
-          openSolveBottomSheet(solveId);
-        } else if (typeof window.openSolveBottomSheet === 'function') {
-          window.openSolveBottomSheet(solveId);
-        }
+        openSolveBottomSheet(solveId);
       }
     });
   });
@@ -141,6 +137,11 @@ export function initTimer() {
                        document.querySelector('.timer');
 
   if (!timerDisplay) return;
+
+  // 💡 [문제 2 해결] 타이머 숫자에 선택/드래그 방지 CSS 강제 적용
+  timerDisplay.style.userSelect = 'none';
+  timerDisplay.style.webkitUserSelect = 'none';
+  timerDisplay.style.webkitTouchCallout = 'none';
 
   setTimeout(() => {
     renderRecentSolves();
@@ -196,7 +197,7 @@ export function initTimer() {
     }
   }
 
-  // --- 터치/입력 이벤트 ---
+  // --- 입력 이벤트 ---
   function handlePressStart(e) {
     if (e && e.target && e.target.closest('button, a, input, select, .nav-item, .tab-btn, .record-card, .bottom-sheet, .recent-solve-item')) {
       return;
