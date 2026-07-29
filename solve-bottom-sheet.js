@@ -57,7 +57,6 @@ export function hideUndoToast() {
   lastDeletedSolve = null;
 }
 
-// 💡 [해결] 세션 및 storage 양쪽에서 정밀 검색
 export function openSolveBottomSheet(id) {
   const session = getCurrentSession();
   const sessionSolves = session ? (session.solves || []) : [];
@@ -72,6 +71,12 @@ export function openSolveBottomSheet(id) {
   const sheet = document.getElementById('detail-bottom-sheet');
   if (!sheet) return;
 
+  // 💡 [핵심] 바텀시트가 특정 탭 화면 안에 갇혀있지 않도록 body 바로 아래(최상위)로 이동
+  if (sheet.parentElement !== document.body) {
+    document.body.appendChild(sheet);
+  }
+
+  // 1. 시간 및 날짜 표시
   const timeEl = sheet.querySelector('.sheet-main-time');
   const dateEl = sheet.querySelector('.date-value');
   const scrambleEl = sheet.querySelector('.scramble-text');
@@ -95,9 +100,12 @@ export function openSolveBottomSheet(id) {
     }
   });
 
+  // 💡 탭 이동 없이 현재 화면(타이머 탭) 맨 위에 바텀시트 띄우기
   sheet.classList.add('active', 'open');
-  sheet.style.display = 'flex';
+  sheet.style.setProperty('display', 'flex', 'important');
+  sheet.style.setProperty('z-index', '9999', 'important'); // 화면 최상단 레이어로 보장
 }
+
 
 export function closeSolveBottomSheet() {
   const sheet = document.getElementById('detail-bottom-sheet');
