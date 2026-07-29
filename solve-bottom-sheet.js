@@ -71,7 +71,7 @@ export function openSolveBottomSheet(id) {
   const sheet = document.getElementById('detail-bottom-sheet');
   if (!sheet) return;
 
-  // 💡 [핵심] 바텀시트가 특정 탭 화면 안에 갇혀있지 않도록 body 바로 아래(최상위)로 이동
+  // 💡 바텀시트가 특정 탭 화면 안에 갇혀있지 않도록 body 직속 최상위로 이동
   if (sheet.parentElement !== document.body) {
     document.body.appendChild(sheet);
   }
@@ -100,12 +100,11 @@ export function openSolveBottomSheet(id) {
     }
   });
 
-  // 💡 탭 이동 없이 현재 화면(타이머 탭) 맨 위에 바텀시트 띄우기
+  // 💡 타이머 탭 화면 맨 위에 즉시 바텀시트 열기
   sheet.classList.add('active', 'open');
   sheet.style.setProperty('display', 'flex', 'important');
-  sheet.style.setProperty('z-index', '9999', 'important'); // 화면 최상단 레이어로 보장
+  sheet.style.setProperty('z-index', '9999', 'important');
 }
-
 
 export function closeSolveBottomSheet() {
   const sheet = document.getElementById('detail-bottom-sheet');
@@ -119,168 +118,164 @@ export function closeSolveBottomSheet() {
 window.openSolveBottomSheet = openSolveBottomSheet;
 
 export function initSolvesManager() {
-  const sheet = document.getElementById('detail-bottom-sheet');
-  if (!sheet) return;
+  // DOM 생성 완료 시 바텀시트를 body 최상위로 이동
+  const setupSheet = () => {
+    const sheet = document.getElementById('detail-bottom-sheet');
+    if (sheet && sheet.parentElement !== document.body) {
+      document.body.appendChild(sheet);
+    }
+  };
 
-  sheet.addEventListener('click', (e) => {
-    if (e.target === sheet) closeSolveBottomSheet();
+  setupSheet();
+  setTimeout(setupSheet, 500);
+
+  // 💡 전역 이벤트 위임 방식으로 바텀시트 관련 모든 클릭/입력 이벤트 제어
+  document.addEventListener('click', (e) => {
+    const sheet = document.getElementById('detail-bottom-sheet');
+    if (!sheet || !sheet.classList.contains('open')) return;
+
+    if (e.target === sheet) {
+      closeSolveBottomSheet();
+    }
+    if (e.target.closest('.bottom-sheet-handle, .drag-handle')) {
+      closeSolveBottomSheet();
+    }
   });
 
-  const handle = sheet.querySelector('.bottom-sheet-handle, .drag-handle');
-  if (handle) handle.addEventListener('click', closeSolveBottomSheet);
-
   // 패널티 변경
-  const penaltyBtns = sheet.querySelectorAll('.penalty-segmented-control .penalty-btn, .penalty-btn');
-  penaltyBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      if (!activeSolveId) return;
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.penalty-segmented-control .penalty-btn, .penalty-btn');
+    if (!btn || !activeSolveId) return;
 
-      let penalty = btn.dataset.penalty;
-      if (penalty === 'OK') penalty = 'NONE';
+    const sheet = document.getElementById('detail-bottom-sheet');
+    if (!sheet || !sheet.contains(btn)) return;
 
-      if (typeof updateSolvePenalty === 'function') {
-        updateSolvePenalty(activeSolveId, penalty);
-      }
+    let penalty = btn.dataset.penalty;
+    if (penalty === 'OK') penalty = 'NONE';
 
-      const session = getCurrentSession();
-      if (session && session.solves) {
-        const target = session.solves.find(s => String(s.id) === String(activeSolveId));
-        if (target) target.penalty = penalty;
-        saveCurrentSession(session);
-      }
+    if (typeof updateSolvePenalty === 'function') {
+      updateSolvePenalty(activeSolveId, penalty);
+    }
 
-      openSolveBottomSheet(activeSolveId);
-      renderSolvesList();
-      renderRecentSolves();
-      renderStats();
-    });
+    const session = getCurrentSession();
+    if (session && session.solves) {
+      const target = session.solves.find(s => String(s.id) === String(activeSolveId));
+      if (target) target.penalty = penalty;
+      saveCurrentSession(session);
+    }
+
+    openSolveBottomSheet(activeSolveId);
+    renderSolvesList();
+    renderRecentSolves();
+    renderStats();
   });
 
   // 메모 작성
-  const noteInput = sheet.querySelector('.sheet-note-input');
-  if (noteInput) {
-    noteInput.addEventListener('input', (e) => {
-      if (!activeSolveId) return;
-      if (typeof updateSolveNote === 'function') {
-        updateSolveNote(activeSolveId, e.target.value);
-      }
+  document.addEventListener('input', (e) => {
+    if (!e.target.matches('.sheet-note-input') || !activeSolveId) return;
+    
+    if (typeof updateSolveNote === 'function') {
+      updateSolveNote(activeSolveId, e.target.value);
+    }
 
-      const session = getCurrentSession();
-      if (session && session.solves) {
-        const target = session.solves.find(s => String(s.id) === String(activeSolveId));
-        if (target) target.note = e.target.value;
-        saveCurrentSession(session);
-      }
-    });
-  }
+    const session = getCurrentSession();
+    if (session && session.solves) {
+      const target = session.solves.find(s => String(s.id) === String(activeSolveId));
+      if (target) target.note = e.target.value;
+      saveCurrentSession(session);
+    }
+  });
 
   // 북마크
-  const bookmarkBtn = document.getElementById('sheet-bookmark-btn');
-  if (bookmarkBtn) {
-    bookmarkBtn.addEventListener('click', () => {
-      if (!activeSolveId) return;
-      let isBookmarked = false;
-      if (typeof toggleSolveBookmark === 'function') {
-        isBookmarked = toggleSolveBookmark(activeSolveId);
-      }
+  document.addEventListener('click', (e) => {
+    const bookmarkBtn = e.target.closest('#sheet-bookmark-btn');
+    if (!bookmarkBtn || !activeSolveId) return;
 
-      const session = getCurrentSession();
-      if (session && session.solves) {
-        const target = session.solves.find(s => String(s.id) === String(activeSolveId));
-        if (target) {
-          target.isBookmarked = !target.isBookmarked;
-          isBookmarked = target.isBookmarked;
-        }
-        saveCurrentSession(session);
-      }
+    let isBookmarked = false;
+    if (typeof toggleSolveBookmark === 'function') {
+      isBookmarked = toggleSolveBookmark(activeSolveId);
+    }
 
-      bookmarkBtn.textContent = isBookmarked ? '⭐' : '🤍';
-      renderSolvesList();
-    });
-  }
+    const session = getCurrentSession();
+    if (session && session.solves) {
+      const target = session.solves.find(s => String(s.id) === String(activeSolveId));
+      if (target) {
+        target.isBookmarked = !target.isBookmarked;
+        isBookmarked = target.isBookmarked;
+      }
+      saveCurrentSession(session);
+    }
+
+    bookmarkBtn.textContent = isBookmarked ? '⭐' : '🤍';
+    renderSolvesList();
+  });
 
   // 삭제 기능
-  const deleteBtn = sheet.querySelector('#menu-delete, .delete-item');
-  if (deleteBtn) {
-    deleteBtn.addEventListener('click', () => {
-      if (!activeSolveId) return;
+  document.addEventListener('click', (e) => {
+    const deleteBtn = e.target.closest('#menu-delete, .delete-item');
+    if (!deleteBtn || !activeSolveId) return;
 
-      const session = getCurrentSession();
-      if (!session) return;
+    const session = getCurrentSession();
+    if (!session) return;
 
-      const targetIndex = session.solves.findIndex(s => String(s.id) === String(activeSolveId));
-      if (targetIndex === -1) return;
+    const targetIndex = session.solves.findIndex(s => String(s.id) === String(activeSolveId));
+    if (targetIndex === -1) return;
 
-      const targetSolve = session.solves[targetIndex];
+    const targetSolve = session.solves[targetIndex];
 
-      session.solves.splice(targetIndex, 1);
-      saveCurrentSession(session);
+    session.solves.splice(targetIndex, 1);
+    saveCurrentSession(session);
 
-      if (typeof deleteSolve === 'function') {
-        deleteSolve(activeSolveId);
+    if (typeof deleteSolve === 'function') {
+      deleteSolve(activeSolveId);
+    }
+
+    closeSolveBottomSheet();
+
+    renderSolvesList();
+    renderRecentSolves();
+    renderStats();
+
+    showUndoToast(targetSolve, (restoredSolve) => {
+      const curSession = getCurrentSession();
+      if (curSession) {
+        curSession.solves = curSession.solves || [];
+        curSession.solves.unshift(restoredSolve);
+        saveCurrentSession(curSession);
       }
-
-      closeSolveBottomSheet();
 
       renderSolvesList();
       renderRecentSolves();
       renderStats();
-
-      showUndoToast(targetSolve, (restoredSolve) => {
-        const curSession = getCurrentSession();
-        if (curSession) {
-          curSession.solves = curSession.solves || [];
-          curSession.solves.unshift(restoredSolve);
-          saveCurrentSession(curSession);
-        }
-
-        renderSolvesList();
-        renderRecentSolves();
-        renderStats();
-      });
     });
-  }
+  });
 
-  // 더보기 메뉴
-  const moreBtn = document.getElementById('sheet-more-btn');
-  const contextMenu = document.getElementById('sheet-context-menu');
+  // 더보기 메뉴 및 스크램블 복사
+  document.addEventListener('click', (e) => {
+    const moreBtn = e.target.closest('#sheet-more-btn');
+    const contextMenu = document.getElementById('sheet-context-menu');
 
-  if (moreBtn && contextMenu) {
-    moreBtn.addEventListener('click', (e) => {
+    if (moreBtn && contextMenu) {
       e.stopPropagation();
       const isHidden = window.getComputedStyle(contextMenu).display === 'none';
-      if (isHidden) {
-        contextMenu.classList.add('show');
-        contextMenu.style.display = 'flex';
-      } else {
-        contextMenu.classList.remove('show');
-        contextMenu.style.display = 'none';
-      }
-    });
+      contextMenu.style.display = isHidden ? 'flex' : 'none';
+      return;
+    }
 
-    contextMenu.addEventListener('click', (e) => {
-      e.stopPropagation();
-      contextMenu.classList.remove('show');
+    if (contextMenu && !e.target.closest('#sheet-context-menu')) {
       contextMenu.style.display = 'none';
-    });
+    }
 
-    document.addEventListener('click', () => {
-      if (contextMenu) {
-        contextMenu.classList.remove('show');
-        contextMenu.style.display = 'none';
+    const copyBtn = e.target.closest('.scramble-copy-btn');
+    if (copyBtn) {
+      const sheet = document.getElementById('detail-bottom-sheet');
+      const scrambleText = sheet?.querySelector('.scramble-text');
+      if (scrambleText) {
+        navigator.clipboard.writeText(scrambleText.textContent).then(() => {
+          copyBtn.textContent = '✅';
+          setTimeout(() => { copyBtn.textContent = '📋'; }, 1500);
+        });
       }
-    });
-  }
-
-  // 복사 기능
-  const copyBtn = sheet.querySelector('.scramble-copy-btn');
-  const scrambleText = sheet.querySelector('.scramble-text');
-  if (copyBtn && scrambleText) {
-    copyBtn.addEventListener('click', () => {
-      navigator.clipboard.writeText(scrambleText.textContent).then(() => {
-        copyBtn.textContent = '✅';
-        setTimeout(() => { copyBtn.textContent = '📋'; }, 1500);
-      });
-    });
-  }
+    }
+  });
 }
