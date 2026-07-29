@@ -1,14 +1,14 @@
 // solve-bottom-sheet.js
 
-import { getSolves, updateSolvePenalty, deleteSolve, updateSolveNote, toggleSolveBookmark, saveToStorage, loadFromStorage } from './storage.js';
+import { updateSolvePenalty, deleteSolve, updateSolveNote, toggleSolveBookmark, saveToStorage, loadFromStorage } from './storage.js';
+import { getCurrentSession, saveCurrentSession } from './session-manager.js';
 import { formatTime, renderRecentSolves, renderStats } from './timer.js';
 import { renderSolvesList } from './solves.js';
 
 let activeSolveId = null;
 let undoTimer = null;
-let lastDeletedSolve = null; // Undo용 백업 저장소
+let lastDeletedSolve = null;
 
-// 날짜 포맷 함수 (YYYY.MM.DD HH:mm:ss)
 function formatFullDate(timestamp) {
   if (!timestamp) return '-';
   const date = new Date(timestamp);
@@ -21,14 +21,12 @@ function formatFullDate(timestamp) {
   return `${yyyy}.${mm}.${dd} ${hh}:${min}:${ss}`;
 }
 
-// Toast 관련 함수
 export function showUndoToast(deletedSolve, onUndoCallback) {
   const toast = document.getElementById('global-undo-toast');
   const undoBtn = document.getElementById('global-undo-btn');
   if (!toast) return;
 
   lastDeletedSolve = deletedSolve;
-
   if (undoTimer) clearTimeout(undoTimer);
 
   toast.classList.add('show');
@@ -45,7 +43,6 @@ export function showUndoToast(deletedSolve, onUndoCallback) {
     }, { once: true });
   }
 
-  // 4초 후 자동 숨김
   undoTimer = setTimeout(() => {
     hideUndoToast();
   }, 4000);
@@ -60,8 +57,10 @@ export function hideUndoToast() {
   lastDeletedSolve = null;
 }
 
+// 💡 [문제 1 해결] 세션에서 직접 기록 찾아와 바텀시트 열기
 export function openSolveBottomSheet(id) {
-  const solves = getSolves();
+  const session = getCurrentSession();
+  const solves = session ? (session.solves || []) : [];
   const target = solves.find(s => String(s.id) === String(id));
   if (!target) return;
 
@@ -70,7 +69,6 @@ export function openSolveBottomSheet(id) {
   const sheet = document.getElementById('detail-bottom-sheet');
   if (!sheet) return;
 
-  // 1. 시간 및 날짜 표시
   const timeEl = sheet.querySelector('.sheet-main-time');
   const dateEl = sheet.querySelector('.date-value');
   const scrambleEl = sheet.querySelector('.scramble-text');
@@ -83,7 +81,6 @@ export function openSolveBottomSheet(id) {
   if (noteInput) noteInput.value = target.note || '';
   if (bookmarkBtn) bookmarkBtn.textContent = target.isBookmarked ? '⭐' : '🤍';
 
-  // 2. 패널티 버튼 활성화 상태 표시
   const penaltyBtns = sheet.querySelectorAll('.penalty-segmented-control .penalty-btn, .penalty-btn');
   penaltyBtns.forEach(btn => {
     const p = btn.dataset.penalty;
@@ -108,34 +105,20 @@ export function closeSolveBottomSheet() {
   activeSolveId = null;
 }
 
-// 💡 window 글로벌 연결
 window.openSolveBottomSheet = openSolveBottomSheet;
 
 export function initSolvesManager() {
   const sheet = document.getElementById('detail-bottom-sheet');
   if (!sheet) return;
 
-  // 💡 [전역 이벤트 수신 추가] timer.js 등 다른 모듈에서 보낸 열기 이벤트 받기
-  window.addEventListener('openSolveDetail', (e) => {
-    if (e.detail && e.detail.solveId) {
-      openSolveBottomSheet(e.detail.solveId);
-    }
-  });
-
-  // 1. 바깥 영역 클릭시 바텀시트 닫기
   sheet.addEventListener('click', (e) => {
-    if (e.target === sheet) {
-      closeSolveBottomSheet();
-    }
+    if (e.target === sheet) closeSolveBottomSheet();
   });
 
-  // 2. 핸들 바 클릭시 닫기
   const handle = sheet.querySelector('.bottom-sheet-handle, .drag-handle');
-  if (handle) {
-    handle.addEventListener('click', closeSolveBottomSheet);
-  }
+  if (handle) handle.addEventListener('click', closeSolveBottomSheet);
 
-  // 3. 패널티 변경 이벤트
+  // 패널티 변경
   const penaltyBtns = sheet.querySelectorAll('.penalty-segmented-control .penalty-btn, .penalty-btn');
   penaltyBtns.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -145,7 +128,14 @@ export function initSolvesManager() {
       if (penalty === 'OK') penalty = 'NONE';
 
       updateSolvePenalty(activeSolveId, penalty);
-      
+
+      const session = getCurrentSession();
+      if (session && session.solves) {
+        const target = session.solves.find(s => String(s.id) === String(activeSolveId));
+        if (target) target.penalty = penalty;
+        saveCurrentSession(session);
+      }
+
       openSolveBottomSheet(activeSolveId);
       renderSolvesList();
       renderRecentSolves();
@@ -153,35 +143,58 @@ export function initSolvesManager() {
     });
   });
 
-  // 4. 메모(Notes) 입력 시 자동 저장
+  // 메모 작성
   const noteInput = sheet.querySelector('.sheet-note-input');
   if (noteInput) {
     noteInput.addEventListener('input', (e) => {
       if (!activeSolveId) return;
       updateSolveNote(activeSolveId, e.target.value);
+
+      const session = getCurrentSession();
+      if (session && session.solves) {
+        const target = session.solves.find(s => String(s.id) === String(activeSolveId));
+        if (target) target.note = e.target.value;
+        saveCurrentSession(session);
+      }
     });
   }
 
-  // 5. 북마크 버튼
+  // 북마크
   const bookmarkBtn = document.getElementById('sheet-bookmark-btn');
   if (bookmarkBtn) {
     bookmarkBtn.addEventListener('click', () => {
       if (!activeSolveId) return;
       const isBookmarked = toggleSolveBookmark(activeSolveId);
+
+      const session = getCurrentSession();
+      if (session && session.solves) {
+        const target = session.solves.find(s => String(s.id) === String(activeSolveId));
+        if (target) target.isBookmarked = isBookmarked;
+        saveCurrentSession(session);
+      }
+
       bookmarkBtn.textContent = isBookmarked ? '⭐' : '🤍';
       renderSolvesList();
     });
   }
 
-  // 6. 삭제 기능 (Undo 원복 포함)
+  // 💡 [문제 3 해결] 세션에서 즉시 삭제하여 실시간 동기화
   const deleteBtn = sheet.querySelector('#menu-delete, .delete-item');
   if (deleteBtn) {
     deleteBtn.addEventListener('click', () => {
       if (!activeSolveId) return;
 
-      const solves = getSolves();
-      const targetSolve = solves.find(s => String(s.id) === String(activeSolveId));
-      if (!targetSolve) return;
+      const session = getCurrentSession();
+      if (!session) return;
+
+      const targetIndex = session.solves.findIndex(s => String(s.id) === String(activeSolveId));
+      if (targetIndex === -1) return;
+
+      const targetSolve = session.solves[targetIndex];
+
+      // 세션 배열에서 직접 삭제 후 저장
+      session.solves.splice(targetIndex, 1);
+      saveCurrentSession(session);
 
       deleteSolve(activeSolveId);
       closeSolveBottomSheet();
@@ -190,16 +203,13 @@ export function initSolvesManager() {
       renderRecentSolves();
       renderStats();
 
-      // Undo 복구 처리 (saveSolves 대신 세션 데이터에 직접 다시 밀어넣기)
+      // Undo 처리
       showUndoToast(targetSolve, (restoredSolve) => {
-        const sessions = loadFromStorage('cub3_sessions') || [];
-        const currentSessionId = loadFromStorage('cub3_current_session_id');
-        let activeSession = sessions.find(s => String(s.id) === String(currentSessionId)) || sessions[0];
-
-        if (activeSession) {
-          activeSession.solves = activeSession.solves || [];
-          activeSession.solves.unshift(restoredSolve);
-          saveToStorage('cub3_sessions', sessions);
+        const curSession = getCurrentSession();
+        if (curSession) {
+          curSession.solves = curSession.solves || [];
+          curSession.solves.unshift(restoredSolve);
+          saveCurrentSession(curSession);
         }
 
         renderSolvesList();
@@ -209,16 +219,14 @@ export function initSolvesManager() {
     });
   }
 
-  // 7. 더보기(⋮) 메뉴 토글
+  // 메뉴 토글
   const moreBtn = document.getElementById('sheet-more-btn');
   const contextMenu = document.getElementById('sheet-context-menu');
 
   if (moreBtn && contextMenu) {
     moreBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-
       const isHidden = window.getComputedStyle(contextMenu).display === 'none';
-
       if (isHidden) {
         contextMenu.classList.add('show');
         contextMenu.style.display = 'flex';
@@ -242,7 +250,7 @@ export function initSolvesManager() {
     });
   }
 
-  // 8. 스크램블 복사 기능
+  // 복사
   const copyBtn = sheet.querySelector('.scramble-copy-btn');
   const scrambleText = sheet.querySelector('.scramble-text');
   if (copyBtn && scrambleText) {
