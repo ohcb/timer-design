@@ -55,9 +55,12 @@ export function renderStats() {
 
   if (timerSummary) {
     timerSummary.innerHTML = `
-      <span>ao5: ${curAo5}</span>
-      <span>ao12: ${curAo12}</span>
+      <div>+0.00</div>
+      <div>ao5: ${curAo5} ao12: ${curAo12}</div>
     `;
+    // 💡 서브 텍스트(+0.00 등) 드래그 선택 방지
+    timerSummary.style.userSelect = 'none';
+    timerSummary.style.webkitUserSelect = 'none';
   }
 
   const statsTable = document.querySelector('.stats-table');
@@ -109,24 +112,12 @@ export function renderRecentSolves() {
     .map((s, idx) => {
       const num = recent.length - idx;
       const formattedTime = formatTime(s.time, s.penalty);
-      return `<li data-id="${s.id}" class="recent-solve-item" style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 14px; cursor: pointer; user-select: none;">
+      return `<li data-id="${s.id}" class="recent-solve-item" style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 14px; cursor: pointer; user-select: none; -webkit-user-select: none;">
         <span class="num" style="color: #64748b; margin-right: 8px; pointer-events: none;">${num}.</span> 
         <span style="font-weight: 600; color: #f8fafc; pointer-events: none;">${formattedTime}</span>
       </li>`;
     })
     .join('');
-
-  // 💡 리스트 생성 직후 클릭 이벤트 직접 등록
-  const items = container.querySelectorAll('.recent-solve-item');
-  items.forEach(item => {
-    item.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const solveId = item.getAttribute('data-id');
-      if (solveId) {
-        openSolveBottomSheet(solveId);
-      }
-    });
-  });
 }
 
 // 5. 메인 타이머 초기화
@@ -138,10 +129,16 @@ export function initTimer() {
 
   if (!timerDisplay) return;
 
-  // 💡 [문제 2 해결] 타이머 숫자에 선택/드래그 방지 CSS 강제 적용
+  // 💡 [해결] 타이머 메인 영역 전체 드래그/터치 선택 방지
+  const timerZone = timerDisplay.closest('.timer-zone') || timerDisplay.parentElement;
+  if (timerZone) {
+    timerZone.style.userSelect = 'none';
+    timerZone.style.webkitUserSelect = 'none';
+    timerZone.style.webkitTouchCallout = 'none';
+  }
+
   timerDisplay.style.userSelect = 'none';
   timerDisplay.style.webkitUserSelect = 'none';
-  timerDisplay.style.webkitTouchCallout = 'none';
 
   setTimeout(() => {
     renderRecentSolves();
@@ -197,9 +194,25 @@ export function initTimer() {
     }
   }
 
+  // 💡 [해결] 최근 기록 클릭시 바텀시트 열기 (전역 이벤트 위임)
+  document.addEventListener('click', (e) => {
+    const item = e.target.closest('.recent-solve-item, [data-id]');
+    if (item) {
+      const solveId = item.getAttribute('data-id');
+      if (solveId) {
+        if (typeof openSolveBottomSheet === 'function') {
+          openSolveBottomSheet(solveId);
+        } else if (window.openSolveBottomSheet) {
+          window.openSolveBottomSheet(solveId);
+        }
+      }
+    }
+  });
+
   // --- 입력 이벤트 ---
   function handlePressStart(e) {
-    if (e && e.target && e.target.closest('button, a, input, select, .nav-item, .tab-btn, .record-card, .bottom-sheet, .recent-solve-item')) {
+    // 버튼, 최근 기록 항목, 바텀시트 영역 터치 시 타이머 작동 방지
+    if (e && e.target && e.target.closest('button, a, input, select, .nav-item, .tab-btn, .record-card, .bottom-sheet, .recent-solve-item, .recent-solves, .solve-list, [data-id]')) {
       return;
     }
 
@@ -219,7 +232,7 @@ export function initTimer() {
   }
 
   function handlePressEnd(e) {
-    if (e && e.target && e.target.closest('button, a, input, select, .nav-item, .tab-btn, .record-card, .bottom-sheet, .recent-solve-item')) {
+    if (e && e.target && e.target.closest('button, a, input, select, .nav-item, .tab-btn, .record-card, .bottom-sheet, .recent-solve-item, .recent-solves, .solve-list, [data-id]')) {
       return;
     }
 
