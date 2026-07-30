@@ -71,12 +71,11 @@ export function openSolveBottomSheet(id) {
   const sheet = document.getElementById('detail-bottom-sheet');
   if (!sheet) return;
 
-  // 💡 바텀시트가 특정 탭 화면 안에 갇혀있지 않도록 body 직속 최상위로 이동
   if (sheet.parentElement !== document.body) {
     document.body.appendChild(sheet);
   }
 
-  // 1. 시간 및 날짜 표시
+  // 1. 데이터 채우기
   const timeEl = sheet.querySelector('.sheet-main-time');
   const dateEl = sheet.querySelector('.date-value');
   const scrambleEl = sheet.querySelector('.scramble-text');
@@ -100,10 +99,17 @@ export function openSolveBottomSheet(id) {
     }
   });
 
-  // 💡 타이머 탭 화면 맨 위에 즉시 바텀시트 열기
+  // 💡 하단 가려짐 방지 스타일 강제 바인딩
+  const sheetContent = sheet.querySelector('.bottom-sheet-content') || sheet;
+  if (sheetContent) {
+    sheetContent.style.paddingBottom = '32px';
+    sheetContent.style.maxHeight = '85vh';
+    sheetContent.style.overflowY = 'auto';
+  }
+
   sheet.classList.add('active', 'open');
   sheet.style.setProperty('display', 'flex', 'important');
-  sheet.style.setProperty('z-index', '9999', 'important');
+  sheet.style.setProperty('z-index', '99999', 'important');
 }
 
 export function closeSolveBottomSheet() {
@@ -118,7 +124,6 @@ export function closeSolveBottomSheet() {
 window.openSolveBottomSheet = openSolveBottomSheet;
 
 export function initSolvesManager() {
-  // DOM 생성 완료 시 바텀시트를 body 최상위로 이동
   const setupSheet = () => {
     const sheet = document.getElementById('detail-bottom-sheet');
     if (sheet && sheet.parentElement !== document.body) {
@@ -129,7 +134,7 @@ export function initSolvesManager() {
   setupSheet();
   setTimeout(setupSheet, 500);
 
-  // 💡 전역 이벤트 위임 방식으로 바텀시트 관련 모든 클릭/입력 이벤트 제어
+  // 바텀시트 외부/닫기 핸들 클릭 시 닫기
   document.addEventListener('click', (e) => {
     const sheet = document.getElementById('detail-bottom-sheet');
     if (!sheet || !sheet.classList.contains('open')) return;
@@ -250,19 +255,28 @@ export function initSolvesManager() {
     });
   });
 
-  // 더보기 메뉴 및 스크램블 복사
+  // 💡 [수정] 더보기 메뉴 토글 및 스크램블 복사
   document.addEventListener('click', (e) => {
-    const moreBtn = e.target.closest('#sheet-more-btn');
-    const contextMenu = document.getElementById('sheet-context-menu');
+    const moreBtn = e.target.closest('#sheet-more-btn, .more-btn, .sheet-more-btn');
+    const contextMenu = document.getElementById('sheet-context-menu') || document.querySelector('.sheet-context-menu');
 
     if (moreBtn && contextMenu) {
       e.stopPropagation();
-      const isHidden = window.getComputedStyle(contextMenu).display === 'none';
-      contextMenu.style.display = isHidden ? 'flex' : 'none';
+      const isVisible = contextMenu.classList.contains('show') || window.getComputedStyle(contextMenu).display !== 'none';
+      
+      if (isVisible) {
+        contextMenu.classList.remove('show');
+        contextMenu.style.display = 'none';
+      } else {
+        contextMenu.classList.add('show');
+        contextMenu.style.setProperty('display', 'flex', 'important');
+        contextMenu.style.setProperty('z-index', '100000', 'important');
+      }
       return;
     }
 
-    if (contextMenu && !e.target.closest('#sheet-context-menu')) {
+    if (contextMenu && !e.target.closest('#sheet-context-menu, .sheet-context-menu')) {
+      contextMenu.classList.remove('show');
       contextMenu.style.display = 'none';
     }
 
