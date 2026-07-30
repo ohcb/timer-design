@@ -58,7 +58,6 @@ export function renderStats() {
       <div>+0.00</div>
       <div>ao5: ${curAo5} ao12: ${curAo12}</div>
     `;
-    // 💡 서브 텍스트(+0.00 등) 드래그 선택 방지
     timerSummary.style.userSelect = 'none';
     timerSummary.style.webkitUserSelect = 'none';
   }
@@ -129,7 +128,6 @@ export function initTimer() {
 
   if (!timerDisplay) return;
 
-  // 💡 [해결] 타이머 메인 영역 전체 드래그/터치 선택 방지
   const timerZone = timerDisplay.closest('.timer-zone') || timerDisplay.parentElement;
   if (timerZone) {
     timerZone.style.userSelect = 'none';
@@ -194,7 +192,7 @@ export function initTimer() {
     }
   }
 
-  // 💡 [해결] 최근 기록 클릭시 바텀시트 열기 (전역 이벤트 위임)
+  // 최근 기록 클릭시 바텀시트 열기
   document.addEventListener('click', (e) => {
     const item = e.target.closest('.recent-solve-item, [data-id]');
     if (item) {
@@ -209,10 +207,19 @@ export function initTimer() {
     }
   });
 
-  // --- 입력 이벤트 ---
+  // 💡 입력 이벤트 핸들러
+  function isBottomSheetOpen() {
+    const sheet = document.getElementById('detail-bottom-sheet');
+    return sheet && (sheet.classList.contains('open') || sheet.classList.contains('active'));
+  }
+
   function handlePressStart(e) {
-    // 버튼, 최근 기록 항목, 바텀시트 영역 터치 시 타이머 작동 방지
-    if (e && e.target && e.target.closest('button, a, input, select, .nav-item, .tab-btn, .record-card, .bottom-sheet, .recent-solve-item, .recent-solves, .solve-list, [data-id]')) {
+    // 💡 바텀시트가 열려있을 때 바깥을 터치하면 타이머 실행 금지
+    if (isBottomSheetOpen()) {
+      return;
+    }
+
+    if (e && e.target && e.target.closest('button, a, input, select, .nav-item, .tab-btn, .record-card, #detail-bottom-sheet, .bottom-sheet, .recent-solve-item, .recent-solves, .solve-list, [data-id]')) {
       return;
     }
 
@@ -232,7 +239,12 @@ export function initTimer() {
   }
 
   function handlePressEnd(e) {
-    if (e && e.target && e.target.closest('button, a, input, select, .nav-item, .tab-btn, .record-card, .bottom-sheet, .recent-solve-item, .recent-solves, .solve-list, [data-id]')) {
+    // 💡 바텀시트 열려있을 땐 터치 종료도 무시
+    if (isBottomSheetOpen()) {
+      return;
+    }
+
+    if (e && e.target && e.target.closest('button, a, input, select, .nav-item, .tab-btn, .record-card, #detail-bottom-sheet, .bottom-sheet, .recent-solve-item, .recent-solves, .solve-list, [data-id]')) {
       return;
     }
 
