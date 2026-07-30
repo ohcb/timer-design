@@ -215,7 +215,7 @@ export function initSolvesManager() {
     renderSolvesList();
   });
 
-  // 삭제 기능
+   // 삭제 기능
   document.addEventListener('click', (e) => {
     const deleteBtn = e.target.closest('#menu-delete, .delete-item');
     if (!deleteBtn || !activeSolveId) return;
@@ -228,6 +228,13 @@ export function initSolvesManager() {
 
     const targetSolve = session.solves[targetIndex];
 
+    // 💡 원래 있던 위치(targetIndex)를 함께 복사해둡니다.
+    const deletedItemInfo = {
+      solve: targetSolve,
+      originalIndex: targetIndex
+    };
+
+    // 배열에서 제거
     session.solves.splice(targetIndex, 1);
     saveCurrentSession(session);
 
@@ -241,11 +248,20 @@ export function initSolvesManager() {
     renderRecentSolves();
     renderStats();
 
-    showUndoToast(targetSolve, (restoredSolve) => {
+    // 💡 Undo 토스트 처리 (원래 위치에 복원)
+    showUndoToast(deletedItemInfo, (restoredData) => {
       const curSession = getCurrentSession();
       if (curSession) {
         curSession.solves = curSession.solves || [];
-        curSession.solves.unshift(restoredSolve);
+        
+        const idx = restoredData.originalIndex;
+        // 원래 위치가 현재 배열 길이보다 크면 맨 뒤에 넣고, 아니면 원래 자리에 splice
+        if (idx >= curSession.solves.length) {
+          curSession.solves.push(restoredData.solve);
+        } else {
+          curSession.solves.splice(idx, 0, restoredData.solve);
+        }
+
         saveCurrentSession(curSession);
       }
 
