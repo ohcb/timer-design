@@ -182,7 +182,7 @@ div.bottom-sheet-overlay#detail-bottom-sheet {
   left: 0 !important;
   width: 100vw !important;
   height: 100vh !important;
-  height: 100dvh !important;
+  height: 100svh !important;
   background-color: rgba(0, 0, 0, 0.7) !important;
   z-index: 999999 !important;
   backdrop-filter: blur(4px);
@@ -209,7 +209,7 @@ div.bottom-sheet-overlay#detail-bottom-sheet .bottom-sheet-content {
   position: relative !important;
   margin: 0 auto !important;
   padding: 24px 24px 40px 24px !important; 
-  max-height: 85dvh !important; 
+  max-height: 85svh !important; 
   overflow-y: auto !important;
   box-sizing: border-box !important;
   box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.6) !important;
