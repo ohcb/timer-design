@@ -99,13 +99,7 @@ export function openSolveBottomSheet(id) {
     }
   });
 
-  // 💡 하단 가려짐 방지 스타일 강제 바인딩
-  const sheetContent = sheet.querySelector('.bottom-sheet-content') || sheet;
-  if (sheetContent) {
-    sheetContent.style.paddingBottom = '32px';
-    sheetContent.style.maxHeight = '85vh';
-    sheetContent.style.overflowY = 'auto';
-  }
+  
 
   sheet.classList.add('active', 'open');
   sheet.style.setProperty('display', 'flex', 'important');
