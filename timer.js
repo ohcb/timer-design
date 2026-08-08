@@ -55,7 +55,6 @@ export function renderStats() {
 
   if (timerSummary) {
     timerSummary.innerHTML = `
-      <div>+0.00</div>
       <div>ao5: ${curAo5} ao12: ${curAo12}</div>
     `;
     timerSummary.style.userSelect = 'none';
