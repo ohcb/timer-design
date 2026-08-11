@@ -3,6 +3,7 @@
 import { getSolves } from './storage.js';
 import { formatTime } from './timer.js';
 import { openSolveBottomSheet } from './solve-bottom-sheet.js';
+import { getCurrentEvent, getSolveEvent, getEventName, setCurrentEvent, EVENT_LIST } from './event.js';
 
 function formatDate(timestamp) {
   if (!timestamp) return '-';
@@ -18,12 +19,15 @@ export function renderSolvesList() {
   const container = document.getElementById('record-cards-container');
   if (!container) return;
 
-  const solves = getSolves(); // 원본 기록 목록
+  const currentEvent = getCurrentEvent();
+  const allSolves = getSolves(); // 현재 세션의 전체 기록
+  // 💡 현재 선택된 종목의 기록만 필터링
+  const solves = allSolves.filter(s => getSolveEvent(s) === currentEvent);
 
   if (!solves || solves.length === 0) {
     container.innerHTML = `
       <div style="text-align: center; color: #94a3b8; padding: 40px 0;">
-        저장된 기록이 없습니다.
+        ${getEventName(currentEvent)} 기록이 없습니다.
       </div>`;
     return;
   }
@@ -43,7 +47,7 @@ export function renderSolvesList() {
             <div class="time-row" style="pointer-events: none;">
               <span class="record-time">${displayTime}</span>
             </div>
-            <span class="badge tag-badge">${solve.note ? '📝 메모' : '3x3'}</span>
+            <span class="badge tag-badge">${solve.note ? '📝 메모' : getEventName(getSolveEvent(solve))}</span>
           </div>
           <div class="card-right" style="pointer-events: none;">
             <span class="card-date">${formattedDate}</span>
@@ -55,8 +59,34 @@ export function renderSolvesList() {
     .join('');
 }
 
+// Solves 탭 상단의 종목 드롭다운을 전역 종목 목록/상태와 동기화
+function syncSolvesEventDropdown() {
+  const select = document.querySelector('#screen-solves .event-dropdown');
+  if (!select) return;
+
+  select.innerHTML = EVENT_LIST
+    .map(e => `<option value="${e.id}">${e.name}</option>`)
+    .join('');
+
+  select.value = getCurrentEvent();
+}
+
 export function initSolves() {
+  syncSolvesEventDropdown();
   renderSolvesList();
+
+  // Solves 탭 자체 종목 드롭다운에서 종목을 바꿔도 전역 종목이 바뀜
+  document.addEventListener('change', (e) => {
+    if (e.target.matches('#screen-solves .event-dropdown')) {
+      setCurrentEvent(e.target.value);
+    }
+  });
+
+  // 종목이 바뀌면(헤더든 이 탭이든) 목록 즉시 갱신 + 드롭다운 값도 동기화
+  document.addEventListener('cub3:event-changed', () => {
+    syncSolvesEventDropdown();
+    renderSolvesList();
+  });
 
   // Solves 카드 클릭 시 바텀시트 열기
   document.addEventListener('click', (e) => {
