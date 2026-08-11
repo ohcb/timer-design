@@ -7,6 +7,8 @@ import { initTimer } from './timer.js';
 import { initStats } from './stats.js';
 import { initSolves } from './solves.js';
 import { initSessionUI } from './session.js';
+import { initEventManager } from './event.js';
+
 
 
 function safeInit(fnName, initFn) {
@@ -30,4 +32,6 @@ document.addEventListener('DOMContentLoaded', () => {
   safeInit('Solves', initSolves);
   safeInit('Stats', initStats);
   safeInit('Timer', initTimer);
+  safeInit('EventManager', initEventManager);
+
 });
