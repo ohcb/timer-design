@@ -68,6 +68,21 @@ export function setCurrentEvent(eventId) {
   return true;
 }
 
+// 종목 id로 표시 이름 조회 (예: '333' -> '3x3')
+export function getEventName(eventId) {
+  const ev = getEventById(eventId);
+  return ev ? ev.name : eventId;
+}
+
+// solve 객체에서 종목을 안전하게 읽어옴.
+// 이벤트 기능 추가 이전에 저장된 solve는 event 필드가 없으므로
+// 기본 종목(DEFAULT_EVENT)으로 취급해 기존 기록이 화면에서 사라지지 않게 함.
+export function getSolveEvent(solve) {
+  return (solve && solve.event) ? solve.event : DEFAULT_EVENT;
+}
+
+export { DEFAULT_EVENT };
+
 // ==========================================
 // 4. 렌더링 (상단 종목 드롭다운)
 // ==========================================
