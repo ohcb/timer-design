@@ -6,6 +6,8 @@ import { initSolvesManager } from './solve-bottom-sheet.js';
 import { initTimer } from './timer.js';
 import { initStats } from './stats.js';
 import { initSolves } from './solves.js';
+import { initSessionUI } from './session.js';
+
 
 function safeInit(fnName, initFn) {
   try {
@@ -20,6 +22,8 @@ function safeInit(fnName, initFn) {
 
 document.addEventListener('DOMContentLoaded', () => {
   safeInit('SessionManager', initSessionManager);
+  safeInit('SessionUI', initSessionUI);
+
   safeInit('Tabs', initTabs);
 
   safeInit('SolvesManager', initSolvesManager);
