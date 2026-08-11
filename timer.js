@@ -3,6 +3,7 @@
 import { getCurrentSession, saveCurrentSession } from './session-manager.js';
 import { renderSolvesList } from './solves.js';
 import { openSolveBottomSheet } from './solve-bottom-sheet.js';
+import { getCurrentEvent, getSolveEvent } from './event.js';
 
 let isRunning = false;
 let startTime = 0;
@@ -47,7 +48,10 @@ function calculateAverage(solves, count) {
 // 3. Current & Best 통계 렌더링
 export function renderStats() {
   const session = getCurrentSession();
-  const solves = session ? (session.solves || []) : [];
+  const currentEvent = getCurrentEvent();
+  const solves = session
+    ? (session.solves || []).filter(s => getSolveEvent(s) === currentEvent)
+    : [];
 
   const timerSummary = document.querySelector('.timer-summary');
   const curAo5 = calculateAverage(solves, 5);
@@ -93,7 +97,10 @@ export function renderRecentSolves() {
   if (!container) return;
 
   const session = getCurrentSession();
-  const solves = session ? (session.solves || []) : [];
+  const currentEvent = getCurrentEvent();
+  const solves = session
+    ? (session.solves || []).filter(s => getSolveEvent(s) === currentEvent)
+    : [];
 
   if (solves.length === 0) {
     container.innerHTML = '<li style="color:#64748b; font-size:14px; padding: 4px 0;">기록 없음</li>';
@@ -142,6 +149,12 @@ export function initTimer() {
     renderStats();
   }, 100);
 
+  // 종목이 바뀌면 Timer 탭의 Recent Solves / Current & Best도 즉시 갱신
+  document.addEventListener('cub3:event-changed', () => {
+    renderRecentSolves();
+    renderStats();
+  });
+
   function updateDisplay(ms) {
     timerDisplay.textContent = (ms / 1000).toFixed(2);
   }
@@ -177,7 +190,8 @@ export function initTimer() {
         createdAt: Date.now(),
         scramble: scrambleText,
         note: '',
-        isBookmarked: false
+        isBookmarked: false,
+        event: getCurrentEvent() // 이 solve가 기록된 시점의 종목
       };
 
       session.solves.unshift(newSolve);
