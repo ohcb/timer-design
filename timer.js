@@ -4,6 +4,7 @@ import { getCurrentSession, saveCurrentSession } from './session-manager.js';
 import { renderSolvesList } from './solves.js';
 import { openSolveBottomSheet } from './solve-bottom-sheet.js';
 import { getCurrentEvent, getSolveEvent } from './event.js';
+import { requestNewScramble } from './scramble.js';
 
 let isRunning = false;
 let startTime = 0;
@@ -203,6 +204,9 @@ export function initTimer() {
     if (typeof renderSolvesList === 'function') {
       renderSolvesList();
     }
+
+    // 다음 solve를 위한 새 스크램블 준비
+    requestNewScramble();
   }
 
   // 최근 기록 클릭시 바텀시트 열기
