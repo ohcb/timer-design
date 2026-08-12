@@ -8,6 +8,36 @@
 @import url("session.css");
 @import url("more.css");
 
+/* 1. 기본 박스 크기 및 텍스트 겹침 방지 리셋 */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  word-break: keep-all; /* 단어가 이상하게 깨지지 않도록 방지 */
+}
+
+/* 2. 전체 화면 레이아웃 고정 */
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden; /* 가로 스크롤 방지 */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* 3. 앱 메인 컨테이너 (컴퓨터/태블릿/모바일 모두 대응) */
+#app, body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
+}
+
+/* 4. 글씨 겹침을 방지하는 핵심: line-height(줄간격) 및 display 설정 */
+h1, h2, h3, h4, p, span, div {
+  line-height: 1.4; /* 줄간격을 주어 텍스트 겹침 방지 */
+}
+
+
 /* ==========================================================================
    🏛️ Cub3 Design System Variables (통합 디자인 시스템)
    ========================================================================== */

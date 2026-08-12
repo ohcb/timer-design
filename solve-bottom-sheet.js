@@ -1,124 +1,305 @@
 // solve-bottom-sheet.js
-export function initSolvesManager() {
-  const container = document.getElementById('record-cards-container');
-  const sheet = document.getElementById('detail-bottom-sheet');
 
-  if (!container || !sheet) return;
+import { getSolves, updateSolvePenalty, deleteSolve, updateSolveNote, toggleSolveBookmark } from './storage.js';
+import { getCurrentSession, saveCurrentSession } from './session-manager.js';
+import { formatTime, renderRecentSolves, renderStats } from './timer.js';
+import { renderSolvesList } from './solves.js';
 
-  let deleteTimeout = null;
-  let pendingCardElement = null;
+let activeSolveId = null;
+let undoTimer = null;
+let lastDeletedSolve = null;
 
-  // 1. 카드 클릭 시 바텀 시트 열기
-  container.addEventListener('click', (event) => {
-    const card = event.target.closest('.record-card');
-    if (!card) return;
-    
-    pendingCardElement = card;
-    sheet.classList.add('open');
-  });
+function formatFullDate(timestamp) {
+  if (!timestamp) return '-';
+  const date = new Date(timestamp);
+  const yyyy = date.getFullYear();
+  const mm = String(date.getMonth() + 1).padStart(2, '0');
+  const dd = String(date.getDate()).padStart(2, '0');
+  const hh = String(date.getHours()).padStart(2, '0');
+  const min = String(date.getMinutes()).padStart(2, '0');
+  const ss = String(date.getSeconds()).padStart(2, '0');
+  return `${yyyy}.${mm}.${dd} ${hh}:${min}:${ss}`;
+}
 
-  // 2. 바텀 시트 내부 클릭 이벤트 분기
-  sheet.addEventListener('click', (event) => {
-    const contextMenu = document.getElementById('sheet-context-menu');
-    if (!contextMenu) return;
+export function showUndoToast(deletedSolve, onUndoCallback) {
+  const toast = document.getElementById('global-undo-toast');
+  const undoBtn = document.getElementById('global-undo-btn');
+  if (!toast) return;
 
-    // 더보기(⋮) 버튼 클릭
-    if (event.target.closest('#sheet-more-btn')) {
-      event.stopPropagation();
-      if (contextMenu.style.getPropertyValue('display') === 'flex') {
-        contextMenu.style.setProperty('display', 'none', 'important');
-      } else {
-        contextMenu.style.setProperty('display', 'flex', 'important');
+  lastDeletedSolve = deletedSolve;
+  if (undoTimer) clearTimeout(undoTimer);
+
+  toast.classList.add('show');
+
+  if (undoBtn) {
+    const newUndoBtn = undoBtn.cloneNode(true);
+    undoBtn.parentNode.replaceChild(newUndoBtn, undoBtn);
+
+    newUndoBtn.addEventListener('click', () => {
+      if (onUndoCallback && lastDeletedSolve) {
+        onUndoCallback(lastDeletedSolve);
       }
-      return;
-    }
-
-    // Edit / Delete 메뉴 아이템 클릭
-    if (event.target.closest('.menu-item')) {
-      contextMenu.style.setProperty('display', 'none', 'important');
-      
-      // 🗑️ Delete 버튼 클릭 시
-      if (event.target.id === 'menu-delete') {
-        sheet.classList.remove('open'); // 바텀시트 닫기
-        
-        if (pendingCardElement) {
-          // 1. 카드를 화면에서 스르륵 투명하게 숨기기
-          pendingCardElement.classList.add('removing');
-          
-          // 2. 기존 타이머가 돌고 있다면 청소
-          if (deleteTimeout) clearTimeout(deleteTimeout);
-          
-          // 3. 진짜 토스트 바 가동!
-          triggerUndoToast();
-        }
-      }
-      return;
-    }
-
-    // 바깥 오버레이 클릭 시 닫기
-    if (!event.target.closest('.bottom-sheet-content')) {
-      sheet.classList.remove('open');
-      contextMenu.style.setProperty('display', 'none', 'important');
-    }
-  });
-
-  // 바탕 화면 클릭 시 미니 메뉴만 숨기기
-  document.addEventListener('click', (event) => {
-    const contextMenu = document.getElementById('sheet-context-menu');
-    if (contextMenu && !event.target.closest('.more-menu-container')) {
-      contextMenu.style.setProperty('display', 'none', 'important');
-    }
-  });
-
-  // 💡 진짜로 토스트 바를 켜고 끄는 핵심 제어 함수
-  function triggerUndoToast() {
-    const toast = document.getElementById('global-undo-toast');
-    const undoBtn = document.getElementById('global-undo-btn');
-    if (!toast || !undoBtn) return;
-
-    // [1] 토스트 바를 화면에 강제로 등장시킵니다.
-    toast.style.setProperty('display', 'flex', 'important');
-    
-    // 브라우저가 정렬을 계산할 시간을 아주 잠깐(0.02초) 준 뒤 애니메이션 실행
-    setTimeout(() => {
-      toast.style.setProperty('opacity', '1', 'important');
-      toast.style.setProperty('transform', 'translate(-50%, 0)', 'important');
-    }, 20);
-
-    // [2] 5초 타이머 작동 (가만히 두면 영구 삭제)
-    deleteTimeout = setTimeout(() => {
-      // 토스트 바 아래로 숨기기
-      toast.style.setProperty('opacity', '0', 'important');
-      toast.style.setProperty('transform', 'translate(-50%, 150px)', 'important');
-      
-      setTimeout(() => {
-        toast.style.setProperty('display', 'none', 'important');
-      }, 300);
-      
-      // 5초 지났으니 진짜로 DOM(화면)에서 카드 없애버리기
-      if (pendingCardElement) {
-        pendingCardElement.remove();
-        pendingCardElement = null;
-      }
-    }, 5000);
-
-    // [3] Undo(실행 취소) 버튼을 눌렀을 때의 로직
-    undoBtn.onclick = () => {
-      clearTimeout(deleteTimeout); // 5초 카운트다운 폭파!
-      
-      // 토스트 바 숨기기
-      toast.style.setProperty('opacity', '0', 'important');
-      toast.style.setProperty('transform', 'translate(-50%, 150px)', 'important');
-      
-      setTimeout(() => {
-        toast.style.setProperty('display', 'none', 'important');
-      }, 300);
-      
-      // 숨겨졌던 카드를 다시 선명하게 부활시키기!
-      if (pendingCardElement) {
-        pendingCardElement.classList.remove('removing');
-        pendingCardElement = null;
-      }
-    };
+      hideUndoToast();
+    }, { once: true });
   }
+
+  undoTimer = setTimeout(() => {
+    hideUndoToast();
+  }, 4000);
+}
+
+export function hideUndoToast() {
+  const toast = document.getElementById('global-undo-toast');
+  if (toast) {
+    toast.classList.remove('show');
+  }
+  if (undoTimer) clearTimeout(undoTimer);
+  lastDeletedSolve = null;
+}
+
+export function openSolveBottomSheet(id) {
+  const session = getCurrentSession();
+  const sessionSolves = session ? (session.solves || []) : [];
+  const storageSolves = typeof getSolves === 'function' ? getSolves() : [];
+
+  const solves = [...sessionSolves, ...storageSolves];
+  const target = solves.find(s => String(s.id) === String(id));
+  if (!target) return;
+
+  activeSolveId = target.id;
+
+  const sheet = document.getElementById('detail-bottom-sheet');
+  if (!sheet) return;
+
+  if (sheet.parentElement !== document.body) {
+    document.body.appendChild(sheet);
+  }
+
+  // 1. 데이터 채우기
+  const timeEl = sheet.querySelector('.sheet-main-time');
+  const dateEl = sheet.querySelector('.date-value');
+  const scrambleEl = sheet.querySelector('.scramble-text');
+  const noteInput = sheet.querySelector('.sheet-note-input');
+  const bookmarkBtn = document.getElementById('sheet-bookmark-btn');
+
+  if (timeEl) timeEl.textContent = formatTime(target.time, target.penalty);
+  if (dateEl) dateEl.textContent = formatFullDate(target.createdAt || Date.now());
+  if (scrambleEl) scrambleEl.textContent = target.scramble || "U2 F2 U' R2 D B2 F2 D L2 U' L2 B2";
+  if (noteInput) noteInput.value = target.note || '';
+  if (bookmarkBtn) bookmarkBtn.textContent = target.isBookmarked ? '⭐' : '🤍';
+
+  const penaltyBtns = sheet.querySelectorAll('.penalty-segmented-control .penalty-btn, .penalty-btn');
+  penaltyBtns.forEach(btn => {
+    const p = btn.dataset.penalty;
+    const currentP = (!target.penalty || target.penalty === 'NONE') ? 'OK' : target.penalty;
+    if (currentP === p) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
+
+  
+
+  sheet.classList.add('active', 'open');
+  sheet.style.setProperty('display', 'flex', 'important');
+  sheet.style.setProperty('z-index', '99999', 'important');
+}
+
+export function closeSolveBottomSheet() {
+  const sheet = document.getElementById('detail-bottom-sheet');
+  if (sheet) {
+    sheet.classList.remove('active', 'open');
+    sheet.style.display = 'none';
+  }
+  activeSolveId = null;
+}
+
+window.openSolveBottomSheet = openSolveBottomSheet;
+
+export function initSolvesManager() {
+  const setupSheet = () => {
+    const sheet = document.getElementById('detail-bottom-sheet');
+    if (sheet && sheet.parentElement !== document.body) {
+      document.body.appendChild(sheet);
+    }
+  };
+
+  setupSheet();
+  setTimeout(setupSheet, 500);
+
+  // 바텀시트 외부/닫기 핸들 클릭 시 닫기
+  document.addEventListener('click', (e) => {
+    const sheet = document.getElementById('detail-bottom-sheet');
+    if (!sheet || !sheet.classList.contains('open')) return;
+
+    if (e.target === sheet) {
+      closeSolveBottomSheet();
+    }
+    if (e.target.closest('.bottom-sheet-handle, .drag-handle')) {
+      closeSolveBottomSheet();
+    }
+  });
+
+  // 패널티 변경
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.penalty-segmented-control .penalty-btn, .penalty-btn');
+    if (!btn || !activeSolveId) return;
+
+    const sheet = document.getElementById('detail-bottom-sheet');
+    if (!sheet || !sheet.contains(btn)) return;
+
+    let penalty = btn.dataset.penalty;
+    if (penalty === 'OK') penalty = 'NONE';
+
+    if (typeof updateSolvePenalty === 'function') {
+      updateSolvePenalty(activeSolveId, penalty);
+    }
+
+    const session = getCurrentSession();
+    if (session && session.solves) {
+      const target = session.solves.find(s => String(s.id) === String(activeSolveId));
+      if (target) target.penalty = penalty;
+      saveCurrentSession(session);
+    }
+
+    openSolveBottomSheet(activeSolveId);
+    renderSolvesList();
+    renderRecentSolves();
+    renderStats();
+  });
+
+  // 메모 작성
+  document.addEventListener('input', (e) => {
+    if (!e.target.matches('.sheet-note-input') || !activeSolveId) return;
+    
+    if (typeof updateSolveNote === 'function') {
+      updateSolveNote(activeSolveId, e.target.value);
+    }
+
+    const session = getCurrentSession();
+    if (session && session.solves) {
+      const target = session.solves.find(s => String(s.id) === String(activeSolveId));
+      if (target) target.note = e.target.value;
+      saveCurrentSession(session);
+    }
+  });
+
+  // 북마크
+  document.addEventListener('click', (e) => {
+    const bookmarkBtn = e.target.closest('#sheet-bookmark-btn');
+    if (!bookmarkBtn || !activeSolveId) return;
+
+    let isBookmarked = false;
+    if (typeof toggleSolveBookmark === 'function') {
+      isBookmarked = toggleSolveBookmark(activeSolveId);
+    }
+
+    const session = getCurrentSession();
+    if (session && session.solves) {
+      const target = session.solves.find(s => String(s.id) === String(activeSolveId));
+      if (target) {
+        target.isBookmarked = !target.isBookmarked;
+        isBookmarked = target.isBookmarked;
+      }
+      saveCurrentSession(session);
+    }
+
+    bookmarkBtn.textContent = isBookmarked ? '⭐' : '🤍';
+    renderSolvesList();
+  });
+
+   // 삭제 기능
+  document.addEventListener('click', (e) => {
+    const deleteBtn = e.target.closest('#menu-delete, .delete-item');
+    if (!deleteBtn || !activeSolveId) return;
+
+    const session = getCurrentSession();
+    if (!session) return;
+
+    const targetIndex = session.solves.findIndex(s => String(s.id) === String(activeSolveId));
+    if (targetIndex === -1) return;
+
+    const targetSolve = session.solves[targetIndex];
+
+    // 💡 원래 있던 위치(targetIndex)를 함께 복사해둡니다.
+    const deletedItemInfo = {
+      solve: targetSolve,
+      originalIndex: targetIndex
+    };
+
+    // 배열에서 제거
+    session.solves.splice(targetIndex, 1);
+    saveCurrentSession(session);
+
+    if (typeof deleteSolve === 'function') {
+      deleteSolve(activeSolveId);
+    }
+
+    closeSolveBottomSheet();
+
+    renderSolvesList();
+    renderRecentSolves();
+    renderStats();
+
+    // 💡 Undo 토스트 처리 (원래 위치에 복원)
+    showUndoToast(deletedItemInfo, (restoredData) => {
+      const curSession = getCurrentSession();
+      if (curSession) {
+        curSession.solves = curSession.solves || [];
+        
+        const idx = restoredData.originalIndex;
+        // 원래 위치가 현재 배열 길이보다 크면 맨 뒤에 넣고, 아니면 원래 자리에 splice
+        if (idx >= curSession.solves.length) {
+          curSession.solves.push(restoredData.solve);
+        } else {
+          curSession.solves.splice(idx, 0, restoredData.solve);
+        }
+
+        saveCurrentSession(curSession);
+      }
+
+      renderSolvesList();
+      renderRecentSolves();
+      renderStats();
+    });
+  });
+
+  // 💡 [수정] 더보기 메뉴 토글 및 스크램블 복사
+  document.addEventListener('click', (e) => {
+    const moreBtn = e.target.closest('#sheet-more-btn, .more-btn, .sheet-more-btn');
+    const contextMenu = document.getElementById('sheet-context-menu') || document.querySelector('.sheet-context-menu');
+
+    if (moreBtn && contextMenu) {
+      e.stopPropagation();
+      const isVisible = contextMenu.classList.contains('show') || window.getComputedStyle(contextMenu).display !== 'none';
+      
+      if (isVisible) {
+        contextMenu.classList.remove('show');
+        contextMenu.style.display = 'none';
+      } else {
+        contextMenu.classList.add('show');
+        contextMenu.style.setProperty('display', 'flex', 'important');
+        contextMenu.style.setProperty('z-index', '100000', 'important');
+      }
+      return;
+    }
+
+    if (contextMenu && !e.target.closest('#sheet-context-menu, .sheet-context-menu')) {
+      contextMenu.classList.remove('show');
+      contextMenu.style.display = 'none';
+    }
+
+    const copyBtn = e.target.closest('.scramble-copy-btn');
+    if (copyBtn) {
+      const sheet = document.getElementById('detail-bottom-sheet');
+      const scrambleText = sheet?.querySelector('.scramble-text');
+      if (scrambleText) {
+        navigator.clipboard.writeText(scrambleText.textContent).then(() => {
+          copyBtn.textContent = '✅';
+          setTimeout(() => { copyBtn.textContent = '📋'; }, 1500);
+        });
+      }
+    }
+  });
 }

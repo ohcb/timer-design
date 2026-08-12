@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+  <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+<script>eruda.init();</script>
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="only dark">
@@ -21,7 +24,7 @@
           <option>Session 1</option>
           <option>Session 2</option>
         </select>
-        <select class="clean-select">
+        <select id="event-select" class="clean-select">
           <option>3x3</option>
           <option>2x2</option>
           <option>4x4</option>
@@ -102,12 +105,8 @@
               </div>
             </div>
           </div>
-          <div class="tools-area">
-            <button class="clean-border-btn">Quick Tools</button>
-          </div>
-        </section>
       </div>
-
+          
       <div id="screen-solves" class="tab-screen">
         <div class="solves-control-manager">
           <div class="control-left-group">
@@ -641,10 +640,33 @@
       <a href="#" class="nav-tab" data-tab="more">More</a>
     </nav>
 
-  </div> <div id="global-undo-toast" class="undo-toast" style="display: none !important;">
+  </div> <div id="global-undo-toast" class="undo-toast">
     <span>기록이 삭제되었습니다.</span>
     <button id="global-undo-btn" class="undo-btn">Undo</button>
   </div>
+
+  <div id="solve-modal" class="modal-backdrop" style="display: none;">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-solve-time">0.00</span>
+      <button type="button" class="modal-close-btn" id="modal-close">&times;</button>
+    </div>
+
+    <div class="modal-body">
+      <p class="modal-section-title">Penalty</p>
+      <div class="penalty-options">
+        <button type="button" class="penalty-btn" data-penalty="NONE">NONE</button>
+        <button type="button" class="penalty-btn" data-penalty="+2">+2</button>
+        <button type="button" class="penalty-btn" data-penalty="DNF">DNF</button>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="delete-btn" id="modal-delete-btn">Delete Solve</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script type="module" src="./app.js"></script>

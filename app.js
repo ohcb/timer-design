@@ -1,25 +1,41 @@
 // app.js
 
 import { initTabs } from './tabs.js';
+import { initSessionManager } from './session-manager.js';
 import { initSolvesManager } from './solve-bottom-sheet.js';
 import { initTimer } from './timer.js';
-import { initStats } from './stats.js'; // 💡 Stats 모듈 import 추가
-import { initSessionManager } from './session.js';
+import { initStats } from './stats.js';
+import { initSolves } from './solves.js';
+import { initSessionUI } from './session.js';
+import { initEventManager } from './event.js';
+import { initScramble } from './scramble.js';
 
-// 앱이 실행될 때 호출되는 초기화 구역
+
+
+
+function safeInit(fnName, initFn) {
+  try {
+    if (typeof initFn === 'function') {
+      initFn();
+      console.log(`✅ [Init Success] ${fnName}`);
+    }
+  } catch (error) {
+    console.error(`❌ [Init Failed] ${fnName}:`, error);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-  
-  // 기존 내비게이션 탭 초기화
-  initTabs();
-  
-  // 바텀 시트 인터랙션 초기화
-  initSolvesManager();
-  
-  // 타이머 기능 초기화
-  initTimer();
+  safeInit('SessionManager', initSessionManager);
+  safeInit('SessionUI', initSessionUI);
 
-  // 💡 새로 추가한 스탯 기능 초기화
-  initStats();
+  safeInit('Tabs', initTabs);
 
-  initSessionManager();
+  safeInit('SolvesManager', initSolvesManager);
+  safeInit('Solves', initSolves);
+  safeInit('Stats', initStats);
+  safeInit('Timer', initTimer);
+  safeInit('EventManager', initEventManager);
+  safeInit('Scramble', initScramble);
+
+
 });

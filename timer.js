@@ -1,74 +1,327 @@
 // timer.js
-export function initTimer() {
-  let timerInterval = null;
-  let startTime = 0;
-  let elapsedTime = 0;
-  let isRunning = false;
 
-  // HTML에서 타이머 글자가 표시되는 구역을 가져옵니다.
-  const timerDisplay = document.querySelector('.timer-display');
+import { getCurrentSession, saveCurrentSession } from './session-manager.js';
+import { renderSolvesList } from './solves.js';
+import { openSolveBottomSheet } from './solve-bottom-sheet.js';
+import { getCurrentEvent, getSolveEvent } from './event.js';
+import { requestNewScramble } from './scramble.js';
 
-  // 방어 코드: 만약 태그를 못 찾으면 실행을 멈춰서 다른 스크립트(tabs.js 등)가 깨지지 않게 보호합니다.
-  if (!timerDisplay) {
-    console.error("타이머 디스플레이(.timer-display) 태그를 찾을 수 없습니다.");
+let isRunning = false;
+let startTime = 0;
+let elapsedTime = 0;
+let holdTimeout = null;
+let isReady = false;
+let lastTouchEventTime = 0;      // 마지막 실제 터치 이벤트 시각 (ghost mouse event 판별용)
+let timerListenersBound = false; // document 레벨 리스너 중복 등록 방지 가드
+
+// 터치 종료 후 브라우저가 자동으로 만들어내는 synthetic mousedown/mouseup을
+// 무시하기 위한 유예 시간(ms). 실기기/브라우저별로 보통 300ms 이내에 발생함.
+const GHOST_EVENT_WINDOW_MS = 600;
+
+// 1. 시간 포맷팅 헬퍼
+export function formatTime(ms, penalty) {
+  if (penalty === 'DNF') return 'DNF';
+  
+  let totalMs = ms || 0;
+  if (penalty === '+2') totalMs += 2000;
+
+  const seconds = (totalMs / 1000).toFixed(2);
+  return penalty === '+2' ? `${seconds}+` : seconds;
+}
+
+// 2. 통계 계산 헬퍼
+function calculateAverage(solves, count) {
+  if (!solves || solves.length < count) return '-';
+  const slice = solves.slice(0, count);
+  
+  const dnfCount = slice.filter(s => s.penalty === 'DNF').length;
+  if (dnfCount > 1) return 'DNF';
+
+  const times = slice.map(s => {
+    if (s.penalty === 'DNF') return Infinity;
+    return s.time + (s.penalty === '+2' ? 2000 : 0);
+  });
+
+  if (count >= 5) {
+    times.sort((a, b) => a - b);
+    times.pop();
+    times.shift();
+  }
+
+  const sum = times.reduce((acc, cur) => acc + cur, 0);
+  return (sum / times.length / 1000).toFixed(2);
+}
+
+// 3. Current & Best 통계 렌더링
+export function renderStats() {
+  const session = getCurrentSession();
+  const currentEvent = getCurrentEvent();
+  const solves = session
+    ? (session.solves || []).filter(s => getSolveEvent(s) === currentEvent)
+    : [];
+
+  const timerSummary = document.querySelector('.timer-summary');
+  const curAo5 = calculateAverage(solves, 5);
+  const curAo12 = calculateAverage(solves, 12);
+
+  if (timerSummary) {
+    timerSummary.innerHTML = `
+      <div>ao5: ${curAo5} ao12: ${curAo12}</div>
+    `;
+    timerSummary.style.userSelect = 'none';
+    timerSummary.style.webkitUserSelect = 'none';
+  }
+
+  const statsTable = document.querySelector('.stats-table');
+  if (!statsTable) return;
+
+  const curSingle = solves.length > 0 ? formatTime(solves[0].time, solves[0].penalty) : '-';
+  
+  const validSolves = solves.filter(s => s.penalty !== 'DNF');
+  let bestSingle = '-';
+  if (validSolves.length > 0) {
+    const bestMs = Math.min(...validSolves.map(s => s.time + (s.penalty === '+2' ? 2000 : 0)));
+    bestSingle = (bestMs / 1000).toFixed(2);
+  }
+
+  statsTable.innerHTML = `
+    <div class="row header"><span class="stat-type"></span> <span>Cur</span> <span>Best</span></div>
+    <div class="row"><span class="stat-type">time</span> <span>${curSingle}</span> <span>${bestSingle}</span></div>
+    <div class="row"><span class="stat-type">mo3</span> <span>${calculateAverage(solves, 3)}</span> <span>-</span></div>
+    <div class="row"><span class="stat-type">ao5</span> <span>${curAo5}</span> <span>-</span></div>
+    <div class="row"><span class="stat-type">ao12</span> <span>${curAo12}</span> <span>-</span></div>
+    <div class="row"><span class="stat-type">ao25</span> <span>${calculateAverage(solves, 25)}</span> <span>-</span></div>
+    <div class="row"><span class="stat-type">ao50</span> <span>${calculateAverage(solves, 50)}</span> <span>-</span></div>
+    <div class="row"><span class="stat-type">ao100</span> <span>${calculateAverage(solves, 100)}</span> <span>-</span></div>
+  `;
+}
+
+// 4. Recent Solves 목록 렌더링
+export function renderRecentSolves() {
+  const container = document.querySelector('.recent-solves .solve-list') || 
+                    document.querySelector('.solve-list');
+
+  if (!container) return;
+
+  const session = getCurrentSession();
+  const currentEvent = getCurrentEvent();
+  const solves = session
+    ? (session.solves || []).filter(s => getSolveEvent(s) === currentEvent)
+    : [];
+
+  if (solves.length === 0) {
+    container.innerHTML = '<li style="color:#64748b; font-size:14px; padding: 4px 0;">기록 없음</li>';
     return;
   }
 
-  // 밀리초 데이터를 0.00 형태로 변환하는 함수
-  function formatTime(time) {
-    const seconds = Math.floor(time / 1000);
-    const milliseconds = Math.floor((time % 1000) / 10);
-    const msString = milliseconds < 10 ? '0' + milliseconds : milliseconds;
-    return `${seconds}.${msString}`;
+  const recent = solves.slice(0, 5);
+
+  container.style.display = 'block';
+  container.style.visibility = 'visible';
+  container.style.opacity = '1';
+
+  container.innerHTML = recent
+    .map((s, idx) => {
+      const num = recent.length - idx;
+      const formattedTime = formatTime(s.time, s.penalty);
+      return `<li data-id="${s.id}" class="recent-solve-item" style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 14px; cursor: pointer; user-select: none; -webkit-user-select: none;">
+        <span class="num" style="color: #64748b; margin-right: 8px; pointer-events: none;">${num}.</span> 
+        <span style="font-weight: 600; color: #f8fafc; pointer-events: none;">${formattedTime}</span>
+      </li>`;
+    })
+    .join('');
+}
+
+// 5. 메인 타이머 초기화
+export function initTimer() {
+  const timerDisplay = document.querySelector('.timer-display') || 
+                       document.getElementById('timer-display') || 
+                       document.querySelector('.timer-zone') ||
+                       document.querySelector('.timer');
+
+  if (!timerDisplay) return;
+
+  // initTimer가 실수로 두 번 호출되어도 document 리스너가 중복 등록되지 않게 함
+  if (timerListenersBound) return;
+  timerListenersBound = true;
+
+  const timerZone = timerDisplay.closest('.timer-zone') || timerDisplay.parentElement;
+  if (timerZone) {
+    timerZone.style.userSelect = 'none';
+    timerZone.style.webkitUserSelect = 'none';
+    timerZone.style.webkitTouchCallout = 'none';
   }
 
-  // 타이머 시작
+  timerDisplay.style.userSelect = 'none';
+  timerDisplay.style.webkitUserSelect = 'none';
+
+  setTimeout(() => {
+    renderRecentSolves();
+    renderStats();
+  }, 100);
+
+  // 종목이 바뀌면 Timer 탭의 Recent Solves / Current & Best도 즉시 갱신
+  document.addEventListener('cub3:event-changed', () => {
+    renderRecentSolves();
+    renderStats();
+  });
+
+  function updateDisplay(ms) {
+    timerDisplay.textContent = (ms / 1000).toFixed(2);
+  }
+
   function startTimer() {
-    startTime = Date.now() - elapsedTime;
-    timerInterval = setInterval(() => {
-      elapsedTime = Date.now() - startTime;
-      timerDisplay.textContent = formatTime(elapsedTime);
-    }, 10);
     isRunning = true;
-  }
+    startTime = performance.now();
+    timerDisplay.style.color = '#ffffff';
 
-  // 타이머 멈춤
-  function stopTimer() {
-    clearInterval(timerInterval);
-    isRunning = false;
-  }
-
-  // 타이머 초기화
-  function resetTimer() {
-    clearInterval(timerInterval);
-    elapsedTime = 0;
-    timerDisplay.textContent = "0.00";
-    isRunning = false;
-  }
-
-  // 시작 / 정지 / 초기화 트리거 제어
-  function handleTrigger() {
-    if (isRunning) {
-      stopTimer();
-    } else {
-      if (elapsedTime > 0) {
-        resetTimer();
-      }
-      startTimer();
+    function tick() {
+      if (!isRunning) return;
+      elapsedTime = performance.now() - startTime;
+      updateDisplay(elapsedTime);
+      requestAnimationFrame(tick);
     }
+    requestAnimationFrame(tick);
   }
 
-  // 1. PC 사용자를 위한 스페이스바 이벤트 등록
-  window.addEventListener('keydown', (event) => {
-    if (event.code === 'Space') {
-      event.preventDefault(); // 스페이스바 누를 때 화면이 아래로 내려가는 현상 방지
-      handleTrigger();
+  function stopTimer() {
+    isRunning = false;
+    isReady = false; // 방어적 초기화: 다음 press 사이클이 이전 상태를 이어받지 않게 함
+    timerDisplay.style.color = '';
+
+    const session = getCurrentSession();
+    if (session) {
+      if (!session.solves) session.solves = [];
+
+      const scrambleText = document.querySelector('.scramble-text')?.textContent || '';
+      
+      const newSolve = {
+        id: Date.now(),
+        time: Math.round(elapsedTime),
+        penalty: 'NONE',
+        createdAt: Date.now(),
+        scramble: scrambleText,
+        note: '',
+        isBookmarked: false,
+        event: getCurrentEvent() // 이 solve가 기록된 시점의 종목
+      };
+
+      session.solves.unshift(newSolve);
+      saveCurrentSession(session);
+    }
+
+    renderRecentSolves();
+    renderStats();
+    if (typeof renderSolvesList === 'function') {
+      renderSolvesList();
+    }
+
+    // 다음 solve를 위한 새 스크램블 준비
+    requestNewScramble();
+  }
+
+  // 최근 기록 클릭시 바텀시트 열기
+  document.addEventListener('click', (e) => {
+    const item = e.target.closest('.recent-solve-item, [data-id]');
+    if (item) {
+      const solveId = item.getAttribute('data-id');
+      if (solveId) {
+        if (typeof openSolveBottomSheet === 'function') {
+          openSolveBottomSheet(solveId);
+        } else if (window.openSolveBottomSheet) {
+          window.openSolveBottomSheet(solveId);
+        }
+      }
     }
   });
 
-  // 2. 아이패드 사용자를 위한 터치(클릭) 이벤트 등록
-  timerDisplay.style.cursor = 'pointer'; // 터치 가능한 영역임을 시각적으로 표시
-  timerDisplay.addEventListener('click', () => {
-    handleTrigger();
+  // 💡 입력 이벤트 핸들러
+  function isBottomSheetOpen() {
+    const sheet = document.getElementById('detail-bottom-sheet');
+    return sheet && (sheet.classList.contains('open') || sheet.classList.contains('active'));
+  }
+
+  function handlePressStart(e) {
+    // 💡 바텀시트가 열려있을 때 바깥을 터치하면 타이머 실행 금지
+    if (isBottomSheetOpen()) {
+      return;
+    }
+
+    if (e && e.target && e.target.closest('button, a, input, select, .nav-item, .tab-btn, .record-card, #detail-bottom-sheet, .bottom-sheet, .recent-solve-item, .recent-solves, .solve-list, [data-id]')) {
+      return;
+    }
+
+    if (isRunning) {
+      clearTimeout(holdTimeout);
+      stopTimer();
+      return;
+    }
+
+    timerDisplay.style.color = '#ef4444';
+    isReady = false;
+
+    clearTimeout(holdTimeout);
+    holdTimeout = setTimeout(() => {
+      isReady = true;
+      timerDisplay.style.color = '#22c55e';
+    }, 300);
+  }
+
+  function handlePressEnd(e) {
+    // 💡 바텀시트 열려있을 땐 터치 종료도 무시
+    if (isBottomSheetOpen()) {
+      return;
+    }
+
+    if (e && e.target && e.target.closest('button, a, input, select, .nav-item, .tab-btn, .record-card, #detail-bottom-sheet, .bottom-sheet, .recent-solve-item, .recent-solves, .solve-list, [data-id]')) {
+      return;
+    }
+
+    clearTimeout(holdTimeout);
+
+    if (isRunning) return;
+
+    if (isReady) {
+      startTimer();
+    } else {
+      timerDisplay.style.color = '';
+    }
+    isReady = false;
+  }
+
+  document.addEventListener('touchstart', (e) => {
+    lastTouchEventTime = Date.now();
+    handlePressStart(e);
+  }, { passive: true });
+
+  document.addEventListener('touchend', (e) => {
+    lastTouchEventTime = Date.now();
+    handlePressEnd(e);
+  });
+
+  // 💡 터치 직후 브라우저가 자동으로 쏘는 synthetic(ghost) mousedown/mouseup은
+  //    실제 사용자 입력이 아니므로 무시한다 (0.03초 오작동 정지의 근본 원인).
+  document.addEventListener('mousedown', (e) => {
+    if (e.button !== 0) return;
+    if (Date.now() - lastTouchEventTime < GHOST_EVENT_WINDOW_MS) return;
+    handlePressStart(e);
+  });
+  document.addEventListener('mouseup', (e) => {
+    if (e.button !== 0) return;
+    if (Date.now() - lastTouchEventTime < GHOST_EVENT_WINDOW_MS) return;
+    handlePressEnd(e);
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.code === 'Space' && !e.repeat) {
+      e.preventDefault();
+      handlePressStart();
+    }
+  });
+  document.addEventListener('keyup', (e) => {
+    if (e.code === 'Space') {
+      e.preventDefault();
+      handlePressEnd();
+    }
   });
 }
