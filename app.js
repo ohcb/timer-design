@@ -8,6 +8,8 @@ import { initStats } from './stats.js';
 import { initSolves } from './solves.js';
 import { initSessionUI } from './session.js';
 import { initEventManager } from './event.js';
+import { initScramble } from './scramble.js';
+
 
 
 
@@ -33,5 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
   safeInit('Stats', initStats);
   safeInit('Timer', initTimer);
   safeInit('EventManager', initEventManager);
+  safeInit('Scramble', initScramble);
+
 
 });
