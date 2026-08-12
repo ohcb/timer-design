@@ -568,41 +568,90 @@
       </div>
 
       <div id="screen-settings" class="tab-screen sub-screen">
-        <div class="sub-screen-header">
-          <button class="back-btn">‹ Back</button>
-          <h2>Settings</h2>
+  <div class="sub-screen-header">
+    <button class="back-btn">‹ Back</button>
+    <h2>Settings</h2>
+  </div>
+  <div class="more-hub-container">
+
+    <div class="hub-card">
+      <div class="card-header-flex" style="margin-bottom: 12px;">
+        <span class="card-title">TIMER SETTINGS</span>
+      </div>
+      <div class="hub-menu-list">
+        <div class="hub-item">
+          <div class="item-text"><span class="item-title">Ready 시간</span></div>
+          <select id="setting-ready-time" class="custom-dropdown">
+            <option value="0">Off</option>
+            <option value="300">0.3s</option>
+            <option value="500">0.5s</option>
+            <option value="800">0.8s</option>
+          </select>
         </div>
-        <div class="more-hub-container">
-          <div class="hub-card">
-            <div class="hub-menu-list">
-              <div class="hub-item">
-                <span class="item-icon">⏱️</span>
-                <div class="item-text">
-                  <span class="item-title">Timer Settings</span>
-                  <span class="item-desc">Inspection, Hold Time, Hide Time</span>
-                </div>
-                <span class="item-arrow">›</span>
-              </div>
-              <div class="hub-item">
-                <span class="item-icon">🎨</span>
-                <div class="item-text">
-                  <span class="item-title">Appearance / Theme</span>
-                  <span class="item-desc">Dark Purple, Neon, etc.</span>
-                </div>
-                <span class="item-arrow">›</span>
-              </div>
-              <div class="hub-item">
-                <span class="item-icon">⚙️</span>
-                <div class="item-text">
-                  <span class="item-title">Preferences</span>
-                  <span class="item-desc">General app behavior</span>
-                </div>
-                <span class="item-arrow">›</span>
-              </div>
-            </div>
-          </div>
+        <div class="hub-item">
+          <div class="item-text"><span class="item-title">기록 측정 방식</span></div>
+          <select id="setting-input-method" class="custom-dropdown">
+            <option value="timer">타이머</option>
+            <option value="manual">직접입력</option>
+            <option value="bluetooth">블루투스 타이머</option>
+            <option value="smartcube">스마트큐브</option>
+          </select>
+        </div>
+        <div class="hub-item">
+          <div class="item-text"><span class="item-title">측정 중 시간 표시</span></div>
+          <select id="setting-display-mode" class="custom-dropdown">
+            <option value="hidden">숨김</option>
+            <option value="realtime">실시간</option>
+            <option value="sec1">1초 단위</option>
+          </select>
+        </div>
+        <div class="hub-item">
+          <div class="item-text"><span class="item-title">측정 중 화면</span></div>
+          <select id="setting-focus-mode" class="custom-dropdown">
+            <option value="timer-only">측정 화면만</option>
+            <option value="fullscreen">전체 화면</option>
+          </select>
         </div>
       </div>
+    </div>
+
+    <div class="hub-card">
+      <div class="card-header-flex" style="margin-bottom: 12px;">
+        <span class="card-title">APPEARANCE</span>
+      </div>
+      <div class="hub-menu-list">
+        <div class="hub-item">
+          <div class="item-text"><span class="item-title">Theme</span></div>
+          <select id="setting-theme" class="custom-dropdown">
+            <option value="dark-purple">Dark Purple</option>
+            <option value="midnight-blue">Midnight Blue</option>
+          </select>
+        </div>
+        <div class="hub-item">
+          <div class="item-text"><span class="item-title">Roundness</span></div>
+          <input type="range" id="setting-roundness" min="0" max="1.6" step="0.1" style="width: 120px;" />
+        </div>
+      </div>
+    </div>
+
+    <div class="hub-card">
+      <div class="card-header-flex" style="margin-bottom: 12px;">
+        <span class="card-title">PREFERENCES</span>
+      </div>
+      <div class="hub-menu-list">
+        <div class="hub-item">
+          <div class="item-text">
+            <span class="item-title">Inspection</span>
+            <span class="item-desc">15초 인스펙션 사용</span>
+          </div>
+          <input type="checkbox" id="setting-inspection" />
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 
       <div id="screen-data" class="tab-screen sub-screen">
         <div class="sub-screen-header">
