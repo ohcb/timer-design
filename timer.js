@@ -5,18 +5,24 @@ import { renderSolvesList } from './solves.js';
 import { openSolveBottomSheet } from './solve-bottom-sheet.js';
 import { getCurrentEvent, getSolveEvent } from './event.js';
 import { requestNewScramble } from './scramble.js';
+import { getSetting } from './settings.js';
 
 let isRunning = false;
 let startTime = 0;
 let elapsedTime = 0;
 let holdTimeout = null;
 let isReady = false;
+let isInspecting = false;
+let inspectionInterval = null;
 let lastTouchEventTime = 0;      // 마지막 실제 터치 이벤트 시각 (ghost mouse event 판별용)
 let timerListenersBound = false; // document 레벨 리스너 중복 등록 방지 가드
 
 // 터치 종료 후 브라우저가 자동으로 만들어내는 synthetic mousedown/mouseup을
 // 무시하기 위한 유예 시간(ms). 실기기/브라우저별로 보통 300ms 이내에 발생함.
 const GHOST_EVENT_WINDOW_MS = 600;
+
+// WCA 관례상 표준 인스펙션 시간(초). 별도 설정 UI 없이 고정값으로 사용.
+const INSPECTION_SECONDS = 15;
 
 // 1. 시간 포맷팅 헬퍼
 export function formatTime(ms, penalty) {
@@ -167,6 +173,15 @@ export function initTimer() {
   });
 
   function updateDisplay(ms) {
+    const mode = getSetting('displayMode');
+    if (mode === 'hidden') {
+      timerDisplay.textContent = '●';
+      return;
+    }
+    if (mode === 'sec1') {
+      timerDisplay.textContent = `${Math.floor(ms / 1000)}`;
+      return;
+    }
     timerDisplay.textContent = (ms / 1000).toFixed(2);
   }
 
@@ -174,6 +189,10 @@ export function initTimer() {
     isRunning = true;
     startTime = performance.now();
     timerDisplay.style.color = '#ffffff';
+
+    if (getSetting('focusMode') === 'fullscreen') {
+      document.body.classList.add('cub3-solving-fullscreen');
+    }
 
     function tick() {
       if (!isRunning) return;
@@ -184,20 +203,52 @@ export function initTimer() {
     requestAnimationFrame(tick);
   }
 
-  function stopTimer() {
-    isRunning = false;
-    isReady = false; // 방어적 초기화: 다음 press 사이클이 이전 상태를 이어받지 않게 함
-    timerDisplay.style.color = '';
+  // Inspection: 준비 완료 후 바로 시작하는 대신 카운트다운을 먼저 보여줌.
+  // 카운트다운 중 다시 누르면 그 시점에 바로 솔브 시작, 0에 도달하면 자동 시작.
+  function startInspection() {
+    isInspecting = true;
+    let remaining = INSPECTION_SECONDS;
+    timerDisplay.style.color = '#f59e0b';
+    timerDisplay.textContent = String(remaining);
 
+    inspectionInterval = setInterval(() => {
+      remaining -= 1;
+      if (remaining <= 0) {
+        clearInterval(inspectionInterval);
+        isInspecting = false;
+        startTimer();
+        return;
+      }
+      timerDisplay.textContent = String(remaining);
+    }, 1000);
+  }
+
+  function cancelInspectionAndStart() {
+    clearInterval(inspectionInterval);
+    isInspecting = false;
+    startTimer();
+  }
+
+  // Ready 완료 후: Inspection 설정이 켜져있으면 인스펙션부터, 아니면 바로 시작
+  function beginSolveSequence() {
+    if (getSetting('inspectionEnabled')) {
+      startInspection();
+    } else {
+      startTimer();
+    }
+  }
+
+  // 실제 solve 저장 로직 (자동 측정 종료 / 수동 입력 공통 사용)
+  function persistSolve(ms) {
     const session = getCurrentSession();
     if (session) {
       if (!session.solves) session.solves = [];
 
-      const scrambleText = document.querySelector('.scramble-text')?.textContent || '';
-      
+      const scrambleText = document.querySelector('.scramble-zone .scramble-text')?.textContent || '';
+
       const newSolve = {
         id: Date.now(),
-        time: Math.round(elapsedTime),
+        time: Math.round(ms),
         penalty: 'NONE',
         createdAt: Date.now(),
         scramble: scrambleText,
@@ -218,6 +269,15 @@ export function initTimer() {
 
     // 다음 solve를 위한 새 스크램블 준비
     requestNewScramble();
+  }
+
+  function stopTimer() {
+    isRunning = false;
+    isReady = false; // 방어적 초기화: 다음 press 사이클이 이전 상태를 이어받지 않게 함
+    timerDisplay.style.color = '';
+    document.body.classList.remove('cub3-solving-fullscreen');
+
+    persistSolve(elapsedTime);
   }
 
   // 최근 기록 클릭시 바텀시트 열기
@@ -242,12 +302,23 @@ export function initTimer() {
   }
 
   function handlePressStart(e) {
+    // 타이머 입력 방식이 'timer'가 아니면(직접입력/블루투스/스마트큐브) 이 흐름을 쓰지 않음
+    if (getSetting('inputMethod') !== 'timer') {
+      return;
+    }
+
     // 💡 바텀시트가 열려있을 때 바깥을 터치하면 타이머 실행 금지
     if (isBottomSheetOpen()) {
       return;
     }
 
     if (e && e.target && e.target.closest('button, a, input, select, .nav-item, .tab-btn, .record-card, #detail-bottom-sheet, .bottom-sheet, .recent-solve-item, .recent-solves, .solve-list, [data-id]')) {
+      return;
+    }
+
+    // Inspection 중에 누르면 그 즉시 인스펙션을 끝내고 솔브 시작
+    if (isInspecting) {
+      cancelInspectionAndStart();
       return;
     }
 
@@ -264,10 +335,14 @@ export function initTimer() {
     holdTimeout = setTimeout(() => {
       isReady = true;
       timerDisplay.style.color = '#22c55e';
-    }, 300);
+    }, getSetting('readyTimeMs'));
   }
 
   function handlePressEnd(e) {
+    if (getSetting('inputMethod') !== 'timer') {
+      return;
+    }
+
     // 💡 바텀시트 열려있을 땐 터치 종료도 무시
     if (isBottomSheetOpen()) {
       return;
@@ -279,10 +354,10 @@ export function initTimer() {
 
     clearTimeout(holdTimeout);
 
-    if (isRunning) return;
+    if (isRunning || isInspecting) return;
 
     if (isReady) {
-      startTimer();
+      beginSolveSequence();
     } else {
       timerDisplay.style.color = '';
     }
@@ -324,4 +399,44 @@ export function initTimer() {
       handlePressEnd();
     }
   });
+
+  // 💡 기록 측정 방식: '직접입력'일 때 타이머 존을 탭하면 수동 입력 프롬프트
+  document.addEventListener('click', (e) => {
+    if (getSetting('inputMethod') !== 'manual') return;
+    if (isBottomSheetOpen()) return;
+    if (e.target.closest('button, a, input, select, .nav-item, .tab-btn, .record-card, #detail-bottom-sheet, .bottom-sheet, .recent-solve-item, .recent-solves, .solve-list, [data-id]')) return;
+    if (!e.target.closest('.timer-zone') && e.target !== timerDisplay) return;
+
+    const input = prompt('기록을 입력하세요 (초 단위, 예: 12.34)');
+    if (input === null) return;
+
+    const sec = parseFloat(String(input).replace(',', '.'));
+    if (isNaN(sec) || sec < 0) {
+      alert('올바른 숫자를 입력해주세요.');
+      return;
+    }
+
+    persistSolve(sec * 1000);
+  });
+
+  // 입력 방식이 timer/manual이 아닌 동안(블루투스/스마트큐브)에는
+  // 아직 실제 하드웨어 연동이 없다는 걸 화면에 명확히 표시
+  function updateInputMethodIndicator() {
+    const method = getSetting('inputMethod');
+    if (method === 'bluetooth') {
+      timerDisplay.textContent = '블루투스 타이머 연동 준비 중';
+    } else if (method === 'smartcube') {
+      timerDisplay.textContent = '스마트큐브 연동 준비 중';
+    } else if (!isRunning && !isInspecting) {
+      timerDisplay.textContent = '0.00';
+    }
+  }
+
+  document.addEventListener('cub3:settings-changed', (e) => {
+    if (e.detail && e.detail.key === 'inputMethod') {
+      updateInputMethodIndicator();
+    }
+  });
+
+  updateInputMethodIndicator();
 }
