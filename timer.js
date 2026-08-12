@@ -11,6 +11,12 @@ let startTime = 0;
 let elapsedTime = 0;
 let holdTimeout = null;
 let isReady = false;
+let lastTouchEventTime = 0;      // 마지막 실제 터치 이벤트 시각 (ghost mouse event 판별용)
+let timerListenersBound = false; // document 레벨 리스너 중복 등록 방지 가드
+
+// 터치 종료 후 브라우저가 자동으로 만들어내는 synthetic mousedown/mouseup을
+// 무시하기 위한 유예 시간(ms). 실기기/브라우저별로 보통 300ms 이내에 발생함.
+const GHOST_EVENT_WINDOW_MS = 600;
 
 // 1. 시간 포맷팅 헬퍼
 export function formatTime(ms, penalty) {
@@ -135,6 +141,10 @@ export function initTimer() {
 
   if (!timerDisplay) return;
 
+  // initTimer가 실수로 두 번 호출되어도 document 리스너가 중복 등록되지 않게 함
+  if (timerListenersBound) return;
+  timerListenersBound = true;
+
   const timerZone = timerDisplay.closest('.timer-zone') || timerDisplay.parentElement;
   if (timerZone) {
     timerZone.style.userSelect = 'none';
@@ -176,6 +186,7 @@ export function initTimer() {
 
   function stopTimer() {
     isRunning = false;
+    isReady = false; // 방어적 초기화: 다음 press 사이클이 이전 상태를 이어받지 않게 함
     timerDisplay.style.color = '';
 
     const session = getCurrentSession();
@@ -241,6 +252,7 @@ export function initTimer() {
     }
 
     if (isRunning) {
+      clearTimeout(holdTimeout);
       stopTimer();
       return;
     }
@@ -277,11 +289,28 @@ export function initTimer() {
     isReady = false;
   }
 
-  document.addEventListener('touchstart', handlePressStart, { passive: true });
-  document.addEventListener('touchend', handlePressEnd);
+  document.addEventListener('touchstart', (e) => {
+    lastTouchEventTime = Date.now();
+    handlePressStart(e);
+  }, { passive: true });
 
-  document.addEventListener('mousedown', (e) => { if (e.button === 0) handlePressStart(e); });
-  document.addEventListener('mouseup', (e) => { if (e.button === 0) handlePressEnd(e); });
+  document.addEventListener('touchend', (e) => {
+    lastTouchEventTime = Date.now();
+    handlePressEnd(e);
+  });
+
+  // 💡 터치 직후 브라우저가 자동으로 쏘는 synthetic(ghost) mousedown/mouseup은
+  //    실제 사용자 입력이 아니므로 무시한다 (0.03초 오작동 정지의 근본 원인).
+  document.addEventListener('mousedown', (e) => {
+    if (e.button !== 0) return;
+    if (Date.now() - lastTouchEventTime < GHOST_EVENT_WINDOW_MS) return;
+    handlePressStart(e);
+  });
+  document.addEventListener('mouseup', (e) => {
+    if (e.button !== 0) return;
+    if (Date.now() - lastTouchEventTime < GHOST_EVENT_WINDOW_MS) return;
+    handlePressEnd(e);
+  });
 
   document.addEventListener('keydown', (e) => {
     if (e.code === 'Space' && !e.repeat) {
