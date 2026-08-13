@@ -100,6 +100,26 @@ export function renderSessionList() {
   completedList.innerHTML = completedSessions.map(s => completedCardHTML(s)).join('');
 }
 
+// 상단 탑바의 Session 드롭다운을 실제 세션 목록/현재 세션과 동기화
+export function renderHeaderSessionSelect() {
+  const select = document.getElementById('header-session-select');
+  if (!select) return;
+
+  const currentId = getCurrentSessionId();
+  const activeSessions = getSessions({ status: 'active' });
+
+  select.innerHTML = activeSessions
+    .map(s => `<option value="${s.id}">${escapeHtml(s.name)}</option>`)
+    .join('');
+
+  select.value = currentId;
+}
+
+function refreshSessionUI() {
+  renderSessionList();
+  renderHeaderSessionSelect();
+}
+
 // ==========================================
 // 3. 모달 (Rename / Archive / Delete 메뉴)
 // ==========================================
@@ -122,7 +142,20 @@ function closeSessionModal() {
 // ==========================================
 
 export function initSessionUI() {
-  renderSessionList();
+  refreshSessionUI();
+
+  // 헤더 Session 드롭다운에서 직접 세션을 바꾸는 경우
+  document.addEventListener('change', (e) => {
+    if (e.target.matches('#header-session-select')) {
+      switchSession(e.target.value);
+      refreshSessionUI();
+    }
+  });
+
+  // 다른 경로(예: 세션 자동 전환 등)로 currentSession이 바뀌어도 헤더/목록 동기화
+  document.addEventListener('cub3:session-changed', () => {
+    refreshSessionUI();
+  });
 
   document.addEventListener('click', (e) => {
     // 새 세션 생성
@@ -131,7 +164,7 @@ export function initSessionUI() {
       const name = prompt('세션 이름을 입력하세요', defaultName);
       if (name && name.trim()) {
         createSession(name.trim(), '333');
-        renderSessionList();
+        refreshSessionUI();
       }
       return;
     }
@@ -153,7 +186,7 @@ export function initSessionUI() {
       const card = restoreBtn.closest('.session-manage-card');
       if (card) {
         archiveSession(card.getAttribute('data-session-id'));
-        renderSessionList();
+        refreshSessionUI();
       }
       return;
     }
@@ -164,7 +197,7 @@ export function initSessionUI() {
       const card = deleteBtnCompleted.closest('.session-manage-card');
       if (card && confirm('이 세션을 완전히 삭제하시겠습니까? 복구할 수 없습니다.')) {
         deleteSession(card.getAttribute('data-session-id'));
-        renderSessionList();
+        refreshSessionUI();
       }
       return;
     }
@@ -173,7 +206,7 @@ export function initSessionUI() {
     const activeCard = e.target.closest('#active-session-list .session-manage-card');
     if (activeCard) {
       switchSession(activeCard.getAttribute('data-session-id'));
-      renderSessionList();
+      refreshSessionUI();
       return;
     }
 
@@ -184,7 +217,7 @@ export function initSessionUI() {
         const newName = prompt('새 세션 이름', target ? target.name : '');
         if (newName && newName.trim()) {
           renameSession(modalTargetId, newName.trim());
-          renderSessionList();
+          refreshSessionUI();
         }
       }
       closeSessionModal();
@@ -195,7 +228,7 @@ export function initSessionUI() {
     if (e.target.closest('#modal-opt-archive')) {
       if (modalTargetId) {
         archiveSession(modalTargetId);
-        renderSessionList();
+        refreshSessionUI();
       }
       closeSessionModal();
       return;
@@ -205,7 +238,7 @@ export function initSessionUI() {
     if (e.target.closest('#modal-opt-delete')) {
       if (modalTargetId && confirm('이 세션을 완전히 삭제하시겠습니까? 복구할 수 없습니다.')) {
         deleteSession(modalTargetId);
-        renderSessionList();
+        refreshSessionUI();
       }
       closeSessionModal();
       return;
