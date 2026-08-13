@@ -43,6 +43,12 @@ export function initTabs() {
     });
 
     syncNavWithActiveScreen(targetScreenId);
+
+    // 💡 이 화면이 방금 켜졌다는 걸 전역에 알림 — 각 탭 모듈이 구독해서
+    //    새로고침 없이 항상 최신 데이터로 다시 그리도록 함
+    document.dispatchEvent(new CustomEvent('cub3:tab-activated', {
+      detail: { screenId: targetScreenId }
+    }));
   }
 
   // 4. 초기 화면 설정 (기본값: screen-timer)
