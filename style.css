@@ -343,10 +343,4 @@ nav.bottom-nav {
   --card-bg: #1e293b;
 }
 
-body.cub3-solving-fullscreen .topbar,
-body.cub3-solving-fullscreen .dashboard-panel,
-body.cub3-solving-fullscreen .main-app-navigation,
-body.cub3-solving-fullscreen nav.bottom-nav {
-  display: none !important;
-}
 
