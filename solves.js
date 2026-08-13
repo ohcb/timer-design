@@ -88,6 +88,11 @@ export function initSolves() {
     renderSolvesList();
   });
 
+  // 세션이 바뀌면(Session 탭 전환, 헤더 드롭다운) 목록도 즉시 갱신
+  document.addEventListener('cub3:session-changed', () => {
+    renderSolvesList();
+  });
+
   // Solves 카드 클릭 시 바텀시트 열기
   document.addEventListener('click', (e) => {
     if (e.target.closest('[data-tab], [data-target], .nav-item, .tab-btn')) {
