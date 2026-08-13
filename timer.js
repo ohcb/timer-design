@@ -190,8 +190,8 @@ export function initTimer() {
     startTime = performance.now();
     timerDisplay.style.color = '#ffffff';
 
-    if (getSetting('focusMode') === 'fullscreen') {
-      document.body.classList.add('cub3-solving-fullscreen');
+    if (getSetting('focusMode') === 'timer-only') {
+      document.body.classList.add('cub3-measure-only');
     }
 
     function tick() {
@@ -275,7 +275,7 @@ export function initTimer() {
     isRunning = false;
     isReady = false; // 방어적 초기화: 다음 press 사이클이 이전 상태를 이어받지 않게 함
     timerDisplay.style.color = '';
-    document.body.classList.remove('cub3-solving-fullscreen');
+    document.body.classList.remove('cub3-measure-only');
 
     persistSolve(elapsedTime);
   }
@@ -407,12 +407,12 @@ export function initTimer() {
     if (e.target.closest('button, a, input, select, .nav-item, .tab-btn, .record-card, #detail-bottom-sheet, .bottom-sheet, .recent-solve-item, .recent-solves, .solve-list, [data-id]')) return;
     if (!e.target.closest('.timer-zone') && e.target !== timerDisplay) return;
 
-    const input = prompt('기록을 입력하세요 (초 단위, 예: 12.34)');
+    const input = prompt('Enter time in seconds (e.g. 12.34)');
     if (input === null) return;
 
     const sec = parseFloat(String(input).replace(',', '.'));
     if (isNaN(sec) || sec < 0) {
-      alert('올바른 숫자를 입력해주세요.');
+      alert('Please enter a valid number.');
       return;
     }
 
@@ -424,9 +424,9 @@ export function initTimer() {
   function updateInputMethodIndicator() {
     const method = getSetting('inputMethod');
     if (method === 'bluetooth') {
-      timerDisplay.textContent = '블루투스 타이머 연동 준비 중';
+      timerDisplay.textContent = 'Bluetooth timer coming soon';
     } else if (method === 'smartcube') {
-      timerDisplay.textContent = '스마트큐브 연동 준비 중';
+      timerDisplay.textContent = 'Smart cube support coming soon';
     } else if (!isRunning && !isInspecting) {
       timerDisplay.textContent = '0.00';
     }
