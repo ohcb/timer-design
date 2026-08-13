@@ -172,6 +172,12 @@ export function initTimer() {
     renderStats();
   });
 
+  // 세션이 바뀌면(Session 탭에서 전환하든, 헤더 드롭다운에서 바꾸든) 즉시 갱신
+  document.addEventListener('cub3:session-changed', () => {
+    renderRecentSolves();
+    renderStats();
+  });
+
   function updateDisplay(ms) {
     const mode = getSetting('displayMode');
     if (mode === 'hidden') {
