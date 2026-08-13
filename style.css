@@ -343,4 +343,83 @@ nav.bottom-nav {
   --card-bg: #1e293b;
 }
 
+/* ==========================================================================
+   Settings 개선사항 추가 CSS
+   style.css 파일 맨 아래에 그대로 붙여넣으세요.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Roundness 기준 변수 (혹시 :root에 아직 없다면 이걸로 보장)
+   -------------------------------------------------------------------------- */
+:root {
+  --roundness-scale: 1;
+}
+
+/* --------------------------------------------------------------------------
+   2. Roundness 실제 적용 — 앱 전체에서 실제로 쓰이는 border-radius를
+      전부 calc(원래 값 * var(--roundness-scale))로 오버라이드.
+      각 원본 파일에 !important가 있던 것들과 동일하게 !important 유지.
+   -------------------------------------------------------------------------- */
+
+/* solves.css 소속 */
+.icon-control-btn { border-radius: calc(10px * var(--roundness-scale)); }
+.custom-dropdown { border-radius: calc(10px * var(--roundness-scale)) !important; }
+.record-card { border-radius: calc(10px * var(--roundness-scale)); }
+.badge { border-radius: calc(3px * var(--roundness-scale)); }
+#detail-bottom-sheet .bottom-sheet-content {
+  border-radius: calc(28px * var(--roundness-scale)) calc(28px * var(--roundness-scale)) 0 0 !important;
+}
+.scramble-box-wrapper { border-radius: calc(8px * var(--roundness-scale)); }
+.penalty-segmented-control { border-radius: calc(8px * var(--roundness-scale)); }
+.penalty-btn { border-radius: calc(6px * var(--roundness-scale)); }
+.sheet-header-btn { border-radius: calc(6px * var(--roundness-scale)); }
+.sheet-context-menu, #sheet-context-menu { border-radius: calc(10px * var(--roundness-scale)) !important; }
+.menu-item { border-radius: calc(6px * var(--roundness-scale)) !important; }
+#global-undo-toast { border-radius: calc(12px * var(--roundness-scale)) !important; }
+
+/* session.css 소속 */
+.primary-btn-purple { border-radius: calc(10px * var(--roundness-scale)) !important; }
+.session-manage-card { border-radius: calc(16px * var(--roundness-scale)) !important; }
+.session-empty-card { border-radius: calc(16px * var(--roundness-scale)) !important; }
+.session-modal-sheet {
+  border-top-left-radius: calc(20px * var(--roundness-scale)) !important;
+  border-top-right-radius: calc(20px * var(--roundness-scale)) !important;
+}
+.modal-menu-list { border-radius: calc(12px * var(--roundness-scale)) !important; }
+.modal-cancel-btn { border-radius: calc(12px * var(--roundness-scale)) !important; }
+
+/* more.css 소속 */
+.more-hub-container .hub-card { border-radius: calc(16px * var(--roundness-scale)) !important; }
+.more-hub-container .edit-btn { border-radius: calc(8px * var(--roundness-scale)) !important; }
+.more-hub-container .hub-item { border-radius: calc(10px * var(--roundness-scale)) !important; }
+.back-btn { border-radius: calc(8px * var(--roundness-scale)) !important; }
+
+/* stats.css 소속 */
+.stats-event-button { border-radius: calc(8px * var(--roundness-scale)); }
+.stats-dropdown { border-radius: calc(10px * var(--roundness-scale)); }
+.scope-select { border-radius: calc(8px * var(--roundness-scale)); }
+.stats-card { border-radius: calc(14px * var(--roundness-scale)); }
+.stat-box { border-radius: calc(8px * var(--roundness-scale)); }
+.penalty-progress { border-radius: calc(6px * var(--roundness-scale)); }
+.chip-btn { border-radius: calc(6px * var(--roundness-scale)); }
+.chart-options-group { border-radius: calc(8px * var(--roundness-scale)); }
+
+/* timer.css / style.css 소속 */
+.clean-select { border-radius: calc(4px * var(--roundness-scale)); }
+
+/* --------------------------------------------------------------------------
+   3. Screen While Measuring — "Measurement Screen Only"는 시간 숫자만 남기고
+      Scramble / TopBar / BottomNav / Session·Event 정보 / 버튼류 전부 숨김.
+      "Full Screen"은 기존 UI를 그대로 유지 (아무 것도 숨기지 않음).
+   -------------------------------------------------------------------------- */
+body.cub3-measure-only .topbar,
+body.cub3-measure-only .scramble-zone,
+body.cub3-measure-only .dashboard-panel,
+body.cub3-measure-only .main-app-navigation,
+body.cub3-measure-only nav.bottom-nav,
+body.cub3-measure-only .timer-summary,
+body.cub3-measure-only .time-diff {
+  display: none !important;
+}
+
 
