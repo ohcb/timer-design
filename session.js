@@ -157,6 +157,14 @@ export function initSessionUI() {
     refreshSessionUI();
   });
 
+  // Session 탭으로 전환될 때마다 최신 solve 개수/ao5/best로 다시 그림
+  // (Timer 탭에서 솔브하는 동안엔 이 탭이 보이지 않으니, 돌아올 때 갱신하면 충분함)
+  document.addEventListener('cub3:tab-activated', (e) => {
+    if (e.detail && e.detail.screenId === 'screen-session') {
+      refreshSessionUI();
+    }
+  });
+
   document.addEventListener('click', (e) => {
     // 새 세션 생성
     if (e.target.closest('#create-session-btn, #empty-create-btn')) {
