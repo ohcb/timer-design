@@ -136,6 +136,22 @@ export function initStats() {
   document.addEventListener('cub3:event-changed', () => {
     if (isEventViewActive()) updateEventStatsData();
   });
+  document.addEventListener('cub3:session-changed', () => {
+    if (isEventViewActive()) updateEventStatsData();
+  });
+
+  // Stats 탭으로 전환될 때마다 최신 데이터로 다시 그림
+  // (Timer 탭에서 솔브하는 동안엔 이 탭이 안 보이니, 돌아올 때 갱신하면 충분함)
+  document.addEventListener('cub3:tab-activated', (e) => {
+    if (!e.detail || e.detail.screenId !== 'screen-stats') return;
+
+    if (isEventViewActive()) {
+      populateSessionSelect();
+      updateEventStatsData();
+    } else {
+      renderDistributionChart();
+    }
+  });
 
   // 6. 초기 화면 설정 (기본 overview 활성화)
   switchEventView('overview');
