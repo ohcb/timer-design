@@ -210,7 +210,8 @@ export function initTimer() {
   }
 
   // Inspection: 준비 완료 후 바로 시작하는 대신 카운트다운을 먼저 보여줌.
-  // 카운트다운 중 다시 누르면 그 시점에 바로 솔브 시작, 0에 도달하면 자동 시작.
+  // 카운트다운 중이든, 0에 도달해 멈춘 뒤든 — 사용자가 직접 눌러야 그 시점에 솔브가 시작됨.
+  // (0에 도달해도 자동으로 시작하지 않음)
   function startInspection() {
     isInspecting = true;
     let remaining = INSPECTION_SECONDS;
@@ -221,9 +222,9 @@ export function initTimer() {
       remaining -= 1;
       if (remaining <= 0) {
         clearInterval(inspectionInterval);
-        isInspecting = false;
-        startTimer();
-        return;
+        timerDisplay.textContent = '0';
+        timerDisplay.style.color = '#ef4444'; // 시간 다 됐다는 걸 색으로 표시, 자동 시작은 안 함
+        return; // isInspecting은 그대로 true 유지 → 다음 press가 곧 시작 트리거
       }
       timerDisplay.textContent = String(remaining);
     }, 1000);
