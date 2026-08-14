@@ -3,6 +3,7 @@
 import { getSessions, getCurrentSessionId } from './session-manager.js';
 import { getSolveEvent } from './event.js';
 import { calculateAoN, getBestTime } from './stats-calculator.js';
+import { formatTime } from './timer.js';
 
 let distributionChart = null;
 let timeProgressChart = null;
@@ -491,21 +492,24 @@ function calculateAndRenderStatistics(solvesData, subTargetTime = SUB_TARGET_SEC
     .map(s => (s.time / 1000) + (s.penalty === '+2' ? 2 : 0))
     .sort((a, b) => a - b);
 
+  // 초 단위 숫자를 formatTime(1분 넘으면 M:SS.xx)로 표시 — 빅큐브/BLD처럼 평균이 1분 넘는 경우 대응
+  const formatSec = (sec) => formatTime(sec * 1000, null);
+
   const sum = validTimes.reduce((a, b) => a + b, 0);
-  const mean = validTimes.length > 0 ? (sum / validTimes.length).toFixed(2) : '-';
-  const median = validTimes.length > 0 ? getQuantile(validTimes, 0.5).toFixed(2) : '-';
+  const mean = validTimes.length > 0 ? formatSec(sum / validTimes.length) : '-';
+  const median = validTimes.length > 0 ? formatSec(getQuantile(validTimes, 0.5)) : '-';
 
   let sd = '-';
   if (validTimes.length > 1) {
     const avg = sum / validTimes.length;
     const variance = validTimes.reduce((acc, cur) => acc + Math.pow(cur - avg, 2), 0) / validTimes.length;
-    sd = Math.sqrt(variance).toFixed(2);
+    sd = formatSec(Math.sqrt(variance));
   }
 
-  const p10 = validTimes.length > 0 ? getQuantile(validTimes, 0.10).toFixed(2) : '-';
-  const p25 = validTimes.length > 0 ? getQuantile(validTimes, 0.25).toFixed(2) : '-';
-  const p75 = validTimes.length > 0 ? getQuantile(validTimes, 0.75).toFixed(2) : '-';
-  const p90 = validTimes.length > 0 ? getQuantile(validTimes, 0.90).toFixed(2) : '-';
+  const p10 = validTimes.length > 0 ? formatSec(getQuantile(validTimes, 0.10)) : '-';
+  const p25 = validTimes.length > 0 ? formatSec(getQuantile(validTimes, 0.25)) : '-';
+  const p75 = validTimes.length > 0 ? formatSec(getQuantile(validTimes, 0.75)) : '-';
+  const p90 = validTimes.length > 0 ? formatSec(getQuantile(validTimes, 0.90)) : '-';
 
   const subCount = validTimes.filter(t => t < subTargetTime).length;
   const subRate = ((subCount / totalCount) * 100).toFixed(1);
@@ -530,13 +534,13 @@ function calculateAndRenderStatistics(solvesData, subTargetTime = SUB_TARGET_SEC
   const p2Pct = ((p2Count / totalCount) * 100).toFixed(0);
   const dnfPct = ((dnfCount / totalCount) * 100).toFixed(0);
 
-  setText('stat-mean', `${mean}s`);
-  setText('stat-median', `${median}s`);
-  setText('stat-sd', `${sd}s`);
-  setText('stat-p10', `${p10}s`);
-  setText('stat-p25', `${p25}s`);
-  setText('stat-p75', `${p75}s`);
-  setText('stat-p90', `${p90}s`);
+  setText('stat-mean', mean);
+  setText('stat-median', median);
+  setText('stat-sd', sd);
+  setText('stat-p10', p10);
+  setText('stat-p25', p25);
+  setText('stat-p75', p75);
+  setText('stat-p90', p90);
   setText('stat-sub-rate', `${subRate}% (${subCount})`);
   setText('stat-sub-streak', `${maxStreak} solves 🔥`);
   setText('stat-total-solves', totalCount.toLocaleString());
@@ -562,7 +566,7 @@ function renderPersonalBest(fullSolves) {
     if (el) el.textContent = text;
   };
 
-  const formatMs = (ms) => (ms / 1000).toFixed(2) + 's';
+  const formatMs = (ms) => formatTime(ms, null); // 1분 넘으면 M:SS.xx로 표시
 
   const chronoSolves = [...fullSolves].reverse(); // 오래된 순
 
