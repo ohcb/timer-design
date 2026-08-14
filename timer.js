@@ -25,14 +25,27 @@ const GHOST_EVENT_WINDOW_MS = 600;
 const INSPECTION_SECONDS = 15;
 
 // 1. 시간 포맷팅 헬퍼
+// ms(밀리초)를 1분 미만이면 "12.34", 1분 이상이면 "1:02.34" 형식으로 변환
+function msToClock(ms) {
+  const totalCentiseconds = Math.round(ms / 10);
+  const minutes = Math.floor(totalCentiseconds / 6000);
+  const seconds = Math.floor((totalCentiseconds % 6000) / 100);
+  const centis = totalCentiseconds % 100;
+
+  const secondsStr = String(seconds).padStart(2, '0');
+  const centisStr = String(centis).padStart(2, '0');
+
+  return minutes > 0 ? `${minutes}:${secondsStr}.${centisStr}` : `${seconds}.${centisStr}`;
+}
+
 export function formatTime(ms, penalty) {
   if (penalty === 'DNF') return 'DNF';
-  
+
   let totalMs = ms || 0;
   if (penalty === '+2') totalMs += 2000;
 
-  const seconds = (totalMs / 1000).toFixed(2);
-  return penalty === '+2' ? `${seconds}+` : seconds;
+  const formatted = msToClock(totalMs);
+  return penalty === '+2' ? `${formatted}+` : formatted;
 }
 
 // 2. 통계 계산 헬퍼
@@ -55,7 +68,7 @@ function calculateAverage(solves, count) {
   }
 
   const sum = times.reduce((acc, cur) => acc + cur, 0);
-  return (sum / times.length / 1000).toFixed(2);
+  return msToClock(sum / times.length);
 }
 
 // 3. Current & Best 통계 렌더링
@@ -87,7 +100,7 @@ export function renderStats() {
   let bestSingle = '-';
   if (validSolves.length > 0) {
     const bestMs = Math.min(...validSolves.map(s => s.time + (s.penalty === '+2' ? 2000 : 0)));
-    bestSingle = (bestMs / 1000).toFixed(2);
+    bestSingle = msToClock(bestMs);
   }
 
   statsTable.innerHTML = `
