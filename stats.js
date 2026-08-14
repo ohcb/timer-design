@@ -23,6 +23,11 @@ const STATS_EVENT_CODE_MAP = {
 
 const ALL_SESSIONS_VALUE = '__all__';
 
+// 초 단위 숫자를 formatTime 포맷(1분 넘으면 M:SS.xx)으로 통일 변환
+function formatSecondsClock(sec) {
+  return formatTime(sec * 1000, null);
+}
+
 // ==========================================
 // 0. 데이터 소스 헬퍼
 // ==========================================
@@ -377,10 +382,22 @@ function renderTimeProgressChart(chronoSolves = []) {
       maintainAspectRatio: false,
       scales: {
         x: { grid: { display: false }, ticks: { color: '#8e9297', font: { size: 10 } } },
-        y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#8e9297', font: { size: 10 } } }
+        y: {
+          grid: { color: 'rgba(255, 255, 255, 0.05)' },
+          ticks: {
+            color: '#8e9297',
+            font: { size: 10 },
+            callback: (value) => formatSecondsClock(value)
+          }
+        }
       },
       plugins: {
-        legend: { display: false }
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => formatSecondsClock(ctx.parsed.y)
+          }
+        }
       }
     }
   });
@@ -393,7 +410,7 @@ function buildHistogram(times, bucketCount = 7) {
   const max = Math.max(...times);
 
   if (min === max) {
-    return { labels: [`${min.toFixed(1)}s`], data: [times.length] };
+    return { labels: [formatSecondsClock(min)], data: [times.length] };
   }
 
   const bucketSize = (max - min) / bucketCount;
@@ -405,7 +422,7 @@ function buildHistogram(times, bucketCount = 7) {
     buckets[idx]++;
   });
 
-  const labels = buckets.map((_, i) => `${(min + i * bucketSize).toFixed(1)}s+`);
+  const labels = buckets.map((_, i) => `${formatSecondsClock(min + i * bucketSize)}+`);
   return { labels, data: buckets };
 }
 
@@ -492,8 +509,7 @@ function calculateAndRenderStatistics(solvesData, subTargetTime = SUB_TARGET_SEC
     .map(s => (s.time / 1000) + (s.penalty === '+2' ? 2 : 0))
     .sort((a, b) => a - b);
 
-  // 초 단위 숫자를 formatTime(1분 넘으면 M:SS.xx)로 표시 — 빅큐브/BLD처럼 평균이 1분 넘는 경우 대응
-  const formatSec = (sec) => formatTime(sec * 1000, null);
+  const formatSec = formatSecondsClock; // 모듈 상단 공용 헬퍼 재사용
 
   const sum = validTimes.reduce((a, b) => a + b, 0);
   const mean = validTimes.length > 0 ? formatSec(sum / validTimes.length) : '-';
