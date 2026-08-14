@@ -198,10 +198,15 @@ export function initTimer() {
       return;
     }
     if (mode === 'sec1') {
-      timerDisplay.textContent = `${Math.floor(ms / 1000)}`;
+      const totalSeconds = Math.floor(ms / 1000);
+      const minutes = Math.floor(totalSeconds / 60);
+      const seconds = totalSeconds % 60;
+      timerDisplay.textContent = minutes > 0
+        ? `${minutes}:${String(seconds).padStart(2, '0')}`
+        : `${seconds}`;
       return;
     }
-    timerDisplay.textContent = (ms / 1000).toFixed(2);
+    timerDisplay.textContent = msToClock(ms);
   }
 
   function startTimer() {
