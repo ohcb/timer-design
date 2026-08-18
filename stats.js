@@ -1,7 +1,7 @@
 // stats.js
 
 import { getSessions, getCurrentSessionId } from './session-manager.js';
-import { getSolveEvent } from './event.js';
+import { getSolveEvent, getEventName } from './event.js';
 import { calculateAoN, getBestTime } from './stats-calculator.js';
 import { formatTime } from './timer.js';
 
@@ -20,6 +20,21 @@ const STATS_EVENT_CODE_MAP = {
   '5x5': '555',
   'oh': '333oh'
 };
+
+// 역방향 매핑: 실제 종목 id -> Stats 짧은 코드 (드릴다운 가능 여부 판단용)
+const REAL_EVENT_TO_STATS_CODE = Object.fromEntries(
+  Object.entries(STATS_EVENT_CODE_MAP).map(([code, realId]) => [realId, code])
+);
+
+// 원그래프 분류 기준: 전체 기록에서 이 비율(%) 이상을 차지하는 종목만 개별 표시,
+// 나머지는 전부 Others로 합침. 종목 이름을 하드코딩하지 않고 실제 기록 수로만 판단.
+const DISTRIBUTION_INDIVIDUAL_SHARE_THRESHOLD = 0.05;
+const DISTRIBUTION_MAX_INDIVIDUAL_SLICES = 8;
+const DISTRIBUTION_COLORS = [
+  '#a855f7', '#3b82f6', '#10b981', '#f59e0b',
+  '#ec4899', '#14b8a6', '#f97316', '#6366f1'
+];
+const DISTRIBUTION_OTHERS_COLOR = '#6b7280';
 
 const ALL_SESSIONS_VALUE = '__all__';
 
@@ -229,19 +244,55 @@ function populateSessionSelect() {
 // 📊 Overview: 종목 분포 차트
 // ==========================================
 
+// 실제 기록 수를 기준으로 "개별 표시할 종목"과 "Others로 합칠 종목"을 동적으로 분류.
+// 종목 이름을 하드코딩하지 않고, 각 종목이 전체에서 차지하는 비율만으로 판단함.
+function classifyEventDistribution(allSolves) {
+  const total = allSolves.length;
+  if (total === 0) return { labels: [], eventIds: [], counts: [] };
+
+  const countMap = {};
+  allSolves.forEach(s => {
+    countMap[s.event] = (countMap[s.event] || 0) + 1;
+  });
+
+  const sorted = Object.entries(countMap)
+    .map(([eventId, count]) => ({ eventId, count }))
+    .sort((a, b) => b.count - a.count);
+
+  let individual = sorted.filter(item => (item.count / total) >= DISTRIBUTION_INDIVIDUAL_SHARE_THRESHOLD);
+
+  // 안전장치: 기록이 너무 잘게 퍼져서 개별 항목이 하나도 안 나오면 최소 1개(가장 많은 종목)는 개별 표시
+  if (individual.length === 0) individual = sorted.slice(0, 1);
+  // 안전장치: 슬라이스가 너무 많아지지 않게 상한선 적용 (넘치는 만큼은 Others로)
+  if (individual.length > DISTRIBUTION_MAX_INDIVIDUAL_SLICES) {
+    individual = individual.slice(0, DISTRIBUTION_MAX_INDIVIDUAL_SLICES);
+  }
+
+  const individualIds = new Set(individual.map(i => i.eventId));
+  const othersCount = sorted
+    .filter(item => !individualIds.has(item.eventId))
+    .reduce((sum, item) => sum + item.count, 0);
+
+  const labels = individual.map(item => getEventName(item.eventId));
+  const eventIds = individual.map(item => item.eventId);
+  const counts = individual.map(item => item.count);
+
+  if (othersCount > 0) {
+    labels.push('Others');
+    eventIds.push(null); // Others는 특정 종목 하나가 아니므로 null
+    counts.push(othersCount);
+  }
+
+  return { labels, eventIds, counts };
+}
+
 function renderDistributionChart() {
   const ctx = document.getElementById('distribution-chart');
   if (!ctx) return;
 
   const isMobile = window.innerWidth <= 600;
   const allSolves = getAllSolvesFlat();
-
-  const c333 = allSolves.filter(s => s.event === '333').length;
-  const c222 = allSolves.filter(s => s.event === '222').length;
-  const c444 = allSolves.filter(s => s.event === '444').length;
-  const cOh = allSolves.filter(s => s.event === '333oh').length;
   const total = allSolves.length;
-  const others = total - (c333 + c222 + c444 + cOh);
 
   // 전체 활동 요약 (Total Solves / Total Time)도 여기서 같이 갱신
   const totalTimeMs = allSolves.reduce((sum, s) => sum + (s.time || 0), 0);
@@ -259,11 +310,16 @@ function renderDistributionChart() {
     return;
   }
 
+  const { labels, eventIds, counts } = classifyEventDistribution(allSolves);
+  const colors = labels.map((label, i) =>
+    label === 'Others' ? DISTRIBUTION_OTHERS_COLOR : DISTRIBUTION_COLORS[i % DISTRIBUTION_COLORS.length]
+  );
+
   const chartData = {
-    labels: ['3x3', '2x2', '4x4', 'OH', 'Others'],
+    labels,
     datasets: [{
-      data: [c333, c222, c444, cOh, others],
-      backgroundColor: ['#a855f7', '#3b82f6', '#10b981', '#f59e0b', '#6b7280'],
+      data: counts,
+      backgroundColor: colors,
       borderWidth: 0,
       hoverOffset: 6
     }]
@@ -288,13 +344,14 @@ function renderDistributionChart() {
         if (!activeElements.length) return;
         const index = activeElements[0].index;
         const clickedEvent = chartData.labels[index];
+        const clickedEventId = eventIds[index];
         const solveCount = chartData.datasets[0].data[index];
         const percentage = total > 0 ? Math.round((solveCount / total) * 100) : 0;
 
-        if (clickedEvent === 'Others') return;
-
-        const eventDataMap = { '3x3': '3x3', '2x2': '2x2', '4x4': '4x4', 'OH': 'oh' };
-        const statsCode = eventDataMap[clickedEvent];
+        // Others이거나, 이 종목이 아직 Stats 종목별 뷰(2x2/3x3/4x4/5x5/OH)에서
+        // 지원되지 않는 종목이면 상세 화면으로 드릴다운하지 않음
+        const statsCode = clickedEventId ? REAL_EVENT_TO_STATS_CODE[clickedEventId] : null;
+        if (!statsCode) return;
 
         if (isMobile) {
           selectedMobileEvent = clickedEvent;
