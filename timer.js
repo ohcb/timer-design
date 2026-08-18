@@ -326,7 +326,19 @@ export function initTimer() {
     return sheet && (sheet.classList.contains('open') || sheet.classList.contains('active'));
   }
 
+  // Timer 화면이 실제로 활성화되어 있을 때만 시작 제스처가 동작해야 함
+  // (tabs.js는 다른 화면을 display:none으로 숨길 뿐, document 레벨 리스너는
+  //  그것과 무관하게 항상 반응하기 때문에 별도로 체크가 필요함)
+  function isTimerScreenActive() {
+    const screen = document.getElementById('screen-timer');
+    return !!screen && screen.classList.contains('active-screen');
+  }
+
   function handlePressStart(e) {
+    if (!isTimerScreenActive()) {
+      return;
+    }
+
     // 타이머 입력 방식이 'timer'가 아니면(직접입력/블루투스/스마트큐브) 이 흐름을 쓰지 않음
     if (getSetting('inputMethod') !== 'timer') {
       return;
@@ -364,6 +376,10 @@ export function initTimer() {
   }
 
   function handlePressEnd(e) {
+    if (!isTimerScreenActive()) {
+      return;
+    }
+
     if (getSetting('inputMethod') !== 'timer') {
       return;
     }
@@ -413,13 +429,13 @@ export function initTimer() {
   });
 
   document.addEventListener('keydown', (e) => {
-    if (e.code === 'Space' && !e.repeat) {
+    if (e.code === 'Space' && !e.repeat && isTimerScreenActive()) {
       e.preventDefault();
       handlePressStart();
     }
   });
   document.addEventListener('keyup', (e) => {
-    if (e.code === 'Space') {
+    if (e.code === 'Space' && isTimerScreenActive()) {
       e.preventDefault();
       handlePressEnd();
     }
@@ -427,6 +443,7 @@ export function initTimer() {
 
   // 💡 기록 측정 방식: '직접입력'일 때 타이머 존을 탭하면 수동 입력 프롬프트
   document.addEventListener('click', (e) => {
+    if (!isTimerScreenActive()) return;
     if (getSetting('inputMethod') !== 'manual') return;
     if (isBottomSheetOpen()) return;
     if (e.target.closest('button, a, input, select, .nav-item, .tab-btn, .record-card, #detail-bottom-sheet, .bottom-sheet, .recent-solve-item, .recent-solves, .solve-list, [data-id]')) return;
