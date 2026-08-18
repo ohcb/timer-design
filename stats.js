@@ -83,20 +83,18 @@ function applyScopeFilter(solves, scope) {
 }
 
 // Stats 탭의 종목 드롭다운을 event.js의 EVENT_LIST(전체 종목)로 채움.
-// 종목을 하드코딩하지 않고, 앱 전역에서 쓰는 종목 목록을 그대로 재사용함.
+// 다른 곳(Session/Event/Solves 필터)과 똑같이 진짜 <select>로 만들어서
+// 모양이 자동으로 통일되도록 함 (커스텀 버튼+플로팅메뉴 방식 폐기).
 function renderStatsEventMenu() {
-  const eventMenu = document.getElementById('stats-event-menu');
-  if (!eventMenu) return;
+  const select = document.getElementById('stats-event-select');
+  if (!select) return;
 
   const optionsHtml = [
-    `<button type="button" class="stats-option active" data-event="overview">Overview</button>`,
-    `<div class="dropdown-divider"></div>`,
-    ...EVENT_LIST.map(ev =>
-      `<button type="button" class="stats-option" data-event="${ev.id}">${ev.name}</button>`
-    )
+    `<option value="overview">Overview</option>`,
+    ...EVENT_LIST.map(ev => `<option value="${ev.id}">${ev.name}</option>`)
   ].join('');
 
-  eventMenu.innerHTML = optionsHtml;
+  select.innerHTML = optionsHtml;
 }
 
 // ==========================================
@@ -104,35 +102,21 @@ function renderStatsEventMenu() {
 // ==========================================
 
 export function initStats() {
-  const eventBtn = document.getElementById('stats-event-btn');
-  const eventMenu = document.getElementById('stats-event-menu');
+  const eventSelect = document.getElementById('stats-event-select');
   const scopeSelect = document.getElementById('stats-scope-select');
   const sessionSelect = document.getElementById('stats-session-select');
   const chipBtns = document.querySelectorAll('.chip-btn');
 
-  if (!eventBtn || !eventMenu) return;
+  if (!eventSelect) return;
 
   renderStatsEventMenu();
 
-  // 1. Overview 드롭다운 토글
-  eventBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const isHidden = eventMenu.style.display === 'none' || eventMenu.style.display === '';
-    eventMenu.style.display = isHidden ? 'flex' : 'none';
+  // 1. 종목 선택 및 화면 전환
+  eventSelect.addEventListener('change', (e) => {
+    switchEventView(e.target.value);
   });
 
-  document.addEventListener('click', () => {
-    eventMenu.style.display = 'none';
-  });
-
-  // 2. 종목 선택 및 화면 전환 (이벤트 위임 — 메뉴가 동적으로 다시 그려져도 항상 동작함)
-  eventMenu.addEventListener('click', (e) => {
-    const option = e.target.closest('.stats-option');
-    if (!option) return;
-    switchEventView(option.getAttribute('data-event'));
-  });
-
-  // 3. 세션 & 범위 선택 이벤트
+  // 2. 세션 & 범위 선택 이벤트
   if (scopeSelect) {
     scopeSelect.addEventListener('change', () => {
       updateEventStatsData();
@@ -145,7 +129,7 @@ export function initStats() {
     });
   }
 
-  // 4. Time Progress 칩 버튼 이벤트
+  // 3. Time Progress 칩 버튼 이벤트
   chipBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       chipBtns.forEach(b => b.classList.remove('active'));
@@ -155,7 +139,7 @@ export function initStats() {
     });
   });
 
-  // 5. 세션/종목이 앱 다른 곳에서 바뀌면(세션 전환, 종목 변경) 현재 보고 있는 통계도 갱신
+  // 4. 세션/종목이 앱 다른 곳에서 바뀌면(세션 전환, 종목 변경) 현재 보고 있는 통계도 갱신
   document.addEventListener('cub3:event-changed', () => {
     if (isEventViewActive()) updateEventStatsData();
   });
@@ -176,7 +160,7 @@ export function initStats() {
     }
   });
 
-  // 6. 초기 화면 설정 (기본 overview 활성화)
+  // 5. 초기 화면 설정 (기본 overview 활성화)
   switchEventView('overview');
 }
 
@@ -187,19 +171,11 @@ function isEventViewActive() {
 
 // 🎯 화면 전환 통합 제어 함수
 function switchEventView(eventName) {
-  const eventBtn = document.getElementById('stats-event-btn');
+  const eventSelect = document.getElementById('stats-event-select');
   const viewOverview = document.getElementById('stats-view-overview');
   const viewEvent = document.getElementById('stats-view-event');
-  const options = document.querySelectorAll('.stats-option');
 
-  options.forEach(opt => {
-    opt.classList.toggle('active', opt.getAttribute('data-event') === eventName);
-  });
-
-  const activeOption = Array.from(options).find(opt => opt.getAttribute('data-event') === eventName);
-  if (eventBtn) {
-    eventBtn.textContent = activeOption ? activeOption.textContent : 'Overview';
-  }
+  if (eventSelect) eventSelect.value = eventName;
 
   if (eventName === 'overview') {
     if (viewOverview) viewOverview.style.setProperty('display', 'flex', 'important');
@@ -214,10 +190,10 @@ function switchEventView(eventName) {
   }
 }
 
-// 현재 Stats 화면에서 선택된 종목의 실제 event id (data-event 값 자체가 실제 종목 id)
+// 현재 Stats 화면에서 선택된 종목의 실제 event id (select의 value 자체가 실제 종목 id)
 function getSelectedStatsEventId() {
-  const activeOption = document.querySelector('.stats-option.active');
-  return (activeOption && activeOption.getAttribute('data-event')) || '333';
+  const eventSelect = document.getElementById('stats-event-select');
+  return (eventSelect && eventSelect.value) || '333';
 }
 
 // Session 드롭다운을 실제 세션 목록으로 채움 ("전체 세션" 옵션 포함)
