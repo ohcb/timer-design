@@ -1,7 +1,7 @@
 // stats.js
 
 import { getSessions, getCurrentSessionId } from './session-manager.js';
-import { getSolveEvent, getEventName } from './event.js';
+import { getSolveEvent, getEventName, EVENT_LIST } from './event.js';
 import { calculateAoN, getBestTime } from './stats-calculator.js';
 import { formatTime } from './timer.js';
 
@@ -10,21 +10,6 @@ let timeProgressChart = null;
 let recordDistChart = null;
 let selectedMobileEvent = null;
 let currentChartType = 'single';
-
-// Stats 탭 자체 종목 드롭다운(Overview/2x2/3x3/4x4/5x5/OH)의 짧은 코드를
-// 실제 solve.event 값(WCA 종목 코드)으로 매핑
-const STATS_EVENT_CODE_MAP = {
-  '2x2': '222',
-  '3x3': '333',
-  '4x4': '444',
-  '5x5': '555',
-  'oh': '333oh'
-};
-
-// 역방향 매핑: 실제 종목 id -> Stats 짧은 코드 (드릴다운 가능 여부 판단용)
-const REAL_EVENT_TO_STATS_CODE = Object.fromEntries(
-  Object.entries(STATS_EVENT_CODE_MAP).map(([code, realId]) => [realId, code])
-);
 
 // 원그래프 분류 기준: 전체 기록에서 이 비율(%) 이상을 차지하는 종목만 개별 표시,
 // 나머지는 전부 Others로 합침. 종목 이름을 하드코딩하지 않고 실제 기록 수로만 판단.
@@ -97,6 +82,23 @@ function applyScopeFilter(solves, scope) {
   }
 }
 
+// Stats 탭의 종목 드롭다운을 event.js의 EVENT_LIST(전체 종목)로 채움.
+// 종목을 하드코딩하지 않고, 앱 전역에서 쓰는 종목 목록을 그대로 재사용함.
+function renderStatsEventMenu() {
+  const eventMenu = document.getElementById('stats-event-menu');
+  if (!eventMenu) return;
+
+  const optionsHtml = [
+    `<button type="button" class="stats-option active" data-event="overview">Overview</button>`,
+    `<div class="dropdown-divider"></div>`,
+    ...EVENT_LIST.map(ev =>
+      `<button type="button" class="stats-option" data-event="${ev.id}">${ev.name}</button>`
+    )
+  ].join('');
+
+  eventMenu.innerHTML = optionsHtml;
+}
+
 // ==========================================
 // 1. 초기화
 // ==========================================
@@ -104,12 +106,13 @@ function applyScopeFilter(solves, scope) {
 export function initStats() {
   const eventBtn = document.getElementById('stats-event-btn');
   const eventMenu = document.getElementById('stats-event-menu');
-  const options = document.querySelectorAll('.stats-option');
   const scopeSelect = document.getElementById('stats-scope-select');
   const sessionSelect = document.getElementById('stats-session-select');
   const chipBtns = document.querySelectorAll('.chip-btn');
 
   if (!eventBtn || !eventMenu) return;
+
+  renderStatsEventMenu();
 
   // 1. Overview 드롭다운 토글
   eventBtn.addEventListener('click', (e) => {
@@ -122,12 +125,11 @@ export function initStats() {
     eventMenu.style.display = 'none';
   });
 
-  // 2. 종목 선택 및 화면 전환
-  options.forEach(option => {
-    option.addEventListener('click', () => {
-      const selectedEvent = option.getAttribute('data-event');
-      switchEventView(selectedEvent);
-    });
+  // 2. 종목 선택 및 화면 전환 (이벤트 위임 — 메뉴가 동적으로 다시 그려져도 항상 동작함)
+  eventMenu.addEventListener('click', (e) => {
+    const option = e.target.closest('.stats-option');
+    if (!option) return;
+    switchEventView(option.getAttribute('data-event'));
   });
 
   // 3. 세션 & 범위 선택 이벤트
@@ -212,11 +214,10 @@ function switchEventView(eventName) {
   }
 }
 
-// 현재 Stats 화면에서 선택된 종목의 실제 event id ('3x3' -> '333')
+// 현재 Stats 화면에서 선택된 종목의 실제 event id (data-event 값 자체가 실제 종목 id)
 function getSelectedStatsEventId() {
   const activeOption = document.querySelector('.stats-option.active');
-  const code = activeOption ? activeOption.getAttribute('data-event') : '3x3';
-  return STATS_EVENT_CODE_MAP[code] || '333';
+  return (activeOption && activeOption.getAttribute('data-event')) || '333';
 }
 
 // Session 드롭다운을 실제 세션 목록으로 채움 ("전체 세션" 옵션 포함)
@@ -348,10 +349,8 @@ function renderDistributionChart() {
         const solveCount = chartData.datasets[0].data[index];
         const percentage = total > 0 ? Math.round((solveCount / total) * 100) : 0;
 
-        // Others이거나, 이 종목이 아직 Stats 종목별 뷰(2x2/3x3/4x4/5x5/OH)에서
-        // 지원되지 않는 종목이면 상세 화면으로 드릴다운하지 않음
-        const statsCode = clickedEventId ? REAL_EVENT_TO_STATS_CODE[clickedEventId] : null;
-        if (!statsCode) return;
+        // Others 슬라이스는 특정 종목 하나가 아니므로 드릴다운하지 않음
+        if (!clickedEventId) return;
 
         if (isMobile) {
           selectedMobileEvent = clickedEvent;
@@ -364,10 +363,10 @@ function renderDistributionChart() {
             mobileName.textContent = clickedEvent;
             mobileStats.textContent = `${percentage}% · ${solveCount.toLocaleString()} solves`;
             mobileCard.style.display = 'flex';
-            viewBtn.onclick = () => switchEventView(statsCode);
+            viewBtn.onclick = () => switchEventView(clickedEventId);
           }
         } else {
-          switchEventView(statsCode);
+          switchEventView(clickedEventId);
         }
       }
     }
