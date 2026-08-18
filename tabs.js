@@ -76,10 +76,10 @@ export function initTabs() {
     });
   });
 
-  // 6. 퀵 설정 버튼 등 외부 클릭 이벤트 연결
+  // 6. 퀵 설정 버튼 → More 탭 내부의 Settings 화면으로 바로 이동
   document.addEventListener('click', (event) => {
     if (event.target.closest('#quick-settings-btn')) {
-      activateScreen('screen-more');
+      activateScreen('screen-settings');
     }
   });
 
