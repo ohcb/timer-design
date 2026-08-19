@@ -10,6 +10,7 @@ import { initTimer } from './timer.js';
 import { initStats } from './stats.js';
 import { initSolves } from './solves.js';
 import { initScramble } from './scramble.js';
+import { initScrambleView } from './scramble-view.js';
 
 function safeInit(fnName, initFn) {
   try {
@@ -35,5 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
   safeInit('Solves', initSolves);
   safeInit('Stats', initStats);
   safeInit('Scramble', initScramble);
+  safeInit('ScrambleView', initScrambleView);
   safeInit('Timer', initTimer);
 });
