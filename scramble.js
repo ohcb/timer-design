@@ -29,6 +29,13 @@ export function getCurrentScramble() {
   return currentScrambleText;
 }
 
+// 다른 모듈(scramble-view.js 등)이 "스크램블이 바뀌었다"는 걸 구독할 수 있도록 알림
+function broadcastScrambleUpdate(eventId) {
+  document.dispatchEvent(new CustomEvent('cub3:scramble-updated', {
+    detail: { scramble: currentScrambleText, eventId }
+  }));
+}
+
 async function generateScramble() {
   const el = getScrambleEl();
   if (!el) return;
@@ -50,6 +57,7 @@ async function generateScramble() {
   // 생성되는 동안 사용자가 다른 종목으로 바꿨으면 그 결과는 버림 (경쟁 상태 방지)
   if (getCurrentEvent() === requestedEvent) {
     el.textContent = currentScrambleText;
+    broadcastScrambleUpdate(requestedEvent);
   }
 
   isGenerating = false;
@@ -90,6 +98,7 @@ export function initScramble() {
         currentScrambleText = input.trim();
         const el = getScrambleEl();
         if (el) el.textContent = currentScrambleText;
+        broadcastScrambleUpdate(getCurrentEvent());
       }
     } else if (idx === 2) {
       if (!isGenerating) generateScramble();
