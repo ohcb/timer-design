@@ -41,10 +41,26 @@ function getContainer() {
   return document.querySelector('.cube-net');
 }
 
+// .cube-net 자체를 못 찾으면 에러를 표시할 곳도 없으므로,
+// 화면 어디에도 반드시 보이도록 body에 직접 고정 배너를 띄움
+function showGlobalBanner(message) {
+  let banner = document.getElementById('cub3-scrambleview-debug-banner');
+  if (!banner) {
+    banner = document.createElement('div');
+    banner.id = 'cub3-scrambleview-debug-banner';
+    banner.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; z-index: 999999; background: #ef4444; color: #fff; font-size: 11px; padding: 6px 10px; text-align: center; word-break: break-word;';
+    document.body.appendChild(banner);
+  }
+  banner.textContent = `[ScrambleView] ${message}`;
+}
+
 // 콘솔 없이도 화면에서 바로 원인을 알 수 있게 컨테이너에 직접 표시
 function showFallback(message) {
   const container = getContainer();
-  if (!container) return;
+  if (!container) {
+    showGlobalBanner(message);
+    return;
+  }
   container.innerHTML = '';
   const el = document.createElement('div');
   el.style.cssText = 'font-size: 10px; color: #ef4444; text-align: center; padding: 4px; word-break: break-word;';
@@ -52,13 +68,27 @@ function showFallback(message) {
   container.appendChild(el);
 }
 
+function findContainerWithRetry(retriesLeft) {
+  return new Promise((resolve) => {
+    const attempt = (n) => {
+      const el = getContainer();
+      if (el || n <= 0) {
+        resolve(el);
+        return;
+      }
+      setTimeout(() => attempt(n - 1), 300);
+    };
+    attempt(retriesLeft);
+  });
+}
+
 // 최초 1회, 기존 3x3 전용 정적 그리드 마크업을 지우고 TwistyPlayer를 붙임
 async function ensurePlayer() {
   if (player) return player;
 
-  const container = getContainer();
+  const container = await findContainerWithRetry(5);
   if (!container) {
-    console.error('[ScrambleView] .cube-net 컨테이너를 찾을 수 없음');
+    showGlobalBanner('.cube-net 요소를 DOM에서 찾을 수 없음 (HTML 구조가 예상과 다를 수 있음)');
     return null;
   }
 
@@ -68,7 +98,6 @@ async function ensurePlayer() {
   try {
     ({ TwistyPlayer } = await loadTwistyLib());
   } catch (err) {
-    console.error('[ScrambleView] cubing/twisty 로드 실패:', err);
     showFallback(`Failed to load viewer: ${err.message || err}`);
     return null;
   }
@@ -83,7 +112,6 @@ async function ensurePlayer() {
       controlPanel: 'none'
     });
   } catch (err) {
-    console.error('[ScrambleView] TwistyPlayer 생성 실패:', err);
     showFallback(`Failed to create viewer: ${err.message || err}`);
     return null;
   }
