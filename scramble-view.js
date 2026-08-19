@@ -41,23 +41,52 @@ function getContainer() {
   return document.querySelector('.cube-net');
 }
 
+// 콘솔 없이도 화면에서 바로 원인을 알 수 있게 컨테이너에 직접 표시
+function showFallback(message) {
+  const container = getContainer();
+  if (!container) return;
+  container.innerHTML = '';
+  const el = document.createElement('div');
+  el.style.cssText = 'font-size: 10px; color: #ef4444; text-align: center; padding: 4px; word-break: break-word;';
+  el.textContent = message;
+  container.appendChild(el);
+}
+
 // 최초 1회, 기존 3x3 전용 정적 그리드 마크업을 지우고 TwistyPlayer를 붙임
 async function ensurePlayer() {
   if (player) return player;
 
   const container = getContainer();
-  if (!container) return null;
+  if (!container) {
+    console.error('[ScrambleView] .cube-net 컨테이너를 찾을 수 없음');
+    return null;
+  }
 
-  const { TwistyPlayer } = await loadTwistyLib();
+  showFallback('Loading puzzle view…');
+
+  let TwistyPlayer;
+  try {
+    ({ TwistyPlayer } = await loadTwistyLib());
+  } catch (err) {
+    console.error('[ScrambleView] cubing/twisty 로드 실패:', err);
+    showFallback(`Failed to load viewer: ${err.message || err}`);
+    return null;
+  }
 
   container.innerHTML = '';
 
-  player = new TwistyPlayer({
-    puzzle: '3x3x3',
-    background: 'none',
-    hintFacelets: 'none',
-    controlPanel: 'none'
-  });
+  try {
+    player = new TwistyPlayer({
+      puzzle: '3x3x3',
+      background: 'none',
+      hintFacelets: 'none',
+      controlPanel: 'none'
+    });
+  } catch (err) {
+    console.error('[ScrambleView] TwistyPlayer 생성 실패:', err);
+    showFallback(`Failed to create viewer: ${err.message || err}`);
+    return null;
+  }
 
   // 기존 3x3 격자가 있던 작은 카드 슬롯 크기에 맞춤
   player.style.width = '100%';
@@ -91,6 +120,7 @@ async function updateView(scramble, eventId) {
     p.experimentalSetupAlg = scramble || '';
   } catch (err) {
     console.error('[ScrambleView] 렌더링 실패:', err);
+    showFallback(`Render failed: ${err.message || err}`);
   }
 }
 
