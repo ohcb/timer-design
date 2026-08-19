@@ -28,6 +28,7 @@ const PUZZLE_ID_MAP = {
 
 let twistyLibPromise = null;
 let player = null;
+let appliedPuzzleId = null; // player.puzzle은 동기적으로 읽을 수 없어서(getter가 비동기 전용) 직접 추적함
 
 function loadTwistyLib() {
   if (!twistyLibPromise) {
@@ -70,18 +71,27 @@ async function ensurePlayer() {
 }
 
 async function updateView(scramble, eventId) {
-  const p = await ensurePlayer();
-  if (!p) return;
+  try {
+    const p = await ensurePlayer();
+    if (!p) return;
 
-  const puzzleId = PUZZLE_ID_MAP[eventId] || '3x3x3';
-  if (p.puzzle !== puzzleId) {
-    p.puzzle = puzzleId;
+    const puzzleId = PUZZLE_ID_MAP[eventId] || '3x3x3';
+
+    // 💡 TwistyPlayer의 속성은 "쓰기"는 되지만 "읽기"는 비동기 전용이라
+    //    p.puzzle 같은 값을 직접 읽어서 비교하면 에러가 나서 아무것도 안 그려짐.
+    //    그래서 우리가 마지막으로 적용한 값을 별도 변수로 추적함.
+    if (appliedPuzzleId !== puzzleId) {
+      p.puzzle = puzzleId;
+      appliedPuzzleId = puzzleId;
+    }
+
+    // alg는 비워두고 setup으로만 스크램블을 적용해서
+    // 재생 컨트롤 없이 "이미 스크램블된 상태"를 그대로 보여줌
+    p.alg = '';
+    p.experimentalSetupAlg = scramble || '';
+  } catch (err) {
+    console.error('[ScrambleView] 렌더링 실패:', err);
   }
-
-  // alg는 비워두고 setup으로만 스크램블을 적용해서
-  // 재생 컨트롤 없이 "이미 스크램블된 상태"를 그대로 보여줌
-  p.alg = '';
-  p.experimentalSetupAlg = scramble || '';
 }
 
 export function initScrambleView() {
