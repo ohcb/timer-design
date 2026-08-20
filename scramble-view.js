@@ -1,13 +1,12 @@
 // scramble-view.js
-// 스크램블 텍스트를 실제 퍼즐 그림으로 보여준다.
-// (지금은 렌더링 자체가 되는지 확인하려고 최소 구성으로 단순화한 버전 —
-//  직접 콘솔 테스트에서 확실히 동작했던 방식과 완전히 동일하게 맞춤)
+// 스크램블 텍스트를 실제 퍼즐 그림(전개도)으로 보여준다.
 
 import { getCurrentScramble } from './scramble.js';
 import { getCurrentEvent } from './event.js';
 
 const TWISTY_LIB_URL = 'https://cdn.cubing.net/v0/js/cubing/twisty';
 
+// 우리 종목 id(WCA 코드) -> cubing.js가 인식하는 퍼즐 형태 id
 const PUZZLE_ID_MAP = {
   '333': '3x3x3', '333oh': '3x3x3', '333bf': '3x3x3', '333fm': '3x3x3', '333mbf': '3x3x3',
   '222': '2x2x2',
@@ -43,13 +42,23 @@ async function ensurePlayer() {
   const container = getContainer();
   if (!container) return null;
 
-  // 직접 테스트와 동일하게: import는 등록용으로만 쓰고, 별다른 옵션 없이
-  // createElement로 만들어서 바로 컨테이너에 붙임
   await loadTwistyLib();
 
   container.innerHTML = '';
   player = document.createElement('twisty-player');
+
+  // 💡 JS 프로퍼티 대입(player.visualization = '2D') 대신 HTML 속성으로 설정.
+  //    프로퍼티 대입 방식에서 렌더링이 깨지는 게 확인돼서 속성 방식으로 바꿈.
+  player.setAttribute('visualization', '2D');
+
   container.appendChild(player);
+
+  // 기존 3x3 격자가 있던 작은 카드 슬롯 크기에 맞춤
+  player.style.width = '100%';
+  player.style.maxWidth = '160px';
+  player.style.height = '120px';
+  player.style.margin = '0 auto';
+  player.style.display = 'block';
 
   return player;
 }
@@ -58,7 +67,11 @@ async function updateView(scramble, eventId) {
   const p = await ensurePlayer();
   if (!p) return;
 
-  // 지금은 종목 구분 없이 우선 스크램블만 반영해서 "뭐라도 뜨는지"부터 확인
+  const puzzleId = PUZZLE_ID_MAP[eventId] || '3x3x3';
+  p.setAttribute('puzzle', puzzleId);
+
+  // alg는 건드리지 않고 setup으로만 스크램블을 적용해서
+  // "이미 스크램블된 상태"를 그대로 보여줌
   p.experimentalSetupAlg = scramble || '';
 }
 
