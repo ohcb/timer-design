@@ -1,16 +1,13 @@
 // scramble-view.js
 // 스크램블 텍스트를 실제 퍼즐 그림으로 보여준다.
-// 기존 .cube-net 마크업은 3x3 전용 고정 격자라 Skewb/Megaminx/Pyraminx 등
-// 다른 모양의 퍼즐은 표현할 수 없었음 — cubing.js의 <twisty-player>를 쓰면
-// 종목별 3D 퍼즐 모양을 우리가 직접 계산하지 않아도 자동으로 그려줌.
+// (지금은 렌더링 자체가 되는지 확인하려고 최소 구성으로 단순화한 버전 —
+//  직접 콘솔 테스트에서 확실히 동작했던 방식과 완전히 동일하게 맞춤)
 
 import { getCurrentScramble } from './scramble.js';
 import { getCurrentEvent } from './event.js';
 
 const TWISTY_LIB_URL = 'https://cdn.cubing.net/v0/js/cubing/twisty';
 
-// 우리 종목 id(WCA 코드) -> cubing.js가 인식하는 퍼즐 형태 id.
-// oh/bld/fm/mbld류는 큐브 "모양" 자체는 베이스 큐브와 동일해서 같은 퍼즐로 매핑.
 const PUZZLE_ID_MAP = {
   '333': '3x3x3', '333oh': '3x3x3', '333bf': '3x3x3', '333fm': '3x3x3', '333mbf': '3x3x3',
   '222': '2x2x2',
@@ -28,7 +25,6 @@ const PUZZLE_ID_MAP = {
 
 let twistyLibPromise = null;
 let player = null;
-let appliedPuzzleId = null; // player.puzzle은 동기적으로 읽을 수 없어서(getter가 비동기 전용) 직접 추적함
 
 function loadTwistyLib() {
   if (!twistyLibPromise) {
@@ -41,127 +37,37 @@ function getContainer() {
   return document.querySelector('.cube-net');
 }
 
-// .cube-net 자체를 못 찾으면 에러를 표시할 곳도 없으므로,
-// 화면 어디에도 반드시 보이도록 body에 직접 고정 배너를 띄움
-function showGlobalBanner(message) {
-  let banner = document.getElementById('cub3-scrambleview-debug-banner');
-  if (!banner) {
-    banner = document.createElement('div');
-    banner.id = 'cub3-scrambleview-debug-banner';
-    banner.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; z-index: 999999; background: #ef4444; color: #fff; font-size: 11px; padding: 6px 10px; text-align: center; word-break: break-word;';
-    document.body.appendChild(banner);
-  }
-  banner.textContent = `[ScrambleView] ${message}`;
-}
-
-// 콘솔 없이도 화면에서 바로 원인을 알 수 있게 컨테이너에 직접 표시
-function showFallback(message) {
-  const container = getContainer();
-  if (!container) {
-    showGlobalBanner(message);
-    return;
-  }
-  container.innerHTML = '';
-  const el = document.createElement('div');
-  el.style.cssText = 'font-size: 10px; color: #ef4444; text-align: center; padding: 4px; word-break: break-word;';
-  el.textContent = message;
-  container.appendChild(el);
-}
-
-function findContainerWithRetry(retriesLeft) {
-  return new Promise((resolve) => {
-    const attempt = (n) => {
-      const el = getContainer();
-      if (el || n <= 0) {
-        resolve(el);
-        return;
-      }
-      setTimeout(() => attempt(n - 1), 300);
-    };
-    attempt(retriesLeft);
-  });
-}
-
-// 최초 1회, 기존 3x3 전용 정적 그리드 마크업을 지우고 TwistyPlayer를 붙임
 async function ensurePlayer() {
   if (player) return player;
 
-  const container = await findContainerWithRetry(5);
-  if (!container) {
-    showGlobalBanner('.cube-net 요소를 DOM에서 찾을 수 없음 (HTML 구조가 예상과 다를 수 있음)');
-    return null;
-  }
+  const container = getContainer();
+  if (!container) return null;
 
-  showFallback('Loading puzzle view…');
-
-  let TwistyPlayer;
-  try {
-    ({ TwistyPlayer } = await loadTwistyLib());
-  } catch (err) {
-    showFallback(`Failed to load viewer: ${err.message || err}`);
-    return null;
-  }
+  // 직접 테스트와 동일하게: import는 등록용으로만 쓰고, 별다른 옵션 없이
+  // createElement로 만들어서 바로 컨테이너에 붙임
+  await loadTwistyLib();
 
   container.innerHTML = '';
-
-  try {
-    player = new TwistyPlayer({
-      puzzle: '3x3x3',
-      visualization: '2D', // 전개도(unfolded net) 형식으로 표시
-      background: 'none',
-      hintFacelets: 'none',
-      controlPanel: 'none'
-    });
-  } catch (err) {
-    showFallback(`Failed to create viewer: ${err.message || err}`);
-    return null;
-  }
-
-  // 기존 3x3 격자가 있던 작은 카드 슬롯 크기에 맞춤
-  // 전개도는 정사각형보다 가로로 넓은 십자 모양이라 비율을 맞춤
-  player.style.width = '100%';
-  player.style.maxWidth = '160px';
-  player.style.height = '120px';
-  player.style.margin = '0 auto';
-  player.style.display = 'block';
-
+  player = document.createElement('twisty-player');
   container.appendChild(player);
+
   return player;
 }
 
 async function updateView(scramble, eventId) {
-  try {
-    const p = await ensurePlayer();
-    if (!p) return;
+  const p = await ensurePlayer();
+  if (!p) return;
 
-    const puzzleId = PUZZLE_ID_MAP[eventId] || '3x3x3';
-
-    // 💡 TwistyPlayer의 속성은 "쓰기"는 되지만 "읽기"는 비동기 전용이라
-    //    p.puzzle 같은 값을 직접 읽어서 비교하면 에러가 나서 아무것도 안 그려짐.
-    //    그래서 우리가 마지막으로 적용한 값을 별도 변수로 추적함.
-    if (appliedPuzzleId !== puzzleId) {
-      p.puzzle = puzzleId;
-      appliedPuzzleId = puzzleId;
-    }
-
-    // alg는 비워두고 setup으로만 스크램블을 적용해서
-    // 재생 컨트롤 없이 "이미 스크램블된 상태"를 그대로 보여줌
-    p.alg = '';
-    p.experimentalSetupAlg = scramble || '';
-  } catch (err) {
-    console.error('[ScrambleView] 렌더링 실패:', err);
-    showFallback(`Render failed: ${err.message || err}`);
-  }
+  // 지금은 종목 구분 없이 우선 스크램블만 반영해서 "뭐라도 뜨는지"부터 확인
+  p.experimentalSetupAlg = scramble || '';
 }
 
 export function initScrambleView() {
-  // scramble.js가 스크램블을 새로 만들 때마다(자동 생성/Change/직접입력) 그림도 같이 갱신
   document.addEventListener('cub3:scramble-updated', (e) => {
     if (!e.detail) return;
     updateView(e.detail.scramble, e.detail.eventId);
   });
 
-  // 초기화 순서와 무관하게 동작하도록, 이미 생성돼있는 스크램블이 있으면 즉시 한 번 반영
   const existing = getCurrentScramble();
   if (existing) {
     updateView(existing, getCurrentEvent());
