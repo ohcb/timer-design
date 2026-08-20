@@ -107,6 +107,7 @@ async function ensurePlayer() {
   try {
     player = new TwistyPlayer({
       puzzle: '3x3x3',
+      visualization: '2D', // 전개도(unfolded net) 형식으로 표시
       background: 'none',
       hintFacelets: 'none',
       controlPanel: 'none'
@@ -117,9 +118,10 @@ async function ensurePlayer() {
   }
 
   // 기존 3x3 격자가 있던 작은 카드 슬롯 크기에 맞춤
+  // 전개도는 정사각형보다 가로로 넓은 십자 모양이라 비율을 맞춤
   player.style.width = '100%';
-  player.style.maxWidth = '140px';
-  player.style.height = '140px';
+  player.style.maxWidth = '160px';
+  player.style.height = '120px';
   player.style.margin = '0 auto';
   player.style.display = 'block';
 
