@@ -9,6 +9,7 @@ import { initSolvesManager } from './solve-bottom-sheet.js';
 import { initTimer } from './timer.js';
 import { initStats } from './stats.js';
 import { initSolves } from './solves.js';
+import { initSolvesFilter } from './solves-filter.js';
 import { initScramble } from './scramble.js';
 import { initScrambleView } from './scramble-view.js';
 
@@ -34,6 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   safeInit('SolvesManager', initSolvesManager);
   safeInit('Solves', initSolves);
+  safeInit('SolvesFilter', initSolvesFilter);
   safeInit('Stats', initStats);
   safeInit('Scramble', initScramble);
   safeInit('ScrambleView', initScrambleView);
