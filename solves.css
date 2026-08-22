@@ -513,4 +513,40 @@ div.bottom-sheet-overlay#detail-bottom-sheet .bottom-sheet-content {
   background-color: #3a3a3c !important;
 }
 
+/* Solves Filter Sheet — solves.css 아무데나 붙여넣기 */
+
+.filter-section {
+  margin-bottom: 16px;
+}
+
+.filter-chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filter-chip-group .chip-btn {
+  background-color: #1c1c1e;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.filter-chip-group .chip-btn.active {
+  background-color: #a855f7;
+  color: #ffffff;
+}
+
+/* 필터 버튼에 활성 필터가 있음을 표시하는 작은 점 */
+#filter-trigger-btn {
+  position: relative;
+}
+
+.filter-active-dot {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #a855f7;
+}
 
