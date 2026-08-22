@@ -131,6 +131,46 @@
           </div>
         </div>
 
+       <!-- Solves Filter Bottom Sheet -->
+<div id="solves-filter-overlay" class="session-bottom-sheet-overlay">
+  <div class="session-modal-sheet">
+    <div class="modal-handle"></div>
+    <h3 class="modal-session-title">Filter</h3>
+
+    <div class="filter-section">
+      <p class="group-title">PENALTY</p>
+      <div class="filter-chip-group">
+        <button type="button" class="chip-btn active" data-filter-type="penalty" data-filter-value="all">All</button>
+        <button type="button" class="chip-btn" data-filter-type="penalty" data-filter-value="ok">OK</button>
+        <button type="button" class="chip-btn" data-filter-type="penalty" data-filter-value="+2">+2</button>
+        <button type="button" class="chip-btn" data-filter-type="penalty" data-filter-value="dnf">DNF</button>
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <p class="group-title">BOOKMARK</p>
+      <div class="filter-chip-group">
+        <button type="button" class="chip-btn active" data-filter-type="bookmark" data-filter-value="all">All</button>
+        <button type="button" class="chip-btn" data-filter-type="bookmark" data-filter-value="bookmarked">⭐ Bookmarked</button>
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <p class="group-title">DATE</p>
+      <div class="filter-chip-group">
+        <button type="button" class="chip-btn active" data-filter-type="date" data-filter-value="all">All</button>
+        <button type="button" class="chip-btn" data-filter-type="date" data-filter-value="today">Today</button>
+        <button type="button" class="chip-btn" data-filter-type="date" data-filter-value="7days">7 Days</button>
+        <button type="button" class="chip-btn" data-filter-type="date" data-filter-value="30days">30 Days</button>
+      </div>
+    </div>
+
+    <button type="button" class="primary-btn-purple" id="solves-filter-apply-btn" style="width:100%;">Apply</button>
+    <button type="button" class="modal-cancel-btn" id="solves-filter-reset-btn">Reset</button>
+  </div>
+</div>
+
+
         <div class="record-cards-list" id="record-cards-container">
           <div class="record-card pb-card" data-id="1">
             <div class="card-left">
