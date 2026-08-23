@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
-<script>eruda.init();</script>
-
+ 
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="only dark">
@@ -15,15 +13,19 @@
   <link rel="stylesheet" href="more.css">
 </head>
 <body>
+ <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+<script>eruda.init();</script>
+
   <div class="app-container">
 
     <header class="topbar">
       <div class="logo">Cub3</div>
       <div class="header-center">
-        <select class="clean-select">
-          <option>Session 1</option>
-          <option>Session 2</option>
-        </select>
+        <select id="header-session-select" class="clean-select">
+  <option>Session 1</option>
+  <option>Session 2</option>
+</select>
+
         <select id="event-select" class="clean-select">
           <option>3x3</option>
           <option>2x2</option>
@@ -129,6 +131,46 @@
           </div>
         </div>
 
+       <!-- Solves Filter Bottom Sheet -->
+<div id="solves-filter-overlay" class="session-bottom-sheet-overlay">
+  <div class="session-modal-sheet">
+    <div class="modal-handle"></div>
+    <h3 class="modal-session-title">Filter</h3>
+
+    <div class="filter-section">
+      <p class="group-title">PENALTY</p>
+      <div class="filter-chip-group">
+        <button type="button" class="chip-btn active" data-filter-type="penalty" data-filter-value="all">All</button>
+        <button type="button" class="chip-btn" data-filter-type="penalty" data-filter-value="ok">OK</button>
+        <button type="button" class="chip-btn" data-filter-type="penalty" data-filter-value="+2">+2</button>
+        <button type="button" class="chip-btn" data-filter-type="penalty" data-filter-value="dnf">DNF</button>
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <p class="group-title">BOOKMARK</p>
+      <div class="filter-chip-group">
+        <button type="button" class="chip-btn active" data-filter-type="bookmark" data-filter-value="all">All</button>
+        <button type="button" class="chip-btn" data-filter-type="bookmark" data-filter-value="bookmarked">⭐ Bookmarked</button>
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <p class="group-title">DATE</p>
+      <div class="filter-chip-group">
+        <button type="button" class="chip-btn active" data-filter-type="date" data-filter-value="all">All</button>
+        <button type="button" class="chip-btn" data-filter-type="date" data-filter-value="today">Today</button>
+        <button type="button" class="chip-btn" data-filter-type="date" data-filter-value="7days">7 Days</button>
+        <button type="button" class="chip-btn" data-filter-type="date" data-filter-value="30days">30 Days</button>
+      </div>
+    </div>
+
+    <button type="button" class="primary-btn-purple" id="solves-filter-apply-btn" style="width:100%;">Apply</button>
+    <button type="button" class="modal-cancel-btn" id="solves-filter-reset-btn">Reset</button>
+  </div>
+</div>
+
+
         <div class="record-cards-list" id="record-cards-container">
           <div class="record-card pb-card" data-id="1">
             <div class="card-left">
@@ -210,17 +252,8 @@
           <header class="stats-header">
             <h1 class="stats-page-title">Stats</h1>
             <div class="stats-selector-wrapper">
-              <button id="stats-event-btn" class="stats-event-button" type="button">Overview</button>
-              <div id="stats-event-menu" class="stats-dropdown" style="display: none;">
-                <button type="button" class="stats-option active" data-event="overview">Overview</button>
-                <div class="dropdown-divider"></div>
-                <button type="button" class="stats-option" data-event="2x2">2x2</button>
-                <button type="button" class="stats-option" data-event="3x3">3x3</button>
-                <button type="button" class="stats-option" data-event="4x4">4x4</button>
-                <button type="button" class="stats-option" data-event="5x5">5x5</option>
-                <button type="button" class="stats-option" data-event="oh">OH</button>
-              </div>
-            </div>
+              <select id="stats-event-select" class="custom-dropdown"></select>
+             </div>
           </header>
 
           <main id="stats-view-overview" class="stats-main-content">
@@ -568,41 +601,90 @@
       </div>
 
       <div id="screen-settings" class="tab-screen sub-screen">
-        <div class="sub-screen-header">
-          <button class="back-btn">‹ Back</button>
-          <h2>Settings</h2>
+  <div class="sub-screen-header">
+    <button class="back-btn">‹ Back</button>
+    <h2>Settings</h2>
+  </div>
+  <div class="more-hub-container">
+
+    <div class="hub-card">
+      <div class="card-header-flex" style="margin-bottom: 12px;">
+        <span class="card-title">TIMER SETTINGS</span>
+      </div>
+      <div class="hub-menu-list">
+        <div class="hub-item">
+          <div class="item-text"><span class="item-title">Ready Time</span></div>
+          <select id="setting-ready-time" class="custom-dropdown">
+            <option value="0">Off</option>
+            <option value="300">0.3s</option>
+            <option value="500">0.5s</option>
+            <option value="800">0.8s</option>
+          </select>
         </div>
-        <div class="more-hub-container">
-          <div class="hub-card">
-            <div class="hub-menu-list">
-              <div class="hub-item">
-                <span class="item-icon">⏱️</span>
-                <div class="item-text">
-                  <span class="item-title">Timer Settings</span>
-                  <span class="item-desc">Inspection, Hold Time, Hide Time</span>
-                </div>
-                <span class="item-arrow">›</span>
-              </div>
-              <div class="hub-item">
-                <span class="item-icon">🎨</span>
-                <div class="item-text">
-                  <span class="item-title">Appearance / Theme</span>
-                  <span class="item-desc">Dark Purple, Neon, etc.</span>
-                </div>
-                <span class="item-arrow">›</span>
-              </div>
-              <div class="hub-item">
-                <span class="item-icon">⚙️</span>
-                <div class="item-text">
-                  <span class="item-title">Preferences</span>
-                  <span class="item-desc">General app behavior</span>
-                </div>
-                <span class="item-arrow">›</span>
-              </div>
-            </div>
-          </div>
+        <div class="hub-item">
+          <div class="item-text"><span class="item-title">Input Method</span></div>
+          <select id="setting-input-method" class="custom-dropdown">
+            <option value="timer">Timer</option>
+            <option value="manual">Manual Entry</option>
+            <option value="bluetooth">Bluetooth Timer</option>
+            <option value="smartcube">Smart Cube</option>
+          </select>
+        </div>
+        <div class="hub-item">
+          <div class="item-text"><span class="item-title">Time Display While Solving</span></div>
+          <select id="setting-display-mode" class="custom-dropdown">
+            <option value="hidden">Hidden</option>
+            <option value="realtime">Real-time</option>
+            <option value="sec1">Whole Seconds</option>
+          </select>
+        </div>
+        <div class="hub-item">
+          <div class="item-text"><span class="item-title">Screen While Measuring</span></div>
+          <select id="setting-focus-mode" class="custom-dropdown">
+            <option value="timer-only">Measurement Screen Only</option>
+            <option value="fullscreen">Full Screen</option>
+          </select>
         </div>
       </div>
+    </div>
+
+    <div class="hub-card">
+      <div class="card-header-flex" style="margin-bottom: 12px;">
+        <span class="card-title">APPEARANCE</span>
+      </div>
+      <div class="hub-menu-list">
+        <div class="hub-item">
+          <div class="item-text"><span class="item-title">Theme</span></div>
+          <select id="setting-theme" class="custom-dropdown">
+            <option value="dark-purple">Dark Purple</option>
+            <option value="midnight-blue">Midnight Blue</option>
+          </select>
+        </div>
+        <div class="hub-item">
+          <div class="item-text"><span class="item-title">Roundness</span></div>
+          <input type="range" id="setting-roundness" min="0" max="1.6" step="0.1" style="width: 120px;" />
+        </div>
+      </div>
+    </div>
+
+    <div class="hub-card">
+      <div class="card-header-flex" style="margin-bottom: 12px;">
+        <span class="card-title">PREFERENCES</span>
+      </div>
+      <div class="hub-menu-list">
+        <div class="hub-item">
+          <div class="item-text">
+            <span class="item-title">Inspection</span>
+            <span class="item-desc">Use 15-second inspection</span>
+          </div>
+          <input type="checkbox" id="setting-inspection" />
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 
       <div id="screen-data" class="tab-screen sub-screen">
         <div class="sub-screen-header">

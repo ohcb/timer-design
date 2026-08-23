@@ -4,6 +4,7 @@ import { getSolves } from './storage.js';
 import { formatTime } from './timer.js';
 import { openSolveBottomSheet } from './solve-bottom-sheet.js';
 import { getCurrentEvent, getSolveEvent, getEventName, setCurrentEvent, EVENT_LIST } from './event.js';
+import { matchesFilters, hasActiveFilters } from './solves-filter.js';
 
 function formatDate(timestamp) {
   if (!timestamp) return '-';
@@ -22,12 +23,18 @@ export function renderSolvesList() {
   const currentEvent = getCurrentEvent();
   const allSolves = getSolves(); // 현재 세션의 전체 기록
   // 💡 현재 선택된 종목의 기록만 필터링
-  const solves = allSolves.filter(s => getSolveEvent(s) === currentEvent);
+  const eventFilteredSolves = allSolves.filter(s => getSolveEvent(s) === currentEvent);
+  // 💡 사용자가 설정한 패널티/북마크/날짜 필터 적용
+  const solves = eventFilteredSolves.filter(matchesFilters);
 
   if (!solves || solves.length === 0) {
+    const message = (eventFilteredSolves.length > 0 && hasActiveFilters())
+      ? '필터 조건에 맞는 기록이 없습니다.'
+      : `${getEventName(currentEvent)} 기록이 없습니다.`;
+
     container.innerHTML = `
       <div style="text-align: center; color: #94a3b8; padding: 40px 0;">
-        ${getEventName(currentEvent)} 기록이 없습니다.
+        ${message}
       </div>`;
     return;
   }
@@ -85,6 +92,11 @@ export function initSolves() {
   // 종목이 바뀌면(헤더든 이 탭이든) 목록 즉시 갱신 + 드롭다운 값도 동기화
   document.addEventListener('cub3:event-changed', () => {
     syncSolvesEventDropdown();
+    renderSolvesList();
+  });
+
+  // 세션이 바뀌면(Session 탭 전환, 헤더 드롭다운) 목록도 즉시 갱신
+  document.addEventListener('cub3:session-changed', () => {
     renderSolvesList();
   });
 

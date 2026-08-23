@@ -25,6 +25,16 @@ function persist() {
   }
 }
 
+// currentSessionId가 실제로 바뀔 때만 전역 이벤트 발행
+// (Timer/Solves 등 다른 탭이 이걸 구독해서 즉시 갱신함)
+function setCurrentSessionId(id) {
+  if (id === currentSessionId) return;
+  currentSessionId = id;
+  document.dispatchEvent(new CustomEvent('cub3:session-changed', {
+    detail: { sessionId: currentSessionId }
+  }));
+}
+
 // 현재 활성화된 세션이 유효한지 확인하고, 없으면 안전한 세션으로 자동 전환
 function ensureActiveSession() {
   const current = getCurrentSession();
@@ -33,11 +43,11 @@ function ensureActiveSession() {
   if (!current || current.status !== 'active') {
     const activeSessions = getSessions({ status: 'active' });
     if (activeSessions.length > 0) {
-      currentSessionId = activeSessions[0].id;
+      setCurrentSessionId(activeSessions[0].id);
     } else {
       // active 세션이 아예 없으면 기본 세션 1개 생성
       const defaultSession = createSessionRaw('3x3 연습', '333');
-      currentSessionId = defaultSession.id;
+      setCurrentSessionId(defaultSession.id);
     }
     persist();
   }
@@ -80,7 +90,7 @@ export function saveCurrentSession(updatedSession) {
     sessions.push(updatedSession);
   }
   updatedSession.updatedAt = Date.now();
-  currentSessionId = updatedSession.id;
+  setCurrentSessionId(updatedSession.id);
   persist();
 }
 
@@ -98,7 +108,7 @@ export function getSessions(filter = {}) {
 // [생성]
 export function createSession(name, event = '333') {
   const newSession = createSessionRaw(name, event);
-  currentSessionId = newSession.id;
+  setCurrentSessionId(newSession.id);
   persist();
   return newSession;
 }
@@ -108,7 +118,7 @@ export function switchSession(targetSessionId) {
   const target = sessions.find(s => s.id === targetSessionId);
   if (!target || target.status !== 'active') return false;
 
-  currentSessionId = targetSessionId;
+  setCurrentSessionId(targetSessionId);
   persist();
   return true;
 }

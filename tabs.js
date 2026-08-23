@@ -43,6 +43,12 @@ export function initTabs() {
     });
 
     syncNavWithActiveScreen(targetScreenId);
+
+    // 💡 이 화면이 방금 켜졌다는 걸 전역에 알림 — 각 탭 모듈이 구독해서
+    //    새로고침 없이 항상 최신 데이터로 다시 그리도록 함
+    document.dispatchEvent(new CustomEvent('cub3:tab-activated', {
+      detail: { screenId: targetScreenId }
+    }));
   }
 
   // 4. 초기 화면 설정 (기본값: screen-timer)
@@ -70,10 +76,10 @@ export function initTabs() {
     });
   });
 
-  // 6. 퀵 설정 버튼 등 외부 클릭 이벤트 연결
+  // 6. 퀵 설정 버튼 → More 탭 내부의 Settings 화면으로 바로 이동
   document.addEventListener('click', (event) => {
     if (event.target.closest('#quick-settings-btn')) {
-      activateScreen('screen-more');
+      activateScreen('screen-settings');
     }
   });
 

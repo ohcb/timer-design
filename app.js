@@ -1,17 +1,17 @@
 // app.js
 
+import { initSettings } from './settings.js';
 import { initTabs } from './tabs.js';
 import { initSessionManager } from './session-manager.js';
+import { initSessionUI } from './session.js';
+import { initEventManager } from './event.js';
 import { initSolvesManager } from './solve-bottom-sheet.js';
 import { initTimer } from './timer.js';
 import { initStats } from './stats.js';
 import { initSolves } from './solves.js';
-import { initSessionUI } from './session.js';
-import { initEventManager } from './event.js';
+import { initSolvesFilter } from './solves-filter.js';
 import { initScramble } from './scramble.js';
-
-
-
+import { initScrambleView } from './scramble-view.js';
 
 function safeInit(fnName, initFn) {
   try {
@@ -25,17 +25,19 @@ function safeInit(fnName, initFn) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  safeInit('SessionManager', initSessionManager);
-  safeInit('SessionUI', initSessionUI);
+  // Settings가 가장 먼저: Ready 시간/화면모드 등을 다른 모듈이 초기화 시점부터 바로 참조함
+  safeInit('Settings', initSettings);
 
+  safeInit('SessionManager', initSessionManager);
+  safeInit('EventManager', initEventManager);
   safeInit('Tabs', initTabs);
+  safeInit('SessionUI', initSessionUI);
 
   safeInit('SolvesManager', initSolvesManager);
   safeInit('Solves', initSolves);
+  safeInit('SolvesFilter', initSolvesFilter);
   safeInit('Stats', initStats);
-  safeInit('Timer', initTimer);
-  safeInit('EventManager', initEventManager);
   safeInit('Scramble', initScramble);
-
-
+  safeInit('ScrambleView', initScrambleView);
+  safeInit('Timer', initTimer);
 });
