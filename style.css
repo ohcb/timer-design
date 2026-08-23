@@ -422,4 +422,130 @@ body.cub3-measure-only .time-diff {
   display: none !important;
 }
 
+/* ==========================================================================
+   🖥️ Desktop-first Layout (768px 이상)
+   기존 모바일 구조/JS는 전혀 건드리지 않고, display:contents로 중첩된
+   요소들을 그리드에 직접 배치해서 데스크톱 3열 레이아웃을 만든다.
+   ========================================================================== */
+@media (min-width: 768px) {
 
+  /* --------------------------------------------------------------------
+     1. 앱 셸: 상단바(고정) + 왼쪽 사이드바
+     -------------------------------------------------------------------- */
+  .topbar {
+    position: sticky;
+    top: 0;
+    height: 64px;
+    box-sizing: border-box;
+    z-index: 500;
+    background-color: var(--bg-color);
+  }
+
+  .main-app-navigation.bottom-nav {
+    position: fixed !important;
+    top: 64px !important;
+    left: 0 !important;
+    bottom: 0 !important;
+    width: 220px !important;
+    height: calc(100vh - 64px) !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    align-items: stretch !important;
+    gap: 4px;
+    padding: 16px 0;
+    border-top: none !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .main-app-navigation .nav-tab {
+    flex: none !important;
+    height: 44px !important;
+    justify-content: flex-start !important;
+    padding-left: 24px !important;
+    border-top: none !important;
+    border-radius: 0;
+  }
+
+  .main-app-navigation .nav-tab.active {
+    border-top: none !important;
+    border-left: 3px solid #a855f7;
+    background-color: rgba(168, 85, 247, 0.08);
+  }
+
+  .app-container {
+    padding-bottom: 0 !important;
+  }
+
+  .tab-contents {
+    margin-left: 220px;
+    max-width: none;
+    padding-bottom: 2rem !important;
+  }
+
+  /* --------------------------------------------------------------------
+     2. Timer 화면: Recent Solves | Scramble+Timer | Current&Best
+        (dashboard-panel/columns는 display:contents로 투명하게 만들어서
+         그 안의 col들을 #screen-timer 그리드에 직접 배치함)
+     -------------------------------------------------------------------- */
+  #screen-timer {
+    display: grid;
+    grid-template-columns: 1fr 1.6fr 1fr;
+    grid-template-rows: auto auto;
+    column-gap: 2.5rem;
+    row-gap: 1rem;
+    align-items: start;
+    width: 100%;
+    max-width: 1200px;
+    margin: 2rem auto 0 auto;
+  }
+
+  #screen-timer .scramble-zone {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  #screen-timer .timer-zone {
+    grid-column: 2;
+    grid-row: 2;
+    margin: 0;
+  }
+
+  #screen-timer .dashboard-panel,
+  #screen-timer .dashboard-columns {
+    display: contents;
+  }
+
+  #screen-timer .col.recent-solves {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+  }
+
+  #screen-timer .col.current-best {
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  #screen-timer .col.scramble-view {
+    grid-column: 3;
+    grid-row: 2;
+  }
+
+  /* --------------------------------------------------------------------
+     3. Solves 탭: 카드 그리드 더 넓게 (3열 -> 5열)
+     -------------------------------------------------------------------- */
+  .record-cards-list {
+    grid-template-columns: repeat(5, 1fr) !important;
+  }
+
+  /* --------------------------------------------------------------------
+     4. Session / More / Stats: 중앙 정렬 폭만 확장 (구조는 그대로)
+     -------------------------------------------------------------------- */
+  .session-hub-container,
+  .more-hub-container {
+    max-width: 700px !important;
+  }
+
+  .stats-container {
+    max-width: 1000px;
+  }
+}
