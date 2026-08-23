@@ -16,6 +16,7 @@ let isInspecting = false;
 let inspectionInterval = null;
 let lastTouchEventTime = 0;      // 마지막 실제 터치 이벤트 시각 (ghost mouse event 판별용)
 let timerListenersBound = false; // document 레벨 리스너 중복 등록 방지 가드
+let wakeLock = null;
 
 // 터치 종료 후 브라우저가 자동으로 만들어내는 synthetic mousedown/mouseup을
 // 무시하기 위한 유예 시간(ms). 실기기/브라우저별로 보통 300ms 이내에 발생함.
@@ -209,10 +210,31 @@ export function initTimer() {
     timerDisplay.textContent = msToClock(ms);
   }
 
+  async function requestWakeLock() {
+  if (!('wakeLock' in navigator)) return;
+
+  try {
+    wakeLock = await navigator.wakeLock.request('screen');
+  } catch (err) {
+    console.warn('Screen Wake Lock failed:', err);
+  }
+}
+
+async function releaseWakeLock() {
+  if (wakeLock) {
+    try {
+      await wakeLock.release();
+    } catch {}
+    wakeLock = null;
+  }
+}
+
   function startTimer() {
-    isRunning = true;
-    startTime = performance.now();
-    timerDisplay.style.color = '#ffffff';
+  isRunning = true;
+  startTime = performance.now();
+  timerDisplay.style.color = '#ffffff';
+
+  requestWakeLock();
 
     if (getSetting('focusMode') === 'timer-only') {
       document.body.classList.add('cub3-measure-only');
@@ -299,6 +321,7 @@ export function initTimer() {
   function stopTimer() {
     isRunning = false;
     isReady = false; // 방어적 초기화: 다음 press 사이클이 이전 상태를 이어받지 않게 함
+     releaseWakeLock();
     timerDisplay.style.color = '';
     document.body.classList.remove('cub3-measure-only');
 
