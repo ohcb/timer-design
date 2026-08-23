@@ -211,12 +211,20 @@ export function initTimer() {
   }
 
   async function requestWakeLock() {
-  if (!('wakeLock' in navigator)) return;
+  if (!('wakeLock' in navigator)) {
+    console.warn('Wake Lock API not supported');
+    return;
+  }
 
   try {
     wakeLock = await navigator.wakeLock.request('screen');
+    console.log('Wake Lock acquired');
+
+    wakeLock.addEventListener('release', () => {
+      console.log('Wake Lock released');
+    });
   } catch (err) {
-    console.warn('Screen Wake Lock failed:', err);
+    console.error('Wake Lock request failed:', err);
   }
 }
 
