@@ -504,4 +504,10 @@ async function releaseWakeLock() {
   });
 
   updateInputMethodIndicator();
+  
+  document.addEventListener('visibilitychange', () => {
+  if (!document.hidden && isRunning) {
+    requestWakeLock();
+  }
+});
 }
