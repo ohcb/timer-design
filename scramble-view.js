@@ -44,36 +44,52 @@ async function ensurePlayer() {
 
   await loadTwistyLib();
 
-  container.innerHTML = '';
-  player = document.createElement('twisty-player');
+  try {
+    container.innerHTML = '';
+    const el = document.createElement('twisty-player');
 
-  // 💡 JS 프로퍼티 대입(player.visualization = '2D') 대신 HTML 속성으로 설정.
-  //    프로퍼티 대입 방식에서 렌더링이 깨지는 게 확인돼서 속성 방식으로 바꿈.
-  player.setAttribute('visualization', '2D');
+    // 💡 JS 프로퍼티 대입(player.visualization = '2D') 대신 HTML 속성으로 설정.
+    //    프로퍼티 대입 방식에서 렌더링이 깨지는 게 확인돼서 속성 방식으로 바꿈.
+    el.setAttribute('visualization', '2D');
 
-  // 💡 기본값 보정 (전부 HTML 속성 = kebab-case로 설정해야 실제로 반영됨)
-  //    1) background="none"      → twisty-player 기본 흰 배경 제거 (카드 배경이 그대로 비쳐야 함)
-  //    2) hint-facelets="none"   → 다음 상태 미리보기용 반투명 스티커 레이어 제거
-  //       (이게 "전개도 옆에 반투명하게 붙어보이던" 부분의 정체)
-  //    3) back-view="side-by-side" → 뒷면을 작은 인셋으로 우겨넣지 않고 앞면과 동일 크기로 나란히 배치
-  //       (Clock처럼 앞/뒤 면이 다 보여야 하는 종목에서 뒷면이 작게 나오던 문제 해결)
-  player.setAttribute('background', 'none');
-  player.setAttribute('hint-facelets', 'none');
-  player.setAttribute('back-view', 'side-by-side');
-  // 💡 아래 재생/컨트롤 바 제거: 이 뷰는 "스크램블된 상태의 정적 그림"만 필요하고
-  //    알고리즘을 재생/되감기 하는 용도가 아니므로 컨트롤 패널 자체를 끔
-  player.setAttribute('control-panel', 'none');
+    // 💡 기본값 보정 (전부 HTML 속성 = kebab-case로 설정해야 실제로 반영됨)
+    //    1) background="none"      → twisty-player 기본 흰 배경 제거
+    //    2) hint-facelets="none"   → 다음 상태 미리보기용 반투명 스티커 레이어 제거
+    //    3) back-view="side-by-side" → 뒷면을 앞면과 동일 크기로 나란히 배치
+    el.setAttribute('background', 'none');
+    el.setAttribute('hint-facelets', 'none');
+    el.setAttribute('back-view', 'side-by-side');
 
-  container.appendChild(player);
+    container.appendChild(el);
 
-  // 기존 3x3 격자가 있던 작은 카드 슬롯 크기에 맞춤
-  // 💡 back-view="side-by-side"로 바꾸면서 앞/뒤 면을 나란히 그리는 종목(Clock 등)은
-  //    가로 폭이 기존 160px보다 더 필요해서 함께 넉넉하게 조정 (잘림 방지)
-  player.style.width = '100%';
-  player.style.maxWidth = '220px';
-  player.style.height = '140px';
-  player.style.margin = '0 auto';
-  player.style.display = 'block';
+    // 기존 3x3 격자가 있던 작은 카드 슬롯 크기에 맞춤
+    el.style.width = '100%';
+    el.style.maxWidth = '220px';
+    el.style.height = '140px';
+    el.style.margin = '0 auto';
+    el.style.display = 'block';
+
+    // 💡 하단 재생바(컨트롤 패널) 제거 시도.
+    //    control-panel="none"을 속성(setAttribute)으로 주면 이 라이브러리 버전에서
+    //    내부적으로 렌더링이 깨지는 현상이 확인돼서(= 화면이 통째로 사라짐),
+    //    속성 대신 JS 프로퍼티 대입으로 바꿔서 시도함.
+    try {
+      el.controlPanel = 'none';
+    } catch (panelErr) {
+      console.warn('[ScrambleView] control-panel 설정 실패(무시하고 계속 진행):', panelErr);
+    }
+
+    player = el;
+  } catch (err) {
+    // 💡 생성 도중 어떤 이유로든 실패하면 player를 null로 되돌려서
+    //    다음 updateView() 호출 때 처음부터 다시 시도하게 함.
+    //    (이걸 안 하면 깨진 인스턴스가 캐시된 채 계속 재사용되면서
+    //     모든 종목에서 영구적으로 빈 화면이 나오는 문제가 생김)
+    console.error('[ScrambleView] twisty-player 생성 실패:', err);
+    container.innerHTML = '';
+    player = null;
+    return null;
+  }
 
   return player;
 }
