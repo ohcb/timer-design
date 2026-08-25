@@ -60,6 +60,9 @@ async function ensurePlayer() {
   player.setAttribute('background', 'none');
   player.setAttribute('hint-facelets', 'none');
   player.setAttribute('back-view', 'side-by-side');
+  // 💡 아래 재생/컨트롤 바 제거: 이 뷰는 "스크램블된 상태의 정적 그림"만 필요하고
+  //    알고리즘을 재생/되감기 하는 용도가 아니므로 컨트롤 패널 자체를 끔
+  player.setAttribute('control-panel', 'none');
 
   container.appendChild(player);
 
