@@ -67,7 +67,7 @@ async function ensurePlayer() {
     const cropWrapper = document.createElement('div');
     cropWrapper.style.width = '100%';
     cropWrapper.style.maxWidth = '220px';
-    cropWrapper.style.height = '140px';
+    cropWrapper.style.height = '172px';
     cropWrapper.style.overflow = 'hidden';
     cropWrapper.style.margin = '0 auto';
     cropWrapper.style.position = 'relative';
@@ -77,7 +77,7 @@ async function ensurePlayer() {
 
     // 실제 el 자체는 wrapper보다 키워서 하단 재생바가 wrapper 밖(잘리는 영역)에 위치하게 함
     el.style.width = '100%';
-    el.style.height = '190px';
+    el.style.height = '195px';
     el.style.display = 'block';
     el.style.position = 'absolute';
     el.style.top = '0';
