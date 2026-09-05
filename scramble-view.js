@@ -60,24 +60,28 @@ async function ensurePlayer() {
     el.setAttribute('hint-facelets', 'none');
     el.setAttribute('back-view', 'side-by-side');
 
-    container.appendChild(el);
+    // 💡 재생바(컨트롤 패널)는 control-panel 속성/프로퍼티를 건드리면
+    //    이 라이브러리 버전에서 화면 전체가 조용히(에러 없이) 사라지는 버그가 있어서
+    //    라이브러리 옵션을 건드리지 않고, 바깥 wrapper의 overflow:hidden으로
+    //    하단 재생바 영역만 시각적으로 잘라내는 방식으로 대체함.
+    const cropWrapper = document.createElement('div');
+    cropWrapper.style.width = '100%';
+    cropWrapper.style.maxWidth = '220px';
+    cropWrapper.style.height = '140px';
+    cropWrapper.style.overflow = 'hidden';
+    cropWrapper.style.margin = '0 auto';
+    cropWrapper.style.position = 'relative';
 
-    // 기존 3x3 격자가 있던 작은 카드 슬롯 크기에 맞춤
+    cropWrapper.appendChild(el);
+    container.appendChild(cropWrapper);
+
+    // 실제 el 자체는 wrapper보다 키워서 하단 재생바가 wrapper 밖(잘리는 영역)에 위치하게 함
     el.style.width = '100%';
-    el.style.maxWidth = '220px';
-    el.style.height = '140px';
-    el.style.margin = '0 auto';
+    el.style.height = '190px';
     el.style.display = 'block';
-
-    // 💡 하단 재생바(컨트롤 패널) 제거 시도.
-    //    control-panel="none"을 속성(setAttribute)으로 주면 이 라이브러리 버전에서
-    //    내부적으로 렌더링이 깨지는 현상이 확인돼서(= 화면이 통째로 사라짐),
-    //    속성 대신 JS 프로퍼티 대입으로 바꿔서 시도함.
-    try {
-      el.controlPanel = 'none';
-    } catch (panelErr) {
-      console.warn('[ScrambleView] control-panel 설정 실패(무시하고 계속 진행):', panelErr);
-    }
+    el.style.position = 'absolute';
+    el.style.top = '0';
+    el.style.left = '0';
 
     player = el;
   } catch (err) {
