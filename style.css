@@ -549,3 +549,22 @@ body.cub3-measure-only .time-diff {
     max-width: 1000px;
   }
 }
+/* 대시보드를 절대위치에서 일반 흐름으로 → 스크램블/타이머를 덮지 않음 */
+.dashboard-panel {
+  position: static !important;
+  bottom: auto !important;
+  padding: 0 !important;
+}
+
+/* 스크램블 영역을 위로 올리고, 긴 스크램블(4x4~7x7)도 안 잘리게 */
+.scramble-zone {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+}
+.scramble-zone .scramble-text {
+  max-width: 100%;
+  font-size: clamp(0.8rem, 3.4vw, 1.1rem);
+  overflow-wrap: anywhere;
+  word-break: break-all;
+}
